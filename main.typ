@@ -3,7 +3,7 @@
 
 #show: project.with(
   title: "Tăng cường khả năng chuyển kiểu chữ đa ngôn ngữ trong bài toán one-shot bằng mô hình khuếch tán",
-  authors: ((name: "Trần Đình Khánh Đăng"),),
+  authors: ((name: "TRẦN ĐÌNH KHÁNH ĐĂNG"),),
 )
 
 #counter(page).update(1)

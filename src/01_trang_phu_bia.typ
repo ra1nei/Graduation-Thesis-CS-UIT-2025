@@ -9,15 +9,21 @@
     stroke: 1.7pt,
     [
       #align(center)[
-      #text(12pt, strong("ĐẠI HỌC QUỐC GIA HỒ CHÍ MINH"))
+      #text(12pt, strong("ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH"))
   
       #text(12pt, strong("TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN"))
-      ]
-      #v(1.5cm)
 
-      
+      #text(12pt, strong("KHOA KHOA HỌC MÁY TÍNH"))
+      ]
+
+      #v(1.5cm)
       #align(center)[
-        #text(14pt, strong("Trần Đình Khánh Đăng - 22520195"))
+        #text(14pt, strong("TRẦN ĐÌNH KHÁNH ĐĂNG - 22520195"))
+      ]
+
+      #v(1.5cm)
+      #align(center)[
+        #text(14pt, strong("KHÓA LUẬN TỐT NGHIỆP"))
       ]
       
       #v(2cm)
@@ -25,21 +31,29 @@
         #set par(justify: false)
         #text(18pt,  upper(strong(title)))
       ]
-      #v(2cm)
+
+      #v(0.5cm)
       #align(center)[
-        #text(14pt, strong("KHÓA LUẬN TỐT NGHIỆP ĐẠI HỌC HỆ CHÍNH QUY"))
+        #text(18pt, strong("Enhancing One-shot Cross-Script Font Style Transfer using Diffusion"))
       ]
-      #align(center)[
-        #text(14pt, strong("Khoa: Khoa học máy tính"))
-      ]
+
       #v(1.5cm)
       #align(center)[
-        #text(14pt, strong("Giảng viên hướng dẫn: TS. Dương Việt Hằng"))
+        #text(14pt, strong("CỬ NHÂN NGÀNH KHOA HỌC MÁY TÍNH"))
       ]
-      #v(1fr)
-    
+
+      // #align(center)[
+      //   #text(14pt, strong("Khoa: Khoa học máy tính"))
+      // ]
+
+      #v(1.5cm)
       #align(center)[
-        #text(12pt, strong("HỒ CHÍ MINH - 2025"))
+        #text(14pt, strong("GIẢNG VIÊN HƯỚNG DẪN:5 TS. Dương Việt Hằng"))
+      ]
+
+      #v(1fr)
+      #align(center)[
+        #text(12pt, strong("TP.HỒ CHÍ MINH, 2025"))
       ]
     ]  
   ))

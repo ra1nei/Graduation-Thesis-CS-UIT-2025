@@ -20,7 +20,7 @@ Cấu trúc chương bao gồm: trình bày kiến trúc tổng thể của Font
 
 == Kiến trúc nền tảng FontDiffuser
 
-FontDiffuser được thiết kế dưới dạng một mô hình khuếch tán có điều kiện (Conditional Diffusion Model - CDM), mô hình hóa bài toán sinh phông chữ dưới dạng quy trình "khử nhiễu" (noise-to-denoise).
+FontDiffuser được thiết kế dưới dạng một mô hình khuếch tán có điều kiện (Conditional Diffusion Model - CDM), mô hình hoá bài toán sinh phông chữ dưới dạng quy trình "khử nhiễu" (noise-to-denoise).
 
 #figure(
   image("../images/FontDiffuser/framework.pdf"),
@@ -50,15 +50,15 @@ Quy trình huấn luyện được chia thành hai giai đoạn (phases) tuần 
 
 === Giai đoạn 1: Tái tạo cấu trúc (Reconstruction Phase)
 Mục tiêu của giai đoạn này là huấn luyện mô hình khuếch tán học cách khôi phục lại hình ảnh ký tự mục tiêu từ nhiễu, dựa trên điều kiện $x_c$ và $x_s$. Các thành phần cốt lõi bao gồm:
-- *Bộ mã hóa nội dung ($E_c$) và phong cách ($E_s$):* Trích xuất đặc trưng ngữ nghĩa.
+- *Bộ mã hoá nội dung ($E_c$) và phong cách ($E_s$):* Trích xuất đặc trưng ngữ nghĩa.
 ==== *Multi-scale Content Aggregation (MCA):* 
 Đây là cơ chế tổng hợp đặc trưng đa tỉ lệ được thiết kế để giải quyết hạn chế của các phương pháp chỉ dựa vào một mức đặc trưng duy nhất. Khi sinh các ký tự phức tạp, một tầng đặc trưng đơn lẻ thường không thể đồng thời nắm bắt được cả bố cục tổng thể lẫn những chi tiết tinh vi như nét mảnh, bộ phận nhỏ hoặc các dấu thanh. MCA khắc phục điều này bằng cách trích xuất nhiều mức đặc trưng nội dung từ các tầng khác nhau của bộ mã hoá, sau đó đưa chúng vào các khối UNet tương ứng.
 
 Cụ thể, quy trình hoạt động như sau:
-1. Ảnh tham chiếu $x_c$ trước hết được nhúng bởi bộ mã hóa nội dung $E_c$ để thu được các đặc trưng đa tỷ lệ $F_c = \{f_c^1, f_c^2, f_c^3\}$ từ các tầng khác nhau.
+1. Ảnh tham chiếu $x_c$ trước hết được nhúng bởi bộ mã hoá nội dung $E_c$ để thu được các đặc trưng đa tỷ lệ $F_c = \{f_c^1, f_c^2, f_c^3\}$ từ các tầng khác nhau.
 2. Mỗi đặc trưng nội dung $f_c^i$ được đưa vào UNet thông qua ba khối MCA tương ứng. Tại đây, $f_c^i$ được ghép nối (concatenated) với đặc trưng của khối UNet trước đó là $r_i$, tạo ra đặc trưng giàu thông tin $I_c$.
 3. Để tăng cường khả năng chọn lọc kênh thích ứng, áp dụng cơ chế chú ý kênh (channel attention) lên $I_c$. Cơ chế này sử dụng một lớp gộp trung bình (average pooling), hai lớp tích chập $1 times 1$ và một hàm kích hoạt để tạo ra vector nhận biết kênh toàn cục $W_c$.
-4. Vector $W_c$ sau đó được dùng để trọng số hóa $I_c$ thông qua phép nhân theo kênh (channel-wise multiplication).
+4. Vector $W_c$ sau đó được dùng để trọng số hoá $I_c$ thông qua phép nhân theo kênh (channel-wise multiplication).
 5. Sau khi đi qua một kết nối phần dư (residual connection), một lớp tích chập $1 times $ được sử dụng để giảm số lượng kênh, thu được đầu ra $I_{co}$.
 6. Cuối cùng, một mô-đun cross-attention được áp dụng để chèn style embedding $e_s$, trong đó $e_s$ đóng vai trò là Key và Value, còn $I_{co}$ đóng vai trò là Query.
   
@@ -66,12 +66,12 @@ Nhờ MCA, mô hình có thể tái hiện chính xác cả những thành phầ
 
 #figure(
   image("../images/FontDiffuser/MCA.pdf"),
-  caption: [Multi-scale Content Aggregation]
+  caption: [Khối MCA (Multi-scale Content Aggregation)]
 )
 
 #figure(
   image("../images/FontDiffuser/multi-scale_content_feature.pdf"),
-  caption: [Content features in various blocks]
+  caption: [Đặc trưng Content ở các khối khác nhau]
 )
 
 ==== *Reference-Structure Interaction (RSI):* 
@@ -143,13 +143,13 @@ Trong đó:
 - $K$: Số lượng mẫu âm.
 - $tau$: siêu tham số nhiệt độ (temperature hyper-parameter), được thiết lập ở mức $0.07$.
 
-Thông qua việc tối thiểu hóa hàm mất mát này, mô hình được định hướng để kéo vector phong cách của ảnh sinh lại gần vector của ảnh đích, đồng thời đẩy xa khỏi các vector của các phong cách không mong muốn.
+Thông qua việc tối thiểu hoá hàm mất mát này, mô hình được định hướng để kéo vector phong cách của ảnh sinh lại gần vector của ảnh đích, đồng thời đẩy xa khỏi các vector của các phong cách không mong muốn.
 
 == Kết hợp vào Mục tiêu Huấn luyện (Training Objective)
 Để đạt được sự cân bằng giữa việc tái tạo nội dung chính xác và bắt chước phong cách tinh tế, quy trình huấn luyện của FontDiffuser áp dụng chiến lược *hai giai đoạn*: *từ thô đến tinh (coarse-to-fine two-phase strategy).*
 
 1. *Giai đoạn 1: Tái tạo Cơ bản (Phase 1 - Coarse Stage)*: 
-Trong giai đoạn đầu, mục tiêu là tối ưu hóa FontDiffuser để mô hình đạt được năng lực nền tảng trong việc tái tạo cấu trúc phông chữ (font reconstruction). Tại bước này, mô-đun SCR *chưa được kích hoạt*.
+Trong giai đoạn đầu, mục tiêu là tối ưu hoá FontDiffuser để mô hình đạt được năng lực nền tảng trong việc tái tạo cấu trúc phông chữ (font reconstruction). Tại bước này, mô-đun SCR *chưa được kích hoạt*.
 Hàm mất mát tổng thể cho giai đoạn 1 ($L_"total"^1$) là sự kết hợp của ba thành phần:
 
 $ L_"total"^1 = L_"MSE" + lambda_"cp"^1 L_"cp" + lambda_"off"^1 L_"offset" $
@@ -158,7 +158,7 @@ Chi tiết các thành phần:
   - *Hàm mất mát Khuếch tán Tiêu chuẩn ($L_"MSE"$)*: Đây là hàm mất mát cơ bản của mô hình khuếch tán, chịu trách nhiệm tính toán sai số giữa nhiễu dự đoán $epsilon_theta$ và nhiễu thực tế $epsilon$ tại bước thời gian $t$, với điều kiện đầu vào là ảnh nội dung $x_c$ và ảnh phong cách $x_s$:
   $ L_"MSE" = ||epsilon - epsilon_theta(x_t, t, x_c, x_s)||^2 $
   
-  - *Hàm mất mát Nhận thức Nội dung ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Chúng tôi sử dụng các đặc trưng được mã hóa bởi mạng VGG ($scr("VGG")_l(dot)$) trên $L$ tầng được chọn:
+  - *Hàm mất mát Nhận thức Nội dung ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Khoá luận sử dụng các đặc trưng được mã hoá bởi mạng VGG ($scr("VGG")_l(dot)$) trên $L$ tầng được chọn:
   $ L_"cp" = sum_(l=1)^L ||"VGG"_l (x_0) - "VGG"_l (x_"target")|| $
   
   - *Hàm mất mát Độ lệch ($L_"offset"$ - Offset Loss)*: Được thiết kế riêng cho mô-đun RSI (Reference-Structure Interaction), hàm này ràng buộc độ lớn của các vector dịch chuyển $delta_"offset"$ nhằm ngăn chặn các biến dạng cấu trúc quá mức, trong đó mean là phép tính trung bình:
@@ -299,7 +299,7 @@ Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các
           $"count" arrow.l "count" + 1$ #d \
   
         *if* $"count" > 0$ *then* #i \
-          $L_"total" arrow.l L_"total / count"$ #comment[Chuẩn hóa khi có nhiều nhánh] #d \
+          $L_"total" arrow.l L_"total / count"$ #comment[Chuẩn hoá khi có nhiều nhánh] #d \
         *end if* \
   
         *return* $L_"total"$ #d \

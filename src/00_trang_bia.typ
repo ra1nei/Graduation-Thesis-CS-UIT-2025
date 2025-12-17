@@ -9,37 +9,46 @@
     stroke: 1.7pt,
     [
       #align(center)[
-      #text(12pt, strong("ĐẠI HỌC QUỐC GIA HỒ CHÍ MINH"))
+      #text(12pt, strong("ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH"))
   
       #text(12pt, strong("TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN"))
+
+      #text(12pt, strong("KHOA KHOA HỌC MÁY TÍNH"))
       ]
-      #v(0.6cm)
+
+      #v(1.5cm)
       #align(center)[
-        #image("/images/UIT.png", width: 25%)
+        #text(14pt, strong("TRẦN ĐÌNH KHÁNH ĐĂNG"))
       ]
-      #v(0.7cm)
-      
+
+      #v(1.5cm)
       #align(center)[
-        #text(14pt, strong("Trần Đình Khánh Đăng - 22520195"))
+        #text(14pt, strong("KHÓA LUẬN TỐT NGHIỆP"))
       ]
       
-      #v(1.2cm)
+      #v(2cm)
       #align(center)[
         #set par(justify: false)
         #text(18pt,  upper(strong(title)))
       ]
-      #v(2cm)
+
+      #v(0.5cm)
       #align(center)[
-        #text(14pt, strong("KHÓA LUẬN TỐT NGHIỆP ĐẠI HỌC HỆ CHÍNH QUY"))
-      ]
-      #align(center)[
-        #text(14pt, strong("Khoa: Khoa học máy tính"))
+        #text(18pt, strong("Enhancing One-shot Cross-Script Font Style Transfer using Diffusion"))
       ]
 
-      #v(1fr)
-    
+      #v(1.5cm)
       #align(center)[
-        #text(12pt, strong("HỒ CHÍ MINH - 2025"))
+        #text(14pt, strong("CỬ NHÂN NGÀNH KHOA HỌC MÁY TÍNH"))
+      ]
+
+      // #align(center)[
+      //   #text(14pt, strong("Khoa: Khoa học máy tính"))
+      // ]
+
+      #v(1fr)
+      #align(center)[
+        #text(12pt, strong("TP.HỒ CHÍ MINH, 2025"))
       ]
     ]  
   ))
