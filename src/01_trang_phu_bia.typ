@@ -48,7 +48,10 @@
 
       #v(1.5cm)
       #align(center)[
-        #text(14pt, strong("GIẢNG VIÊN HƯỚNG DẪN:5 TS. Dương Việt Hằng"))
+        #text(14pt, strong("GIẢNG VIÊN HƯỚNG DẪN:"))
+      ]
+      #align(center)[
+        #text(14pt, strong("TS. Dương Việt Hằng"))
       ]
 
       #v(1fr)

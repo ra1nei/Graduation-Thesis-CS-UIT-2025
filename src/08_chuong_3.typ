@@ -12,11 +12,11 @@
 
 == Giới thiệu chương
 
-Trong chương trước, khoá luận đã phân tích các hạn chế của phương pháp GAN và tiềm năng của Mô hình khuếch tán (Diffusion Models) trong bài toán sinh phông chữ. Dựa trên cơ sở đó, chương này trình bày chi tiết phương pháp nghiên cứu được đề xuất.
+Trong chương trước, khoá luận đã phân tích các hạn chế của phương pháp GAN@Goodfellow2014GAN và tiềm năng của Mô hình khuếch tán (Diffusion Models)@SohlDickstein2015ICML trong bài toán sinh phông chữ. Dựa trên cơ sở đó, chương này trình bày chi tiết phương pháp nghiên cứu được đề xuất.
 
-Cụ thể, khoá luận kế thừa kiến trúc tiên tiến *FontDiffuser* (Yang et al., AAAI 2024) làm mô hình cơ sở (baseline) và đề xuất một cải tiến quan trọng tại giai đoạn tinh chỉnh phong cách (Phase 2) mang tên *Cross-Lingual Style Contrastive Refinement (CL-SCR)*. Mục tiêu của cải tiến này là giải quyết vấn đề về sự không nhất quán phong cách khi chuyển đổi giữa các hệ ngôn ngữ có cấu trúc khác biệt (như từ chữ Latin sang Hán tự).
+Cụ thể, khoá luận kế thừa kiến trúc tiên tiến *FontDiffuser*@Yang2024FontDiffuser làm mô hình cơ sở (baseline) và đề xuất một cải tiến quan trọng tại giai đoạn tinh chỉnh phong cách (Phase 2) mang tên *Cross-Lingual Style Contrastive Refinement (CL-SCR)*. Mục tiêu của cải tiến này là giải quyết vấn đề về sự không nhất quán phong cách khi chuyển đổi giữa các hệ ngôn ngữ có cấu trúc khác biệt (như từ chữ Latin sang Hán tự).
 
-Cấu trúc chương bao gồm: trình bày kiến trúc tổng thể của FontDiffuser, phân tích cơ chế hoạt động của module SCR gốc, và cuối cùng là chi tiết về giải pháp CL-SCR được đề xuất cho bài toán đa ngôn ngữ.
+Cấu trúc chương bao gồm: trình bày kiến trúc tổng thể của FontDiffuser@Yang2024FontDiffuser, phân tích cơ chế hoạt động của module SCR gốc, và cuối cùng là chi tiết về giải pháp CL-SCR được đề xuất cho bài toán đa ngôn ngữ.
 
 == Kiến trúc nền tảng FontDiffuser
 
@@ -132,7 +132,7 @@ SCR sử dụng chiến lược học tương phản (Contrastive Learning), v�
 // DEBUG: Chèn hình ví dụ ở đây
 
 ==== Định nghĩa hàm mất mát
-Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE* được tính tổng trên $N$ tầng đặc trưng:
+Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE@Oord2018CPC* được tính tổng trên $N$ tầng đặc trưng:
 
 $ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $
 

@@ -11,60 +11,63 @@
   = Cơ sở Lý thuyết và Tổng quan Tài liệu <chuong2>
 ]
 
-Trong chương này, khoá luận trình bày hệ thống cơ sở lý thuyết nền tảng về các mô hình sinh (Generative Models) và tổng quan tình hình nghiên cứu trong lĩnh vực sinh phông chữ tự động. Cấu trúc chương đi từ các phương pháp truyền thống dựa trên GAN, đến sự trỗi dậy của Mô hình khuếch tán (Diffusion Models). Đồng thời, phần cuối chương sẽ tập trung phân tích sâu về các kỹ thuật biểu diễn phong cách (Style Representation) và những thách thức đặc thù trong bài toán chuyển đổi đa ngôn ngữ, nhằm làm rõ động lực nghiên cứu cho phương pháp đề xuất tại Chương 3.
+Trong chương này, khoá luận trình bày hệ thống cơ sở lý thuyết nền tảng về các mô hình sinh (Generative Models) và tổng quan tình hình nghiên cứu trong lĩnh vực sinh phông chữ tự động. Cấu trúc chương đi từ các phương pháp truyền thống dựa trên GAN@Goodfellow2014GAN, đến sự trỗi dậy của Mô hình khuếch tán (Diffusion Models)@SohlDickstein2015ICML. Đồng thời, phần cuối chương sẽ tập trung phân tích sâu về các kỹ thuật biểu diễn phong cách (Style Representation) và những thách thức đặc thù trong bài toán chuyển đổi đa ngôn ngữ, nhằm làm rõ động lực nghiên cứu cho phương pháp đề xuất tại Chương 3.
 
 == Tổng quan về các phương pháp Sinh phông chữ
 
-Lĩnh vực sinh phông chữ (Font Generation) đã trải qua một sự chuyển dịch mạnh mẽ về mặt công nghệ trong thập kỷ qua. Các phương pháp hiện nay có thể được chia thành hai nhóm chính dựa trên mô hình lõi: Mạng đối nghịch sinh (GANs) và Mô hình khuếch tán (Diffusion Models).
+Lĩnh vực sinh phông chữ (Font Generation) đã trải qua một sự chuyển dịch mạnh mẽ về mặt công nghệ trong thập kỷ qua. Các phương pháp hiện nay có thể được chia thành hai nhóm chính dựa trên mô hình lõi: Mạng đối nghịch sinh (GANs)@Goodfellow2014GAN và Mô hình khuếch tán (Diffusion Models)@SohlDickstein2015ICML.
 
-=== Các phương pháp dựa trên GAN (GAN-based Approaches)
+=== Các phương pháp dựa trên GAN@Goodfellow2014GAN (GAN-based Approaches)
 
-Trước sự bùng nổ của Diffusion Models vào năm 2023, Generative Adversarial Networks (GAN) là hướng tiếp cận chủ đạo (State-of-the-art) cho bài toán này. Các nghiên cứu GAN thường tập trung giải quyết vấn đề tách biệt nội dung (content) và phong cách (style).
+Trước sự bùng nổ của Diffusion Models@SohlDickstein2015ICML vào năm 2023, Generative Adversarial Networks (GAN)@Goodfellow2014GAN là hướng tiếp cận chủ đạo (State-of-the-art) cho bài toán này. Các nghiên cứu GAN thường tập trung giải quyết vấn đề tách biệt nội dung (content) và phong cách (style).
 
-==== DG-Font (Deformable Generative Network, CVPR 2021)
-DG-Font tiếp cận bài toán theo hướng học không giám sát (unsupervised), tập trung giải quyết thách thức về sự sai lệch hình học giữa font nguồn và font đích. Thay vì cố gắng ép buộc mô hình học phong cách ngay lập tức, DG-Font giới thiệu mô-đun *Feature Deformation Skip Connection (FDSC)*.
+==== DG-Font@Xie2021DGFont (Deformable Generative Network, CVPR 2021)
+DG-Font tiếp cận bài toán sinh phông chữ theo hướng *không giám sát (unsupervised)*, tập trung giải quyết thách thức về sự sai lệch hình học lớn giữa phông chữ nguồn và phông chữ đích mà các phương pháp chuyển đổi phong cách dựa trên texture thông thường thường thất bại. Thay vì sử dụng dữ liệu cặp (paired data) tốn kém, DG-Font đề xuất một kiến trúc mới cho phép học ánh xạ phong cách trực tiếp từ các tập dữ liệu không gán nhãn.
 
-Cơ chế này hoạt động bằng cách dự đoán các bản đồ dịch chuyển (displacement maps) và áp dụng tích chập biến dạng (deformable convolution) lên các đặc trưng cấp thấp. Điều này cho phép mô hình "uốn nắn" cấu trúc của ký tự nguồn sao cho khớp với dáng vẻ của ký tự đích.
-Tuy nhiên, điểm yếu cố hữu của DG-Font nói riêng và GAN nói chung là sự mất ổn định trong quá trình huấn luyện (training instability). Khi gặp các ký tự có cấu trúc quá phức tạp hoặc khác biệt lớn về topo học (ví dụ từ chữ in sang chữ thư pháp), mô hình thường tạo ra các kết quả bị mờ hoặc đứt nét (broken strokes).
+Đóng góp cốt lõi của mô hình là mô-đun *Feature Deformation Skip Connection (FDSC)*. Cơ chế này hoạt động bằng cách dự đoán các bản đồ dịch chuyển (displacement maps) từ đặc trưng nội dung và phong cách, sau đó áp dụng *tích chập biến dạng (deformable convolution)* lên các đặc trưng cấp thấp. Điều này cho phép mô hình "uốn nắn" cấu trúc không gian của ký tự nguồn sao cho khớp với dáng vẻ của ký tự đích trước khi đưa vào bộ trộn (Mixer) để sinh ảnh cuối cùng. Mặc dù đạt hiệu quả cao trong việc bảo toàn cấu trúc, DG-Font vẫn tồn tại nhược điểm cố hữu của dòng GAN là sự mất ổn định khi huấn luyện; đối với các ký tự có sự biến đổi topo học quá lớn (ví dụ từ nét thanh sang nét đậm phá cách), ảnh sinh ra dễ bị hiện tượng đứt nét (broken strokes) hoặc mờ nhoè.
 
 #figure(
-      image("../images/DG/main_new.png", width: 85%),
+      image("../images/DG/main_new.png", width: 100%),
       caption: [Kiến trúc mạng DG-Font. Mô-đun FDSC đóng vai trò nòng cốt trong việc học biến dạng hình học giữa các ký tự.]
     )
 
-==== CF-Font (Content Fusion, CVPR 2023)
-CF-Font đề xuất giải quyết vấn đề bằng cách "lai ghép" nội dung. Thay vì tin tưởng hoàn toàn vào một ảnh nguồn, CF-Font sử dụng mô-đun *Content Fusion Module (CFM)* để nội suy đặc trưng từ một tập hợp các font cơ sở (basis fonts). Phương pháp này giúp giảm thiểu việc mất mát thông tin cấu trúc, nhưng lại dễ gây ra hiện tượng "bóng ma" (ghosting artifacts) khi các font cơ sở không đủ đa dạng hoặc quá khác biệt so với font đích.
+==== CF-Font@Wang2023CFFont (Content Fusion, CVPR 2023)
+CF-Font tiếp cận bài toán sinh phông chữ few-shot theo hướng *"lai ghép" nội dung (content fusion)*, khắc phục hạn chế của các phương pháp truyền thống vốn chỉ dựa vào một font nguồn (source font) duy nhất. Nhận định rằng sự chênh lệch cấu trúc (topology) giữa font nguồn và font đích là nguyên nhân chính gây ra các lỗi biến dạng, CF-Font đề xuất sử dụng một tập hợp các *font cơ sở (basis fonts)* tiêu chuẩn để làm "nguyên liệu" tham chiếu.
+
+Đóng góp cốt lõi của nghiên cứu là mô-đun *Content Fusion Module (CFM)*. Cơ chế này hoạt động bằng cách dự đoán bộ trọng số nhiệt (fusion weights) để *tổ hợp tuyến tính* các đặc trưng nội dung từ các font cơ sở. Thay vì phải "uốn nắn" khó khăn từ một hình dạng cố định, mô hình có thể linh hoạt pha trộn các đặc điểm hình học từ nhiều nguồn khác nhau để tạo ra một "khung xương" nội dung tiệm cận nhất với font mục tiêu. Chiến lược này giúp giảm thiểu đáng kể việc mất mát thông tin cấu trúc, tuy nhiên cũng đánh đổi bằng chi phí tính toán cao hơn do phải xử lý đa luồng đầu vào. Ngoài ra, nếu tập font cơ sở không đủ bao quát không gian topo, ảnh sinh ra có thể xuất hiện các vết mờ hoặc bóng ma (ghosting artifacts) tại các vùng giao thoa nét.
 
 #figure(
-      image("/images/CF/CF_vis.png", width: 60%),
-      caption: [Minh hoạ cơ chế Content Fusion: Sự kết hợp tuyến tính các đặc trưng nội dung giúp xấp xỉ font mục tiêu tốt hơn.]
-    )
+  image("../images/CF/TeaserV2.0.pdf", width: 100%),
+  caption: [Minh hoạ cơ chế Content Fusion: Các đặc trưng từ tập font cơ sở (Source) được tổ hợp tuyến tính dựa trên bộ trọng số dự đoán (Weights) để xấp xỉ cấu trúc hình học của font mục tiêu.]
+)
 
-==== EMD (Separating Style and Content for Generalized Style Transfer, CVPR 2018)
+==== DFS@Zhu2020FewShotTextStyle (Few-Shot Text Style Transfer via Deep Feature Similarity, TIP 2020)
+DFS đề xuất một cách tiếp cận mới cho bài toán chuyển đổi phong cách few-shot bằng cách khai thác mối tương quan cấu trúc giữa các ký tự. Khác với các phương pháp trước đó thường nén toàn bộ thông tin phong cách vào một vector duy nhất, DFS trích xuất đặc trưng từ từng ảnh tham chiếu riêng biệt thông qua mạng CNN. Đóng góp quan trọng nhất của mô hình là cơ chế *Deep Feature Similarity*, trong đó một *Ma trận Tương đồng (Similarity Matrix - SM)* được tính toán dựa trên *độ tương quan (cross-correlation)* giữa đặc trưng nội dung của ký tự tham chiếu và ký tự mục tiêu
+Các đặc trưng style đã được điều chỉnh sau đó được gộp lại và nối với đặc trưng content, rồi đưa qua decoder đối xứng dạng U-Net để tái tạo ký tự đích trong phong cách mong muốn. Mô hình được huấn luyện end-to-end với LSGAN@Mao2017LSGAN loss kết hợp loss tái tạo, cho phép sinh ảnh có độ chân thực cao hơn so với các phương pháp chỉ dùng CNN thuần túy.
 
-EMD giải quyết bài toán chuyển kiểu bằng cách tách rời hoàn toàn hai thành phần style và content. Hai encoder độc lập được huấn luyện để rút trích các đặc trưng style/content “thuần” từ những tập ảnh tham chiếu nhỏ, trong đó các ảnh được ghép theo chiều kênh để làm nổi bật tính chất chung của từng yếu tố. Hai đặc trưng này được kết hợp qua mô-đun Mixer dùng *bilinear model*, cho phép tái tổ hợp linh hoạt style và content, từ đó sinh ra ký tự mang style mới mà không cần huấn luyện lại mô hình.
+Cơ chế này hoạt động như một bộ lọc chú ý thông minh: nó cho phép mô hình tự động *gán trọng số lớn hơn cho các ký tự tham chiếu có cấu trúc hình học tương đồng* với ký tự cần sinh (ví dụ: sử dụng nét cong của chữ 'O' để hỗ trợ sinh chữ 'Q' hoặc 'C'). Sau đó, các đặc trưng phong cách được trọng số hóa này sẽ được trộn (mix) với đặc trưng nội dung để giải mã thành ảnh kết quả. Mặc dù đạt được độ chính xác cao về chi tiết phong cách nhờ việc "chọn lọc" thông tin, DFS vẫn tồn tại nhược điểm là yêu cầu quá trình *tinh chỉnh (fine-tuning)* cho từng phong cách mới (leave-one-out strategy) để đạt kết quả tối ưu, làm hạn chế khả năng ứng dụng thời gian thực so với các mô hình suy diễn trực tiếp (feed-forward).
 
-Decoder đối xứng, kết hợp skip-connection từ Content Encoder, giúp khôi phục hình dạng ký tự chính xác ngay cả với các nội dung hoàn toàn mới. Nhờ kiến trúc phân tách, EMD chỉ cần rất ít ảnh tham chiếu (5–10 hình) để tái tạo trọn bộ font và có khả năng tổng quát hóa tốt hơn các phương pháp dựa trên GAN. Tuy nhiên, do không dùng adversarial loss, kết quả của EMD thường sạch và đúng cấu trúc nhưng có thể thiếu độ sắc nét hoặc chi tiết thị giác cao.
+#figure( 
+  image("../images/DFS/overview.png", width: 100%), 
+  caption: [Kiến trúc mạng DFS với thành phần cốt lõi là Ma trận Tương đồng (SM) giúp điều hướng dòng chảy thông tin phong cách.] 
+)
 
-#figure(
-      image("../images/FontDiffuser/EMD.pdf", width: 85%),
-      caption: [Kiến trúc mạng EMD.]
-    )
+==== FTransGAN@Li2021FTransGAN (Few-shot Font Style Transfer between Different Languages, WACV 2021)
+FTransGAN là một trong những mô hình tiên phong giải quyết bài toán *chuyển đổi phong cách phông chữ đa ngôn ngữ (cross-lingual)* theo hướng few-shot learning. Khác với các phương pháp trước đó thường chỉ tập trung vào chuyển đổi trong cùng một ngôn ngữ, FTransGAN đề xuất một kiến trúc end-to-end cho phép trích xuất thông tin phong cách từ một ngôn ngữ (ví dụ: tiếng Anh) và áp dụng lên nội dung của ngôn ngữ khác (ví dụ: tiếng Trung).
 
-==== DFS (Few-Shot Text Style Transfer via Deep Feature Similarity, TIP 2020)
+Để giải quyết sự chênh lệch lớn về cấu trúc giữa các hệ chữ viết, FTransGAN thiết kế bộ mã hóa phong cách (Style Encoder) đặc biệt với *cơ chế chú ý đa tầng (multi-level attention)*. Kiến trúc này bao gồm hai mô-đun chính: *Context-aware Attention Network* giúp nắm bắt các đặc trưng cục bộ (như nét bút, hoạ tiết trang trí) và *Layer Attention Network* giúp tổng hợp các đặc trưng toàn cục để quyết định mức độ ưu tiên giữa các tầng đặc trưng khác nhau. Nhờ đó, mô hình có khả năng tạo ra các phông chữ chất lượng cao mà *không cần quá trình tinh chỉnh (fine-tuning)* phức tạp cho từng style mới. Tuy nhiên, FTransGAN vẫn còn hạn chế khi xử lý các phông chữ có tính nghệ thuật quá cao hoặc cấu trúc biến dạng mạnh, đồng thời yêu cầu *số lượng ảnh phong cách đầu vào cố định* trong quá trình huấn luyện.
 
-DFS tiếp cận bài toán chuyển kiểu chữ theo hướng few-shot, kết hợp đồng thời cả kiểu font (hình học) lẫn texture (màu sắc, hiệu ứng). Thay vì ép mô hình học trực tiếp từ tập tham chiếu nhỏ, DFS khai thác đặc trưng sâu từ hai mạng CNN độc lập: một cho content và một cho style. Các đặc trưng style của từng ký tự tham chiếu được trích xuất riêng rẽ, sau đó được *trọng số hóa theo mức độ tương đồng hình dạng* giữa từng ký tự tham chiếu và ký tự mục tiêu. Trọng số này được tính trong không gian đặc trưng thông qua normalized cross-correlation, tạo thành *Similarity Matrix* – thành phần trung tâm cho phép mô hình “ưu tiên” các ký tự tham chiếu giống nhất về cấu trúc.
+#figure( 
+  image("../images/FTransGAN/overview.png", width: 100%), 
+  caption: [Tổng quan kiến trúc FTransGAN.] 
+)
 
-Các đặc trưng style đã được điều chỉnh sau đó được gộp lại và nối với đặc trưng content, rồi đưa qua decoder đối xứng dạng U-Net để tái tạo ký tự đích trong phong cách mong muốn. Mô hình được huấn luyện end-to-end với LSGAN loss kết hợp loss tái tạo, cho phép sinh ảnh có độ chân thực cao hơn so với các phương pháp chỉ dùng CNN thuần túy.
+=== Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models)
 
-DFS có khả năng tổng quát hóa tốt trong thiết lập few-shot, cho phép sinh trọn bộ ký tự chỉ từ 4–8 mẫu tham chiếu. Việc tách đặc trưng từng tham chiếu giúp mô hình linh hoạt về số lượng và thứ tự đầu vào, đồng thời thích ứng tốt với nhiều ngôn ngữ (Latin, Chinese). Tuy vậy, DFS vẫn phụ thuộc mạnh vào độ đa dạng ký tự tham chiếu: nếu chỉ cung cấp các ký tự ít nét hoặc thiếu cấu trúc then chốt, mô hình thường thất bại trong việc tái tạo các ký tự có hình dạng phức tạp (vòng cung, giao nét). Ngoài ra, DFS cần fine-tune theo từng style mới, nên khó áp dụng khi số lượng mẫu tham chiếu quá ít (ví dụ chỉ một ký tự).
+Gần đây, Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models) đã tạo nên một cuộc cách mạng trong lĩnh vực thị giác máy tính. Khác với GAN@Goodfellow2014GAN – vốn dựa trên việc lừa mô hình phân biệt, Diffusion Model mô phỏng quá trình nhiệt động lực học để biến đổi dần dần từ nhiễu sang dữ liệu có ý nghĩa.
 
-=== Mô hình khuếch tán (Diffusion Models)
-
-Gần đây, Mô hình khuếch tán (Diffusion Models) đã tạo nên một cuộc cách mạng trong lĩnh vực thị giác máy tính. Khác với GAN – vốn dựa trên việc lừa mô hình phân biệt, Diffusion Model mô phỏng quá trình nhiệt động lực học để biến đổi dần dần từ nhiễu sang dữ liệu có ý nghĩa.
-
-Nguyên lí cơ bản gồm hai giai đoạn:
-- *Quá trình Khuếch tán xuôi:* phá hủy dữ liệu một cách có kiểm soát bằng cách thêm nhiễu Gaussian nhiều bước.  
+Nguyên lý cơ bản gồm hai giai đoạn:
+- *Quá trình Khuếch tán xuôi:* phá huỷ dữ liệu một cách có kiểm soát bằng cách thêm nhiễu Gaussian nhiều bước.  
 - *Quá trình Khuếch tán ngược:* học cách loại bỏ nhiễu từng bước để tái tạo lại dữ liệu gốc.  
 
 Điều này tương tự như việc ta học cách "tô dần" một bức tranh từ nền trắng nhiễu cho đến khi ra ảnh rõ nét.
@@ -97,8 +100,6 @@ $ alpha_t = product_(s=1)^t alpha_s $
 
 ===== Quá trình Khuếch tán ngược
 
-// The reverse process aims to reconstruct the original data by denoising the noisy data in a series of steps reversing the forward diffusion.
-// Quá trình ngược lại nhằm mục đích tái tạo dữ liệu gốc bằng cách khử nhiễu dữ liệu nhiễu trong một loạt các bước đảo ngược quá trình khuếch tán về phía trước
 Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng cách khử nhiễu bằng một loạt các bước đảo ngược quá trình khuếch tán xuôi.
 
 #figure(
@@ -111,10 +112,6 @@ $ p_theta (x_(t-1)|x_t) = scr(N)(x_(t-1);mu_theta (x_t, t), sum_theta (x_t, t)) 
 
 với $mu_theta$ được tính như sau:
 
-// $$
-// \mu_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}} \Big(x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \epsilon_\theta(x_t, t)\Big)
-// $$
-
 $ mu_theta (x_t, t) = 1/sqrt(alpha_t)(x_t - (1-alpha_t)/(sqrt(1 - alpha_t)) epsilon.alt_theta (x_t, t)) $
 
 Ở đây, $epsilon.alt_theta (x_t, t)$ là nhiễu do mạng nơ-ron dự đoán, đóng vai trò trung tâm trong việc phục hồi ảnh gốc.  
@@ -124,15 +121,11 @@ Trong huấn luyện, mô hình được tối ưu để giảm sai số giữa 
 ===== Loss function
 Hàm mất mát được sử dụng phổ biến nhất là *Mean Squared Error (MSE)*:
 
-// $$
-// \mathcal{L}_{simple} = \mathbb{E}_{t, x_0, \epsilon} \big[ \| \epsilon - \epsilon_\theta(x_t, t) \|^2 \big]
-// $$
-
 $ scr(L)_"simple" = EE_(t, x_0, epsilon.alt) [bar.v.double epsilon.alt - epsilon.alt_theta (x_t, t) bar.v.double ^2] $
 
 Điều này tương đương với việc tối đa hóa khả năng tái tạo phân phối dữ liệu gốc (variational lower bound). Các nghiên cứu gần đây (v-prediction, hybrid loss) cho thấy việc dự đoán trực tiếp $v_t$ hoặc $x_0$ có thể cải thiện chất lượng ảnh sinh, nhưng MSE vẫn là chuẩn mực trong nhiều ứng dụng như FontDiffuser.
 
-==== FontDiffuser (AAAI 2024)
+==== FontDiffuser@Yang2024FontDiffuser (AAAI 2024)
 FontDiffuser là công trình tiên phong áp dụng thành công Diffusion Model vào bài toán One-shot Font Generation. Pipeline của mô hình giải quyết ba vấn đề cốt lõi:
 - *Bảo toàn cấu trúc:* Sử dụng khối *MCA (Multi-Scale Content Aggregation)* để tổng hợp thông tin cấu trúc từ toàn cục đến chi tiết.
 - *Xử lý biến dạng:* Sử dụng khối *RSI (Reference-Structure Interaction)* thay thế cho các phương pháp biến dạng cũ, giúp tương thích tốt hơn giữa cấu trúc ảnh nguồn và phong cách ảnh đích.
@@ -145,35 +138,27 @@ FontDiffuser là công trình tiên phong áp dụng thành công Diffusion Mode
 Trong bài toán sinh phông chữ One-shot, đặc biệt là trong bối cảnh chuyển đổi đa ngôn ngữ (Cross-Lingual), việc trích xuất và biểu diễn chính xác "phong cách" (style) là yếu tố quyết định sự thành bại của mô hình.
 
 === Neural Style Transfer truyền thống
-Các phương pháp sơ khai (như Gatys et al.) thường sử dụng Ma trận Gram (Gram Matrix) tính toán trên các bản đồ đặc trưng (feature maps) của mạng VGG pre-trained để định nghĩa phong cách.
-Tuy nhiên, phương pháp này chủ yếu nắm bắt các đặc trưng về chất liệu (texture) và họa tiết cục bộ. Đối với ký tự, "phong cách" không chỉ là vân bề mặt mà còn bao gồm các yếu tố hình học cấp cao như: độ gãy khúc, kiểu chân chữ (serif/sans-serif), và cách kết thúc nét (stroke ending). Gram Matrix thường thất bại trong việc hướng dẫn mô hình áp dụng các đặc trưng này lên các cấu trúc hình học mới, dẫn đến kết quả bị biến dạng hoặc chỉ đơn thuần là phủ texture lên ảnh nội dung.
+Các phương pháp sơ khai (như Gatys et al.@Gatys2015NeuralStyle) thường sử dụng Ma trận Gram (Gram Matrix) tính toán trên các bản đồ đặc trưng (feature maps) của mạng VGG pre-trained để định nghĩa phong cách.
+Tuy nhiên, phương pháp này chủ yếu nắm bắt các đặc trưng về chất liệu (texture) và hoạ tiết cục bộ. Đối với ký tự, "phong cách" không chỉ là vân bề mặt mà còn bao gồm các yếu tố hình học cấp cao như: độ gãy khúc, kiểu chân chữ (serif/sans-serif), và cách kết thúc nét (stroke ending). Gram Matrix thường thất bại trong việc hướng dẫn mô hình áp dụng các đặc trưng này lên các cấu trúc hình học mới, dẫn đến kết quả bị biến dạng hoặc chỉ đơn thuần là phủ texture lên ảnh nội dung.
 
 === Học tương phản (Contrastive Learning)
 Để khắc phục hạn chế trên, các nghiên cứu hiện đại (trong đó có FontDiffuser) chuyển sang hướng *Học biểu diễn tương phản (Contrastive Representation Learning)*. Tư tưởng cốt lõi là học một không gian embedding phong cách (style latent space) sao cho:
 - Các mẫu có cùng phong cách (Positive samples) được kéo lại gần nhau.
 - Các mẫu khác phong cách (Negative samples) bị đẩy ra xa nhau.
 
-Hàm mất mát InfoNCE thường được sử dụng để tối ưu hóa không gian này:
+Hàm mất mát InfoNCE@Oord2018CPC thường được sử dụng để tối ưu hóa không gian này:
 $ scr(L)_"NCE" = - log (exp("sim"(z, z^+)\/tau) / (exp("sim"(z, z^+)\/tau) + sum_(k) exp("sim"(z, z_k^-)\/tau))) $
 
 Trong FontDiffuser, mô-đun SCR áp dụng tư tưởng này để giám sát bộ mã hóa phong cách. Tuy nhiên, module này ban đầu được thiết kế cho cùng một ngôn ngữ (Hán $arrow.r$ Hán). Khi áp dụng sang bài toán Cross-Lingual, đặc biệt là dùng chữ Latin làm mẫu phong cách, các phương pháp chọn mẫu âm (negative selection) thông thường trở nên kém hiệu quả do khoảng cách miền (domain gap) quá lớn giữa hai hệ chữ.
 
-== Thách thức trong bài toán Cross-Lingual: Từ Latin sang Hán tự
+== Thách thức trong bài toán Cross-Lingual: Chuyển đổi Hai chiều giữa Latin và Hán tự
 
-Khác với các hướng tiếp cận thông thường (Hán $arrow.r$ Hán hoặc Hán $arrow.r$ Latin), khoá luận này tập trung vào bài toán thách thức hơn: *Sử dụng ảnh phong cách Latin (Simple) để sinh ảnh nội dung Hán tự (Complex).*
+Khác với các hướng tiếp cận truyền thống thường chỉ tập trung vào một chiều chuyển đổi đơn lẻ, khoá luận giải quyết bài toán tổng quát và thách thức hơn là chuyển đổi phong cách hai chiều (Bidirectional Style Transfer) giữa hệ chữ Latin và Hán tự. Sự khác biệt nền tảng giữa hai hệ chữ này đặt ra những rào cản kỹ thuật đặc thù cho từng hướng chuyển đổi, chủ yếu xoay quanh sự bất đối xứng về thông tin và hình thái học.
 
 === Vấn đề Chênh lệch Mật độ Thông tin (Information Density Gap)
-Đây là thách thức lớn nhất của hướng nghiên cứu này.
-- *Ảnh phong cách (Latin):* Có cấu trúc đơn giản, ít nét, mật độ thông tin thấp. Ví dụ: chữ 'I' chỉ là một nét sổ, chữ 'O' là một vòng tròn.
-- *Ảnh nội dung (Hán tự):* Có cấu trúc cực kỳ phức tạp, mật độ nét cao (trung bình 10-15 nét, cá biệt lên tới 30 nét), không gian bố cục chật hẹp.
-
-Bài toán đặt ra là một dạng *"Ngoại suy phong cách" (Style Extrapolation)*: Mô hình phải học cách "tưởng tượng" xem một phong cách đơn giản (ví dụ: nét thanh đậm của chữ 'A') sẽ trông như thế nào khi áp dụng lên một cấu trúc chằng chịt như chữ '龍' (Long - Rồng). Nếu không xử lý tốt, mô hình rất dễ sinh ra các nét dính bết vào nhau (blob) hoặc làm mất đi các chi tiết phong cách khi cố gắng nhồi nhét vào cấu trúc phức tạp.
+Thách thức đầu tiên và cốt lõi nhất xuất phát từ *Sự bất cân xứng về mật độ thông tin*, tạo ra hai bài toán ngược chiều nhau. Ở hướng chuyển đổi từ Latin sang Hán tự (`e2c`), mô hình đối mặt với bài toán "Ngoại suy" (Extrapolation), nơi nó phải học cách trích xuất phong cách từ các ký tự Latin có cấu trúc cực kỳ đơn giản (như chữ `I` hay `O`) để áp dụng lên các Hán tự có kết cấu rậm rạp và phức tạp (như chữ `龍 ` - `Rồng`). Nếu không có cơ chế suy diễn tốt, mô hình sẽ không biết cách "tưởng tượng" để lấp đầy phong cách vào các nét phức tạp, dẫn đến hiện tượng ảnh sinh bị dính bết (blob) hoặc mất chi tiết. Ngược lại, ở hướng Hán tự sang Latin (`c2e`), bài toán trở thành "Trừu tượng hóa" (Abstraction). Lúc này, ảnh nguồn chứa quá nhiều thông tin chi tiết về bút pháp và kết cấu; thách thức đặt ra là làm sao để mô hình biết cách "lọc bỏ" các nhiễu cấu trúc thừa thãi, chỉ giữ lại thần thái phong cách để áp dụng lên khung xương đơn giản của chữ Latin. Nếu thất bại, hiện tượng "rò rỉ nội dung" (content leakage) sẽ xảy ra, khiến chữ Latin sinh ra bị méo mó và trông giống như một bộ thủ Hán tự.
 
 === Khoảng cách Hình thái học (Morphological Gap)
-Sự khác biệt về quy tắc viết (stroke order) và cấu tạo (topology) giữa hai hệ chữ tạo ra rào cản lớn cho việc chuyển giao phong cách:
-1.  *Cấu trúc:* Latin là hệ chữ tuyến tính, độ rộng biến thiên. Hán tự là hệ chữ khối (block-based), kích thước cố định.
-2.  *Đặc trưng cục bộ:* Các chi tiết phong cách đặc trưng của Latin (như serifs ở chân chữ, terminal ở đầu chữ) không có sự tương quan trực tiếp 1-1 với các bộ thủ trong tiếng Trung.
-
-Do đó, việc áp dụng trực tiếp module SCR (Style Contrastive Refinement) nguyên bản là không đủ, vì nó không được huấn luyện để xử lý sự chênh lệch độ phức tạp này. Khoá luận này sẽ đề xuất cải tiến SCR nhằm giúp mô hình học được các đặc trưng phong cách "bất biến" (invariant style features) từ chữ Latin và áp dụng chúng một cách thông minh lên cấu trúc Hán tự phức tạp.
+Bên cạnh đó, *Khoảng cách hình thái học* (Morphological Gap) giữa hai hệ chữ cũng là một rào cản lớn ngăn cản việc chuyển giao phong cách trực tiếp. Chữ Latin được xây dựng trên tư duy tuyến tính với độ rộng ký tự biến thiên, trong khi Hán tự tuân theo quy tắc khối vuông (block-based) với kích thước cố định. Hơn nữa, các đặc trưng cục bộ như chân chữ (serif) hay điểm kết thúc (terminal) trong tiếng Anh không có sự tương quan một-một trực tiếp với các nét (strokes) hay bộ thủ trong tiếng Trung. Chính vì những sự khác biệt căn bản này, việc áp dụng trực tiếp các mô-đun học phong cách truyền thống (như SCR nguyên bản) thường không hiệu quả. Đây chính là động lực để khoá luận đề xuất cải tiến thành *CL-SCR*, một cơ chế có khả năng học được các đặc trưng phong cách "bất biến" (invariant features) để chuyển giao thông minh qua lại giữa hai miền dữ liệu đối lập này.
 
 #pagebreak()
