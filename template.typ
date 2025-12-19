@@ -11,6 +11,7 @@
   .map(str)
   .join(".")
 }
+
 #let phuluc_numbering(..nums) = {
   return str.from-unicode(counter(heading).get().at(1) + 64) + "." + nums
   .pos()
