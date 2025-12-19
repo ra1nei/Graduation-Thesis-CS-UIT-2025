@@ -6,10 +6,10 @@
   = Thực Nghiệm và Đánh Giá Kết Quả <chuong4>
 ]
 
-#let scr(it) = math.class("normal", box({
-  show math.equation: set text(stylistic-set: 1)
-  $cal(it)$
-}))
+// #let scr(it) = math.class("normal", box({
+//   show math.equation: set text(stylistic-set: 1)
+//   $cal(it)$
+// }))
 
 #let glyph-grid(chars, base, font, suffix) = grid(
   columns: (45pt,) * chars.len(),
@@ -60,11 +60,11 @@ Trong giai đoạn khởi đầu này, mục tiêu chính của mô hình là h�
 *2. Tiền huấn luyện mô-đun CL-SCR:*
 Trước khi được tích hợp vào luồng sinh ảnh chính, mô-đun CL-SCR (Cross-Lingual Style Contrastive Refinement) trải qua một quá trình huấn luyện độc lập nhằm xây dựng không gian biểu diễn phong cách tối ưu. Quá trình này được thực hiện trong tổng số *200,000 bước lặp* với kích thước batch là *16*. Khoá luận sử dụng bộ tối ưu hoá Adam để cập nhật tham số cho cả bộ trích xuất đặc trưng (Style Feat Extractor) và bộ chiếu đặc trưng (Style Projector) với tốc độ học cố định là *$1 times 10^(-4)$*.
 
-Để tăng cường tính bền vững của biểu diễn phong cách đối với các biến thể hình học, khoá luận áp dụng chiến lược tăng cường dữ liệu (Data Augmentation) thông qua kỹ thuật *Random Resized Crop*. Cụ thể, ảnh đầu vào được *cắt ngẫu nhiên với tỷ lệ diện tích từ 75% đến 100% (scale 0.75 - 1.0)* và *tỷ lệ khung hình dao động nhẹ trong khoảng 0.8 đến 1.2*, sau đó được đưa về kích thước chuẩn thông qua nội suy song tuyến tính (bilinear interpolation).
+Để tăng cường tính bền vững của biểu diễn phong cách đối với các biến thể hình học, khoá luận áp dụng chiến lược tăng cường dữ liệu (Data Augmentation) thông qua kỹ thuật *Random Resized Crop*. Cụ thể, ảnh đầu vào được *cắt ngẫu nhiên với tỷ lệ diện tích từ 80% đến 100% (scale 0.8 - 1.0)* và *tỷ lệ khung hình dao động nhẹ trong khoảng 0.8 đến 1.2*, sau đó được đưa về kích thước chuẩn thông qua nội suy song tuyến tính (bilinear interpolation).
 
 *3. Giai đoạn Tinh chỉnh Phong cách (Phase 2 - Style Refinement with CL-SCR):*
 Bước sang giai đoạn hai, mô-đun CL-SCR được kích hoạt để tinh chỉnh sâu các đặc trưng phong cách Latin, trong khi tốc độ học của các thành phần khác được giảm xuống để tránh phá vỡ cấu trúc đã học. Quá trình này diễn ra trong *30,000 bước* với *kích thước batch 4* nhằm dành tài nguyên VRAM cho các tính toán của mô-đun tương phản. Tốc độ học được thiết lập ở mức thấp hơn là *$1 times 10^(-5)$*, áp dụng chiến lược Constant (hằng số) sau *1,000 bước khởi động*. Đối với cấu hình CL-SCR, khoá luận lựa chọn chế độ huấn luyện kết hợp cả nội miền và xuyên miền (`scr_mode="both"`) với tỷ trọng $alpha_"intra" = 0.3$ và ưu tiên *$beta_"cross" = 0.7$*, đồng thời sử dụng *4 mẫu âm* (negative samples) cho mỗi lần tính toán loss. Hàm mục tiêu tổng thể lúc này là sự kết hợp của các thành phần theo công thức:
-$ cal(L)"total" = cal(L)"MSE" + 0.01 dot cal(L)"percep" + 0.5 dot cal(L)"offset" + 0.01 dot cal(L)_"CL-SCR" $
+$ L_"total" = L_"MSE" + 0.01 dot L_"percep" + 0.5 dot L_"offset" + 0.01 dot L_"CL-SCR" $
 
 *4. Quy trình Inference:* Trong quá trình lấy mẫu (Inference), mô hình FontDiffuser@Yang2024FontDiffuser được đóng gói thành một Pipeline dựa trên DPM-Solver để tối ưu hoá tốc độ.
 
@@ -79,13 +79,14 @@ $ cal(L)"total" = cal(L)"MSE" + 0.01 dot cal(L)"percep" + 0.5 dot cal(L)"offset"
 2. *UFSC (Unseen Font, Seen Character):* Font mới hoàn toàn (chưa từng xuất hiện trong quá trình huấn luyện). Đây là kịch bản quan trọng nhất để đánh giá khả năng *One-shot Generalization* của mô hình đối với phong cách lạ.
 
 == Các thước đo đánh giá (Evaluation Metrics)
+Để đảm bảo tính khách quan và toàn diện trong việc kiểm định chất lượng mô hình, khoá luận áp dụng hệ thống đánh giá đa chiều bao gồm cả các chỉ số định lượng tiêu chuẩn (Quantitative Metrics) và đánh giá định tính dựa trên cảm nhận người dùng (Subjective User Study).
 
 === Chỉ số Định lượng (Quantitative Metrics)
 Khoá luận sử dụng bộ 4 chỉ số tiêu chuẩn trong bài toán sinh ảnh để đánh giá chất lượng ảnh sinh ($x$) so với ảnh thật ($y$):
 
 ==== L1 (Mean Absolute Error)
 Độ đo *L1* tính trung bình giá trị tuyệt đối của sai khác giữa các điểm ảnh (pixel-wise), phản ánh độ chính xác về cường độ điểm ảnh:
-$ cal(L)_1 = 1/N sum_(i=1)^N |x_i - y_i| $
+$ "L1" = 1/N sum_(i=1)^N |x_i - y_i| $
 Trong đó $N$ là tổng số điểm ảnh. Giá trị L1 càng nhỏ càng tốt.
 
 ==== SSIM (Structural Similarity Index)
@@ -109,15 +110,17 @@ Việc sử dụng đơn lẻ một độ đo không thể phản ánh toàn di�
 Sự kết hợp giữa SSIM (cấu trúc) và LPIPS (cảm nhận) là đặc biệt quan trọng trong bài toán Cross-lingual, nơi việc giữ cấu trúc chữ quan trọng ngang hàng với việc bắt chước phong cách.
 
 === Đánh giá Định tính (Qualitative Study)
-Các chỉ số định lượng (Quantitative Metrics) như FID hay LPIPS, mặc dù khách quan, nhưng không thể mô phỏng hoàn toàn gu thẩm mỹ và khả năng đọc hiểu của con người. Do đó, để kiểm chứng tính thực tiễn của phương pháp đề xuất, khoá luận tiến hành một khảo sát *đánh giá chủ quan (Subjective Evaluation)* với sự tham gia của con người.
+Các chỉ số định lượng (Quantitative Metrics) như FID hay LPIPS, mặc dù khách quan, nhưng không thể mô phỏng hoàn toàn gu thẩm mỹ và khả năng đọc hiểu của con người. Do đó, để kiểm chứng tính thực tiễn của phương pháp đề xuất, Khoá luận thực hiện đánh giá định tính trên hai khía cạnh: *phân tích thị giác dựa trên chuyên môn (Visual Analysis)* và *khảo sát cảm nhận người dùng (User Study)*.
 
-==== Thiết kế khảo sát
-Để đánh giá chất lượng thị giác và tính nhất quán phong cách một cách khách quan nhất theo cảm nhận của con người, khoá luận thiết kế một bảng *khảo sát mù (blind test)* với sự tham gia của tổng cộng *30 tình nguyện viên*. Nhóm khảo sát bao gồm 5 người bạn học chuyên ngành thiết kế đồ họa có kiến thức chuyên sâu về typography và 25 người dùng phổ thông, đảm bảo tính đại diện cho cả đánh giá kỹ thuật và thẩm mỹ công chúng. 
+==== Quy trình Phân tích Trực quan (Visual Analysis Protocol)
+Đối với đánh giá chuyên môn, các kết quả sinh ảnh sẽ được phân tích dựa trên việc so sánh đối chứng trực tiếp (side-by-side comparison) giữa mô hình đề xuất và các phương pháp cơ sở (Baseline). Các tiêu chí phân tích bao gồm: sự toàn vẹn của các nét mảnh (fine details), khả năng xử lý các vùng giao nhau phức tạp (stroke intersection), và mức độ biến dạng cấu trúc (structural artifacts) như hiện tượng dính nét (blob) hay đứt gãy.
+
+==== Thiết kế Khảo sát Người dùng (User Study Design)
+Để đánh giá chất lượng thị giác và tính nhất quán phong cách một cách khách quan nhất theo cảm nhận của con người, khoá luận thiết kế một bảng *khảo sát mù (blind test)* với sự tham gia của tổng cộng *20 tình nguyện viên*. Nhóm khảo sát bao gồm 5 người bạn học chuyên ngành thiết kế đồ hoạ có kiến thức về typography và 15 người dùng phổ thông, đảm bảo tính đại diện cho cả đánh giá kỹ thuật và thẩm mỹ công chúng. 
 
 Bộ dữ liệu khảo sát được xây dựng từ *20 bộ mẫu ngẫu nhiên* trích xuất từ tập kiểm thử (Test Set), *bao gồm các mẫu đại diện cho cả hai kịch bản chuyển đổi phong cách:* *từ Hán tự sang Latin* và *từ Latin sang Hán tự*. Trong mỗi câu hỏi, tình nguyện viên được yêu cầu so sánh kết quả sinh ảnh giữa các mô hình khác nhau. Cụ thể, mỗi mẫu so sánh hiển thị một *ảnh tham chiếu (Reference Style)* (chứa phong cách mục tiêu) và các *ảnh kết quả (Generated Images)* là các ký tự được sinh ra bởi các mô hình cạnh tranh (DG-Font@Xie2021DGFont, FontDiffuser Baseline@Yang2024FontDiffuser, và Phương pháp đề xuất Ours). Vị trí hiển thị của các ảnh kết quả được xáo trộn ngẫu nhiên để đảm bảo tính công bằng và loại bỏ thiên kiến vị trí. Tình nguyện viên được yêu cầu chọn ra ảnh có *độ nhất quán phong cách tốt nhất* và *chất lượng hình ảnh tổng thể cao nhất* trong số các lựa chọn.
 
-==== Tiêu chí đánh giá
-Thay vì chấm điểm phức tạp, người tham gia được yêu cầu thực hiện đánh giá dựa trên *lựa chọn ưu tiên*. Cụ thể, với mỗi bộ mẫu, tình nguyện viên cần chọn ra một bức ảnh duy nhất mà họ cho là tốt nhất dựa trên sự cân bằng giữa hai tiêu chí cốt lõi. Thứ nhất là *Tính nhất quán phong cách*, tức ảnh sinh ra phải kế thừa chính xác các đặc trưng thị giác của ảnh phong cách (như độ đậm nhạt, kết cấu nét cọ, hoặc kiểu chân chữ serif/sans-serif). Thứ hai là *Tính toàn vẹn nội dung*, tức ký tự sinh ra phải duy trì đúng cấu trúc hình học của ảnh nội dung, đảm bảo tính dễ đọc và không bị biến dạng kỳ quái (ví dụ: chữ `丘` trong kịch bản `e2c` phải giữ nguyên các nét ngang dọc đặc trưng, không bị lai tạp thành ký tự Latin). Kết quả cuối cùng được định lượng thông qua *Tỷ lệ Ưu tiên*, tính bằng phần trăm số phiếu bầu chọn mà mỗi mô hình nhận được trên tổng số lượt đánh giá.
+*Tiêu chí đánh giá:* Thay vì chấm điểm phức tạp, người tham gia được yêu cầu thực hiện đánh giá dựa trên *lựa chọn ưu tiên*. Cụ thể, với mỗi bộ mẫu, tình nguyện viên cần chọn ra một bức ảnh duy nhất mà họ cho là tốt nhất dựa trên sự cân bằng giữa hai tiêu chí cốt lõi. Thứ nhất là *Tính nhất quán phong cách*, tức ảnh sinh ra phải kế thừa chính xác các đặc trưng thị giác của ảnh phong cách (như độ đậm nhạt, kết cấu nét cọ, hoặc kiểu chân chữ serif/sans-serif). Thứ hai là *Tính toàn vẹn nội dung*, tức ký tự sinh ra phải duy trì đúng cấu trúc hình học của ảnh nội dung, đảm bảo tính dễ đọc và không bị biến dạng kỳ quái (ví dụ: chữ `丘` trong kịch bản `e2c` phải giữ nguyên các nét ngang dọc đặc trưng, không bị lai tạp thành ký tự Latin). Kết quả cuối cùng được định lượng thông qua *Tỷ lệ Ưu tiên*, tính bằng phần trăm số phiếu bầu chọn mà mỗi mô hình nhận được trên tổng số lượt đánh giá.
 
 == Kết quả Thực nghiệm và Thảo luận
 Trong chương này, khoá luận trình bày toàn bộ kết quả thực nghiệm của mô hình đề xuất. Nội dung bao gồm đánh giá định lượng và định tính chi tiết, nghiên cứu bóc tách (ablation study) về các thành phần kiến trúc, khảo sát người dùng, và phân tích các trường hợp thất bại. Các kết quả này được đối chiếu trực tiếp với nhiều mô hình sinh font hiện đại, bao gồm các mô hình *GAN-based* (DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont, DFS@Zhu2020FewShotTextStyle, FTransGAN@Li2021FTransGAN), mô hình *diffusion-based* (FontDiffuser@Yang2024FontDiffuser), và các phiên bản mô hình của khoá luận.
@@ -299,11 +302,41 @@ Thứ hai, phân tích sâu về độ phức tạp nét (stroke complexity) th�
 Cuối cùng, mặc dù $"Ours"_"Medium"$ tối ưu về cấu trúc, nhưng $"Ours"_"All"$ lại đạt chỉ số FID tốt nhất trên tập UFSC (41.115). Điều này cho thấy *việc tiếp xúc với đa dạng các mức độ phức tạp trong quá trình huấn luyện giúp mô hình xây dựng được không gian biểu diễn phong cách phong phú nhất*, từ đó sinh ra các hình ảnh có độ tự nhiên cao nhất về mặt cảm nhận thị giác, ngay cả khi độ chính xác từng điểm ảnh (L1) thua kém nhẹ so với cấu hình chuyên biệt Medium.
 
 === So sánh Định tính (Qualitative Analysis)
-// TODO (Dinh luong)
+Bên cạnh các chỉ số đo lường, việc phân tích trực quan là bước không thể thiếu để kiểm chứng khả năng xử lý các trường hợp khó của mô hình, đặc biệt là các lỗi cấu trúc mà các chỉ số thống kê như FID đôi khi không phản ánh hết. Khoá luận thực hiện phân tích dựa trên hình ảnh sinh ra từ hai chiều chuyển đổi đối lập.
 
-=== Đánh giá Cảm nhận Người dùng (User Study)
+==== Phân tích Trực quan (Visual Analysis)
+// TODO (Me)
+
+==== Đánh giá Cảm nhận Người dùng (User Study)
 // TODO (User)
+Dựa trên quy trình khảo sát mù (blind test) đã được thiết lập chi tiết tại Mục TODO, khoá luận tổng hợp kết quả bình chọn từ 30 tình nguyện viên trên tập dữ liệu kiểm thử ngẫu nhiên.
 
+#figure(
+    image("../images/user score.png", width: 100%),
+    caption: [Biểu đồ so sánh tỷ lệ ưu tiên của người dùng giữa phương pháp đề xuất (Ours) và các phương pháp SOTA khác. Kết quả cho thấy sự vượt trội về độ hài lòng thị giác của mô hình tích hợp CL-SCR.]
+  )
+
+*Phân tích và Thảo luận:*
+Kết quả định lượng cho thấy sự vượt trội của phương pháp đề xuất (Ours) với tỷ lệ được ưu tiên lựa chọn trung bình đạt *khoảng 70%*, bỏ xa các phương pháp đối chứng (cao nhất là CF-Font chỉ đạt khoảng 10%). Sự chênh lệch áp đảo này phản ánh sự tương đồng giữa cảm nhận chủ quan của mắt người và các chỉ số máy học (FID/LPIPS) đã phân tích trước đó.
+
+Xu hướng lựa chọn của người dùng có thể được lý giải thông qua sự so sánh trực quan, trong đó *tính dễ đọc (Legibility)* đóng vai trò là yếu tố tiên quyết. Thực tế cho thấy, người dùng thường có phản xạ loại bỏ ngay lập tức các mẫu bị *biến dạng cấu trúc nặng nề* - một nhược điểm cố hữu khiến các mô hình thuộc họ GAN (như DG-Font, CF-Font) nhận được tỷ lệ bình chọn rất thấp ($<10%$). Trong bối cảnh đó, mô hình đề xuất đã chứng minh được ưu thế nhờ khả năng bảo toàn khung xương ký tự vững chắc thông qua cơ chế MCA và RSI, giúp các kết quả sinh ra vượt qua được rào cản nhận thức đầu tiên về mặt cấu trúc để tiến tới các đánh giá chi tiết hơn về phong cách.
+
+#grid(
+  columns: 1,
+  gutter: 10pt,
+
+  figure(
+    image("../images/content1.png", width: 100%),
+    caption: [Ví dụ về ảnh Content và ảnh Style.]
+  ),
+
+  figure(
+    image("../images/gen1.png", width: 100%),
+    caption: [Các kết quả để người tham khảo sát lựa chọn.]
+  )
+)
+
+Tóm lại, tỷ lệ ưu tiên cao trong khảo sát người dùng là minh chứng thực tiễn khẳng định phương pháp đề xuất đã đạt được điểm cân bằng tốt nhất giữa hai yêu cầu cốt lõi: giữ đúng chữ (Content) và thể hiện đúng kiểu (Style).
 
 == Nghiên cứu Bóc tách (Ablation Study)
 Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nhằm định lượng đóng góp cụ thể của từng thành phần kỹ thuật trong phương pháp đề xuất. Để đảm bảo tính tập trung và sức thuyết phục của các kết luận, thay vì dàn trải thí nghiệm trên mọi biến thể, khoá luận cố định và lựa chọn hai cấu hình đại diện tiêu biểu nhất làm cơ sở so sánh:
@@ -461,148 +494,149 @@ Tuy nhiên, điểm nhấn quan trọng nhất nằm ở sự so sánh giữa m�
 _Lý giải:_ *SCR gốc* vốn được thiết kế cho bài toán đơn ngôn ngữ, nơi khoảng cách giữa các phong cách nhỏ hơn. Khi áp dụng cho bài toán đa ngôn ngữ (*Cross-lingual*), SCR gốc gặp khó khăn trong việc tách biệt triệt để phong cách khỏi nội dung do sự khác biệt lớn về hình thái học. Ngược lại, *CL-SCR* với *cơ chế tương phản đa miền và chiến lược lấy mẫu âm cải tiến* đã giúp mô hình "hiểu" và trích xuất được bản chất phong cách (như kết cấu, bút pháp) một cách trừu tượng hơn, qua đó đảm bảo chất lượng sinh ảnh ổn định và tự nhiên ngay cả với các font chữ mới lạ.
 
 #figure(
-  table(
-    columns: (auto, auto, auto, auto),
+  grid(
+    columns: (40pt, auto, auto, auto),
+    gutter: 8pt,
     inset: 6pt,
+    stroke: none,
     align: horizon,
-    stroke: (x, y) => if x >= 0 and y >= 0 { 0.5pt },
 
-    [], [*Mô-đun \ M $"  "$ R $"  "$ S $"  "$ CL*], [Example 1], [Example 2],
+    // ===== Header =====
+    [], grid.vline(),
+    [*Mô-đun \ M $"  "$ R $"  "$ S $"  "$ CL*], grid.vline(),
+    [*Example 1*], grid.vline(),
+    [*Example 2*],
 
-    table.cell(
-        rowspan: 4,
-        align: horizon,
-        rotate(-90deg, reflow: true)[
-  *UFSC* (`e2c`)
-        ],
-      ),
-
+    // ===== UFSC e2c =====
+    grid.hline(),
+    [],
     [$crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy$],
-    [#glyph-grid(
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/noMCA_noRSI/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/noMCA_noRSI/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
+    rotate(-90deg)[*UFSC* (`e2c`)],
     [$crossmark.heavy "  " crossmark.heavy "  " checkmark.heavy "  " crossmark.heavy$],
-    [#glyph-grid(
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/intra/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/intra/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
+    [],
     [$crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy "  " checkmark.heavy$],
-    [#glyph-grid(
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
-    [Target],
-    [#glyph-grid(
+    [],
+    [*Target*],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Free letter fonts Font-Simplified Chinese",
       "gt"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "gt"
-    )],
+    ),
 
-    [], [], [Example 1], [Example 2],
-    table.cell(
-        rowspan: 4,
-        align: horizon,
-        rotate(-90deg, reflow: true)[
-  *UFSC* (`c2e`)
-        ],
-      ),
-
+    // ===== UFSC c2e =====
+    grid.hline(),
+    [], 
     [$crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy$],
-    [#glyph-grid(
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/noMCA_noRSI/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/noMCA_noRSI/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
+    rotate(-90deg)[*UFSC* (`c2e`)],
     [$crossmark.heavy "  " crossmark.heavy "  " checkmark.heavy "  " crossmark.heavy$],
-    [#glyph-grid(
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/intra/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/intra/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
+    [],
     [$crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy "  " checkmark.heavy$],
-    [#glyph-grid(
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
-    [Target],
-    [#glyph-grid(
+    [],
+    [*Target*],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "gt"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "gt"
-    )],
-    // lặp lại Method 1 / 2 / Target cho UFSC
+    ),
   ),
+
   caption: [
-    So sánh kết quả sinh ảnh định tính giữa các mô-đun khác nhau khác nhau trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (`e2c` và `c2e`).
+    So sánh kết quả sinh ảnh giữa các mô-đun khác nhau
+    trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).
   ]
-) <tab:dinhtinh_module>
+)
 
 *Kết luận:* Tổng hợp lại, kết quả nghiên cứu bóc tách đã làm sáng tỏ vai trò riêng biệt và bổ trợ lẫn nhau của các thành phần kiến trúc. Trong khi *MCA* và *RSI* đóng vai trò là nền tảng cấu trúc không thể thiếu để ngăn chặn sự sụp đổ hình dáng ký tự, thì *CL-SCR* chính là nhân tố quyết định nâng tầm chất lượng thị giác và khả năng tổng quát hoá. Việc CL-SCR giúp giảm sâu chỉ số *FID* trên các *tập dữ liệu lạ (UFSC)* so với SCR gốc khẳng định rằng cơ chế tương phản đa ngôn ngữ là chìa khoá để mô hình vượt qua rào cản hình thái học, cho phép chuyển giao phong cách Latin sang Hán tự một cách tự nhiên và linh hoạt hơn.
 
@@ -690,120 +724,108 @@ Kết quả thực nghiệm được trình bày chi tiết tại @tab:e2c_aug v
 Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Latin (`c2e`) tại @tab:c2e_aug lại hé lộ một sự đánh đổi thú vị giữa khả năng *ghi nhớ và khái quát hoá*. Trên tập dữ liệu đã biết (SFUC), cấu hình không có Augmentation đạt kết quả tốt hơn với FID 12.36 so với 14.72. Tuy nhiên, ưu thế *đảo chiều hoàn toàn* trên tập dữ liệu chưa biết (UFSC), nơi cấu hình có Augmentation giành lại vị thế dẫn đầu với FID giảm từ *43.06* xuống *41.11* và sai số L1 cũng được cải thiện. Hiện tượng này minh chứng rõ ràng cho *vai trò điều hòa (Regularization)* của tăng cường dữ liệu. Ở kịch bản SFUC, việc thiếu nhiễu cho phép mô hình *tối ưu hoá cục bộ (overfit)* trên các mẫu đã thấy, dẫn đến chỉ số cao nhưng kém bền vững. Ngược lại, khi đối mặt với dữ liệu lạ trong UFSC, khả năng ghi nhớ trở nên vô hiệu, và lúc này các *đặc trưng phong cách cốt lõi* mang tính khái quát cao mà mô hình học được nhờ *Augmentation* mới thực sự phát huy tác dụng. Vì vậy, kết quả vượt trội trên UFSC khẳng định rằng tăng cường dữ liệu là thành phần thiết yếu để đảm bảo *khả năng tổng quát hoá* của mô hình trong các ứng dụng thực tế.
 
 #figure(
-  table(
-    columns: (auto, auto, auto, auto),
-    inset: 6pt,
+  grid(
+    columns: (40pt, auto, auto, auto),
+    gutter: 6pt,
+    stroke: none,
     align: horizon,
-    stroke: (x, y) => if x >= 0 and y >= 0 { 0.5pt },
+    inset: 6pt,
 
-    [], [], [Example 1], [Example 2],
-
-    table.cell(
-        rowspan: 3,
-        align: horizon,
-        rotate(-90deg, reflow: true)[
-  *UFSC* (`e2c`)
-        ],
-      ),
-
-    [w/ Augment],
-    [#glyph-grid(
+    // ===== Header =====
+    [], grid.vline(), [], grid.vline(), [*Example 1*], grid.vline(), [*Example 2*],
+    grid.hline(),
+    // ===== UFSC e2c =====
+    [], [w/ Augment],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
-    [w/o Augment],
-    [#glyph-grid(
+    rotate(-90deg)[*UFSC* (`e2c`)], [w/o Augment],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/noaug/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/noaug/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
-    [Target],
-    [#glyph-grid(
+    [], [*Target*],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Free letter fonts Font-Simplified Chinese",
       "gt"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "gt"
-    )],
+    ),
 
-    [], [], [Example 1], [Example 2],
-    table.cell(
-        rowspan: 3,
-        align: horizon,
-        rotate(-90deg, reflow: true)[
-  *UFSC* (`c2e`)
-        ],
-      ),
-
-    [w/ Augment],
-    [#glyph-grid(
+    grid.hline(),
+    // ===== UFSC c2e =====
+    [], [w/ Augment],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
-    [w/o Augment],
-    [#glyph-grid(
+    rotate(-90deg)[*UFSC* (`c2e`)], [w/o Augment],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/noaug/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/noaug/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
-    [Target],
-    [#glyph-grid(
+    [], [*Target*],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "gt"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "gt"
-    )],
-    // lặp lại Method 1 / 2 / Target cho UFSC
+    ),
   ),
+
   caption: [
-    So sánh kết quả sinh ảnh định tính giữa mô hình có và không có áp dụng Tăng cường dữ liệu trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (`e2c` và `c2e`).
+    So sánh kết quả sinh ảnh giữa mô hình có và không áp dụng tăng cường dữ liệu trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).
   ]
-) <tab:dinhtinh_aug>
+)
 
 *Kết luận:* Dựa trên phân tích trên, khoá luận khẳng định *chiến lược Tăng cường dữ liệu* là thành phần không thể thiếu, đặc biệt quan trọng để nâng cao hiệu suất trên các *dữ liệu chưa từng biết (Unseen Domains)*, mặc dù có thể đánh đổi một lượng nhỏ hiệu năng trên các dữ liệu đã biết.
 
@@ -899,148 +921,140 @@ Kết quả thực nghiệm được trình bày tại @tab:e2c_lossmode và @ta
 Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều ngược lại từ Hán tự sang Latin (`c2e`) tại @tab:c2e_lossmode, nơi xuất hiện một *nghịch lý về độ giàu thông tin*. Khác với hướng `e2c`, chiến lược `scr_intra` *lại thể hiện sự vượt trội về các chỉ số cấu trúc và điểm ảnh*(L1 thấp nhất 0.097, SSIM cao nhất) trên cả hai tập dữ liệu. Nguyên nhân sâu xa nằm ở bản chất *"đậm đặc" (dense) và giàu thông tin* của phong cách Hán tự (nét bút, độ dày, kết cấu). Chỉ cần *so sánh nội bộ giữa các Hán tự* là đã đủ để mô hình trích xuất được một vector phong cách mạnh mẽ. Trong bối cảnh này, việc ép buộc so sánh xuyên miền với Latin (thông qua thành phần cross trong `scr_both`) vô tình tạo ra nhiễu do sự khác biệt quá lớn về cấu trúc, làm giảm nhẹ độ chính xác tái tạo. Tuy nhiên, `scr_both` *vẫn giữ được ưu thế về độ tự nhiên tổng thể* (FID 41.11 so với 41.34) trên tập lạ UFSC, đóng vai trò như một cơ chế điều hòa cần thiết để đảm bảo tính thẩm mỹ khi đối mặt với các font hoàn toàn mới.
 
 #figure(
-  table(
-    columns: (auto, auto, auto, auto),
-    inset: 6pt,
+  grid(
+    columns: (40pt, auto, auto, auto),
+    gutter: 6pt,
+    stroke: none,
     align: horizon,
-    stroke: (x, y) => if x >= 0 and y >= 0 { 0.5pt },
+    inset: 6pt,
 
-    [], [], [Example 1], [Example 2],
+    // ===== Header =====
+    [], grid.vline(), [], grid.vline(), [*Example 1*], grid.vline(), [*Example 2*],
+    grid.hline(),
 
-    table.cell(
-        rowspan: 4,
-        align: horizon,
-        rotate(-90deg, reflow: true)[
-  *UFSC* (`e2c`)
-        ],
-      ),
-
-    [scr_intra],
-    [#glyph-grid(
+    // ===== UFSC e2c =====
+    [], [scr_intra],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/intra/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/intra/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
-    [scr_cross],
-    [#glyph-grid(
+    rotate(-90deg)[*UFSC* (`e2c`)], [scr_cross],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/cross/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/cross/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
-    [scr_both],
-    [#glyph-grid(
+    [], [scr_both],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
-    [Target],
-    [#glyph-grid(
+    [], [*Target*],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Free letter fonts Font-Simplified Chinese",
       "gt"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "gt"
-    )],
+    ),
 
-    [], [], [Example 1], [Example 2],
-    table.cell(
-        rowspan: 4,
-        align: horizon,
-        rotate(-90deg, reflow: true)[
-  *UFSC* (`c2e`)
-        ],
-      ),
+    grid.hline(),
 
-    [scr_intra],
-    [#glyph-grid(
+    // ===== UFSC c2e =====
+    [], [scr_intra],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/intra/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/intra/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
-    [scr_cross],
-    [#glyph-grid(
+    rotate(-90deg)[*UFSC* (`c2e`)], [scr_cross],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/cross/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/cross/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
-    [scr_both],
-    [#glyph-grid(
+    [], [scr_both],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
-    [Target],
-    [#glyph-grid(
+    [], [*Target*],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "gt"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "gt"
-    )],
-    // lặp lại Method 1 / 2 / Target cho UFSC
+    ),
   ),
+
   caption: [
-    So sánh kết quả sinh ảnh định tính giữa các chế độ mất mát khác nhau trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (`e2c` và `c2e`).
+    So sánh kết quả sinh ảnh giữa các chế độ mất mát khác nhau
+    trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).
   ]
-) <tab:dinhtinh_loss>
+)
+
 
 *Kết luận:* Tổng kết lại, đối với bài toán tổng quát, *chiến lược* `scr_both` *là lựa chọn an toàn và ổn định nhất* để cân bằng giữa độ chính xác và tính tự nhiên. Tuy nhiên, thực nghiệm cũng mở ra một góc nhìn quan trọng: khi miền nguồn có lượng thông tin phong phú như Hán tự, *chiến lược học nội miền* (`scr_intra`) *cũng mang lại hiệu quả rất ấn tượng*, gợi ý tiềm năng tối ưu hoá chi phí huấn luyện cho các ứng dụng cụ thể mà không nhất thiết phải phụ thuộc vào dữ liệu cặp đôi xuyên ngôn ngữ.
 
@@ -1131,148 +1145,150 @@ Phân tích số liệu từ thực nghiệm cho thấy một kết quả *trái
 Xu hướng tương tự cũng được quan sát thấy ở chiều ngược lại từ Hán tự sang Latin (@tab:c2e_numneg), mặc dù có sự phân hoá nhẹ giữa khả năng ghi nhớ và khái quát hoá. Khi đánh giá trên tập font đã biết (SFUC), việc tăng số lượng mẫu âm lên 16 giúp cải thiện nhẹ các chỉ số điểm ảnh như L1 và SSIM, do mô hình tận dụng được nhiều dữ liệu so sánh hơn để khớp chi tiết các nét phức tạp của Hán tự. Tuy nhiên, lợi thế này *không duy trì được khi chuyển sang tập font lạ (UFSC)*. Tại đây, cấu hình $K=4$ một lần nữa khẳng định tính hiệu quả với chỉ số FID thấp nhất (*41.11*), vượt qua cả cấu hình $K=8$ và $K=16$. Kết quả này củng cố nhận định rằng trong bài toán chuyển đổi đa ngôn ngữ với sự chênh lệch lớn về miền dữ liệu, một tập hợp mẫu âm *nhỏ nhưng tinh gọn* sẽ hiệu quả hơn việc cố gắng phân biệt với một lượng lớn mẫu âm có thể gây nhiễu. Do đó, việc lựa chọn $K=4$ không chỉ giúp *tối ưu hoá tài nguyên tính toán* mà còn đảm bảo chất lượng sinh ảnh tốt nhất về mặt thị giác.
 
 #figure(
-  table(
-    columns: (auto, auto, auto, auto),
+  grid(
+    columns: (40pt, auto, auto, auto),
+    gutter: 8pt,
     inset: 6pt,
+    stroke: none,
     align: horizon,
-    stroke: (x, y) => if x >= 0 and y >= 0 { 0.5pt },
 
-    [], [], [Example 1], [Example 2],
+    // ===== Header =====
+    [], grid.vline(),
+    [], grid.vline(),
+    [*Example 1*], grid.vline(),
+    [*Example 2*],
 
-    table.cell(
-        rowspan: 4,
-        align: horizon,
-        rotate(-90deg, reflow: true)[
-  *UFSC* (`e2c`)
-        ],
-      ),
-
+    // ===== UFSC e2c =====
+    grid.hline(),
+    [],
     [$"num_neg"=4$],
-    [#glyph-grid(
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
+    rotate(-90deg)[*UFSC* (`e2c`)],
     [$"num_neg"=8$],
-    [#glyph-grid(
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg08/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg08/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
+    [],
     [$"num_neg"=16$],
-    [#glyph-grid(
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg16/",
       "Free letter fonts Font-Simplified Chinese",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg16/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "generated"
-    )],
+    ),
 
-    [Target],
-    [#glyph-grid(
+    [],
+    [*Target*],
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Free letter fonts Font-Simplified Chinese",
       "gt"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
       "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
       "gt"
-    )],
+    ),
 
-    [], [], [Example 1], [Example 2],
-    table.cell(
-        rowspan: 4,
-        align: horizon,
-        rotate(-90deg, reflow: true)[
-  *UFSC* (`c2e`)
-        ],
-      ),
-
+    // ===== UFSC c2e =====
+    grid.hline(),
+    [],
     [$"num_neg"=4$],
-    [#glyph-grid(
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
+    rotate(-90deg)[*UFSC* (`c2e`)],
     [$"num_neg"=8$],
-    [#glyph-grid(
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg08/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg08/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
+    [],
     [$"num_neg"=16$],
-    [#glyph-grid(
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg16/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "generated"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg16/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "generated"
-    )],
+    ),
 
-    [Target],
-    [#glyph-grid(
+    [],
+    [*Target*],
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
       "gt"
-    )],
-    [#glyph-grid(
+    ),
+    glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
       "Font housekeeper impression Chinese Font-Simplified Chinese",
       "gt"
-    )],
-    // lặp lại Method 1 / 2 / Target cho UFSC
+    ),
   ),
+
   caption: [
-    So sánh kết quả sinh ảnh định tính giữa các số lượng mẫu âm khác nhau trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (`e2c` và `c2e`).
+    So sánh kết quả sinh ảnh giữa các số lượng mẫu âm khác nhau
+    trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (`e2c` và `c2e`).
   ]
 ) <tab:dinhtinh_neg>
+
 
 *Kết luận:* Tổng kết lại, thực nghiệm về số lượng mẫu âm đã làm sáng tỏ một đặc điểm thú vị trong bài toán chuyển đổi phong cách xuyên ngôn ngữ: *sự tối giản lại mang lại hiệu quả tối ưu*. Trái với kỳ vọng rằng nhiều mẫu âm sẽ giúp học biểu diễn phong cách tốt hơn, kết quả cho thấy việc *giới hạn* $K=4$ giúp mô hình xây dựng được *không gian biểu diễn phong cách cô đọng*, tránh được hiện tượng quá khớp (overfitting) hoặc nhiễu loạn thông tin từ các mẫu âm dư thừa. Đặc biệt trên các tập dữ liệu chưa từng thấy (UFSC), cấu hình $K=4$ luôn duy trì vị thế dẫn đầu về chỉ số FID ở cả hai hướng chuyển đổi, chứng minh đây là *thiết lập tối ưu* để cân bằng giữa độ chính xác tái tạo và khả năng tổng quát hoá, đồng thời *giảm tải đáng kể chi phí huấn luyện*.
 

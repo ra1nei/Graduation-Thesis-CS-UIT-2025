@@ -204,12 +204,13 @@ Hàm mất mát CL-SCR được định nghĩa là tổ hợp tuyến tính gi�
 
 $ L_"CL-SCR" = alpha_"intra" dot L_"intra" + beta_"cross" dot L_"cross" $
 
-Trong đó:
-$alpha_"intra"$ và $beta_"cross"$ là các siêu tham số trọng số (được thiết lập lần lượt là $0.3$ và $0.7$ trong thực nghiệm) nhằm ưu tiên khả năng chuyển giao phong cách sang ngôn ngữ đích.
+Trong đó, dựa trên thực nghiệm, các siêu tham số trọng số được thiết lập là $alpha_"intra" = 0.3$ và $beta_"cross" = 0.7$ nhằm ưu tiên khả năng chuyển giao phong cách sang ngôn ngữ đích trong khi vẫn giữ được sự ổn định từ dữ liệu cùng ngôn ngữ.
 
-Thành phần *Cross-Lingual InfoNCE Loss* ($L_"cross"$) được tính toán bằng cách tổng hợp qua $L$ tầng đặc trưng (từ relu1_1 đến relu5_1 của VGG):
+Cả $L_"intra"$ và $L_"cross"$ đều được tính toán dựa trên hàm mất mát InfoNCE, được *trung bình hoá* qua $L$ tầng đặc trưng (từ các khối $"ReLU"^1_1$ đến $"ReLU"^5_1$ của mạng VGG-19). Công thức chi tiết cho thành phần Intra-Lingual Loss ($L_"intra"$) và Cross-Lingual Loss ($L_"cross"$) được tính theo trình tự như sau:
 
-$ L_"cross" = - sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,cross"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"cross")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "cross")^l "/" tau)) $
+$ L_"intra" = -1/L sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,intra"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"intra")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "intra")^l "/" tau)) $
+
+$ L_"cross" = -1/L sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,cross"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"cross")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "cross")^l "/" tau)) $
 
 Với $v = "Projector(Extractor(x))"$ là vector phong cách sau khi đi qua mạng chiếu.
 
@@ -230,6 +231,8 @@ Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các
 
 #pagebreak()
 == Đề xuất thuật toán tính CL-SCR
+Dựa trên cơ chế lấy mẫu đa luồng và hàm mất mát InfoNCE, thuật toán tính toán giá trị loss cho mô-đun CL-SCR được trình bày chi tiết dưới đây.
+
 #outline_algo(
   [
     #algo(
@@ -240,24 +243,20 @@ Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các
           row-gutter: (0pt, 3pt),
           stroke: none,
           [*Input*],
-          [$S "                  "$ embedding style anchor rút ra từ sample],
+          [$S "                 "$ Vector đặc trưng của ảnh sinh (Sample/Anchor)],
           [],
-          [$P_"intra                     "$ positive cùng ngôn ngữ (intra-language)],
+          [$P_"intra", N_"intra" "     "$ Tập mẫu Dương/Âm thuộc luồng Nội miền],
           [],
-          [$P_"cross                     "$ positive khác ngôn ngữ (cross-language)],
+          [$P_"cross", N_"cross" "     "$ Tập mẫu Dương/Âm thuộc luồng Xuyên miền],
           [],
-          [$N_"intra                    "$ negative cùng ngôn ngữ],
+          [$alpha, beta "               "$ Trọng số cho luồng nội miền và xuyên miền],
           [],
-          [$N_"cross                    "$ negative khác ngôn ngữ],
+          [$L "                 "$ Số lượng tầng đặc trưng (sử dụng $"ReLU"^x_1$)],
           [],
-          [$alpha, beta "               "$ hệ số trọng số cho từng nhánh],
-          [],
-          [L $"                  "$ số lượng tầng đặc trưng (feature layers)],
-          [],
-          [mode $"             "$ {intra, cross, both}],
+          [mode $"             "$ Chế độ huấn luyện ${"intra", "cross", "both"}$],
           table.hline(stroke: 0.5pt),
           [*Output*],
-          [$L_"total                     "$ giá trị loss cuối cùng],
+          [$L_"total" "          "$ Giá trị loss cuối cùng],
           table.hline(stroke: 0.5pt),
         )
       ],
@@ -266,44 +265,49 @@ Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các
       breakable: true,
       comment-prefix: [#sym.triangle.stroked.r ],
     )[
-      *procedure* CAL_CL_SCR_LOSS($V_"gen", V_(p_"intra"), V_(n_"intra"), V_(p_"cross"), V_(n_"cross"), alpha_"intra", beta_"cross", tau$):#i \
-      $L_"total" arrow.l 0.0$ #comment[Loss tổng] \
-      $"count" arrow.l 0$ #comment[Số nhánh loss được sử dụng] \
-        *if mode* $in {"intra", "both"}$ và $P_"intra" ≠ ∅$ then #i\
-          $L_"intra" arrow.l 0$ \
-          *for* $l = 1 arrow "L"$ do #comment[Duyệt từng tầng embedding] #i \
-            $L_"intra" arrow.l L_"intra" + "InfoNEC"(S^l, P_"intra"^l, N_"intra"^l) #d $ \
-          *end for* \
-          $L_"intra" arrow.l L_"intra / L"$ #comment[Trung bình theo tầng] \
-  
-          *if* mode = both *then* #i \
-            $L_"total" arrow.l L_"total" + alpha dot L_"intra"$ #comment[Áp dụng trọng số $alpha$] #d \
-          *else* #i \
-            $L_"total" arrow.l L_"total" + L_"intra"$ #d \
-          *end if* \
-          $"count" arrow.l "count" + 1$ #d \
+      *procedure* CAL_CL_SCR_LOSS($S, P_"intra", N_"intra", P_"cross", N_"cross", alpha, beta, tau$):#i \
+      $L_"total" arrow.l 0.0$ \
+      $"count" arrow.l 0$ #comment[Biến đếm số nhánh tham gia tính loss] \
+      
+      // 1. Tính Loss Nội miền (Intra-domain)
+      *if* mode $in {"intra", "both"}$ *and* $P_"intra" != emptyset$ *then* #i\
+        $L_"intra" arrow.l 0$ \
+        *for* $l = 1 arrow L$ *do* #comment[Duyệt qua các tầng $"ReLU"^1_1$ đến $"ReLU"^5_1$] #i \
+          $L_"intra" arrow.l L_"intra" + "InfoNCE"(S^l, P_"intra"^l, N_"intra"^l, tau) $ #d \
+        *end for* \
+        $L_"intra" arrow.l L_"intra" / L$ #comment[Trung bình cộng các tầng] \
+        
+        *if* mode $== "both"$ *then* #i \
+           $L_"total" arrow.l L_"total" + alpha dot L_"intra"$ #d \
+        *else* #i \
+           $L_"total" arrow.l L_"total" + L_"intra"$ #d \
         *end if* \
-  
-        *if mode* $in {"cross", "both"}$ và $P_"cross" ≠ ∅$ then #i\
-          $L_"cross" arrow.l 0$ \
-          *for* $l = 1 arrow "L"$ do #i \
-            $L_"cross" arrow.l L_"cross" + "InfoNEC"(S^l, P_"cross"^l, N_"cross"^l) #d $ \
-          *end for* \
-          $L_"cross" arrow.l L_"cross / L"$ \
-  
-          *if* mode = both *then* #i \
-            $L_"total" arrow.l L_"total" + beta dot L_"cross"$ #comment[Áp dụng trọng số $beta$] #d \
-          *else* #i \
-            $L_"total" arrow.l L_"total" + L_"cross"$ #d \
-          *end if* \
-          $"count" arrow.l "count" + 1$ #d \
-  
-        *if* $"count" > 0$ *then* #i \
-          $L_"total" arrow.l L_"total / count"$ #comment[Chuẩn hoá khi có nhiều nhánh] #d \
+        $"count" arrow.l "count" + 1$ #d \
+      *end if* \
+
+      // 2. Tính Loss Xuyên miền (Cross-domain)
+      *if* mode $in {"cross", "both"}$ *and* $P_"cross" != emptyset$ *then* #i\
+        $L_"cross" arrow.l 0$ \
+        *for* $l = 1 arrow L$ *do* #i \
+          $L_"cross" arrow.l L_"cross" + "InfoNCE"(S^l, P_"cross"^l, N_"cross"^l, tau) $ #d \
+        *end for* \
+        $L_"cross" arrow.l L_"cross" / L$ \
+
+        *if* mode $== "both"$ *then* #i \
+           $L_"total" arrow.l L_"total" + beta dot L_"cross"$ #d \
+        *else* #i \
+           $L_"total" arrow.l L_"total" + L_"cross"$ #d \
         *end if* \
-  
-        *return* $L_"total"$ #d \
-      *end if*
+        $"count" arrow.l "count" + 1$ #d \
+      *end if* \
+
+      // 3. Chuẩn hoá theo số lượng nhánh (Khớp với scr.py)
+      *if* $"count" > 0$ *then* #i \
+         $L_"total" arrow.l L_"total" / "count"$ #d \
+      *end if* \
+
+      *return* $L_"total"$ #d \
+      *end procedure*
     ]
   ],
   [Thuật toán tính hàm mất mát CL-SCR],

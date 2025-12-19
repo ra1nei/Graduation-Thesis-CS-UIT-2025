@@ -27,9 +27,9 @@ DG-Font tiếp cận bài toán sinh phông chữ theo hướng *không giám s�
 Đóng góp cốt lõi của mô hình là mô-đun *Feature Deformation Skip Connection (FDSC)*. Cơ chế này hoạt động bằng cách dự đoán các bản đồ dịch chuyển (displacement maps) từ đặc trưng nội dung và phong cách, sau đó áp dụng *tích chập biến dạng (deformable convolution)* lên các đặc trưng cấp thấp. Điều này cho phép mô hình "uốn nắn" cấu trúc không gian của ký tự nguồn sao cho khớp với dáng vẻ của ký tự đích trước khi đưa vào bộ trộn (Mixer) để sinh ảnh cuối cùng. Mặc dù đạt hiệu quả cao trong việc bảo toàn cấu trúc, DG-Font vẫn tồn tại nhược điểm cố hữu của dòng GAN là sự mất ổn định khi huấn luyện; đối với các ký tự có sự biến đổi topo học quá lớn (ví dụ từ nét thanh sang nét đậm phá cách), ảnh sinh ra dễ bị hiện tượng đứt nét (broken strokes) hoặc mờ nhoè.
 
 #figure(
-      image("../images/DG/main_new.png", width: 100%),
-      caption: [Kiến trúc mạng DG-Font. Mô-đun FDSC đóng vai trò nòng cốt trong việc học biến dạng hình học giữa các ký tự.]
-    )
+    image("../images/DG/main_new.png", width: 100%),
+    caption: [Kiến trúc mạng DG-Font. Mô-đun FDSC đóng vai trò nòng cốt trong việc học biến dạng hình học giữa các ký tự.]
+  )
 
 ==== CF-Font@Wang2023CFFont (Content Fusion, CVPR 2023)
 CF-Font tiếp cận bài toán sinh phông chữ few-shot theo hướng *"lai ghép" nội dung (content fusion)*, khắc phục hạn chế của các phương pháp truyền thống vốn chỉ dựa vào một font nguồn (source font) duy nhất. Nhận định rằng sự chênh lệch cấu trúc (topology) giữa font nguồn và font đích là nguyên nhân chính gây ra các lỗi biến dạng, CF-Font đề xuất sử dụng một tập hợp các *font cơ sở (basis fonts)* tiêu chuẩn để làm "nguyên liệu" tham chiếu.
@@ -64,7 +64,7 @@ FTransGAN là một trong những mô hình tiên phong giải quyết bài toá
 
 === Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models)
 
-Gần đây, Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models) đã tạo nên một cuộc cách mạng trong lĩnh vực thị giác máy tính. Khác với GAN@Goodfellow2014GAN – vốn dựa trên việc lừa mô hình phân biệt, Diffusion Model mô phỏng quá trình nhiệt động lực học để biến đổi dần dần từ nhiễu sang dữ liệu có ý nghĩa.
+Gần đây, Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models) đã tạo nên một cuộc cách mạng trong lĩnh vực thị giác máy tính. Khác với GAN@Goodfellow2014GAN – vốn dựa trên việc lừa mô hình phân biệt, Diffusion Model mô phỏng quá trình nhiệt động lực học để biến đổi dần dần từ nhiễu sang dữ liệu có ý nghĩa. Trong phạm vi khoá luận này, khoá luận tập trung vào Mô hình Khuếch tán Khử nhiễu Xác suất (Denoising Diffusion Probabilistic Models - DDPM)@Ho2020DDPM, biến thể phổ biến nhất và là nền tảng của phương pháp FontDiffuser.
 
 Nguyên lý cơ bản gồm hai giai đoạn:
 - *Quá trình Khuếch tán xuôi:* phá huỷ dữ liệu một cách có kiểm soát bằng cách thêm nhiễu Gaussian nhiều bước.  
@@ -90,11 +90,11 @@ $ q(x_t|x_(t-1))= scr(N)(x_t;sqrt(1-beta_t)x_(t-1),beta_t I) $
 - $I$: ma trận đơn vị, đảm bảo nhiễu độc lập và đẳng hướng.
 
 Do tính chất của Gaussian, ta có thể suy ra trực tiếp từ $x_0$ đến $x_t$:
-$ x_t = sqrt(alpha_t)x_0 + sqrt(1-alpha_t)epsilon.alt, epsilon.alt ~ scr(N)(0,I) $
+$ x_t = sqrt(dash(alpha)_t) x_0 + sqrt(1 - dash(alpha)_t)epsilon.alt, "   " epsilon.alt ~ scr(N)(0,I) $
 
 trong đó:
 $ alpha_t = 1 - beta_t $
-$ alpha_t = product_(s=1)^t alpha_s $
+$ dash(alpha)_t = product_(s=1)^t alpha_s $
 
 Điều này rất quan trọng vì giúp ta không cần sinh tuần tự từng bước mà vẫn có thể lấy mẫu trực tiếp ở bước t bất kì (quan trọng khi huấn luyện batch lớn).
 
@@ -112,7 +112,7 @@ $ p_theta (x_(t-1)|x_t) = scr(N)(x_(t-1);mu_theta (x_t, t), sum_theta (x_t, t)) 
 
 với $mu_theta$ được tính như sau:
 
-$ mu_theta (x_t, t) = 1/sqrt(alpha_t)(x_t - (1-alpha_t)/(sqrt(1 - alpha_t)) epsilon.alt_theta (x_t, t)) $
+$ mu_theta (x_t, t) = 1/sqrt(alpha_t)(x_t - (beta_t)/(sqrt(1 - dash(alpha)_t)) epsilon.alt_theta (x_t, t)) $
 
 Ở đây, $epsilon.alt_theta (x_t, t)$ là nhiễu do mạng nơ-ron dự đoán, đóng vai trò trung tâm trong việc phục hồi ảnh gốc.  
 
