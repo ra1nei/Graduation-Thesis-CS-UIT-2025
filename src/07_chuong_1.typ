@@ -30,33 +30,39 @@ Mô hình nhận vào hai luồng thông tin chính:
   - Mục đích: Cung cấp thông tin về cấu trúc hình học và định danh của ký tự cần sinh (ví dụ: chữ 'A', chữ 'g').
   - Trong bài toán cross-lingual, $I_c$ thuộc hệ ngôn ngữ đích (Target Language, ví dụ: Latin).
 
-#grid(
-  columns: 3,
-  gutter: 5pt,
-  fill: rgb("ffffff"),     // nền chung cho các ô
-  inset: 4pt,             // padding trong mỗi ô
-  stroke: (0.5pt),        // đường kẻ lưới
-  image("../images/example_image/ダ.png", width:100%),
-  image("../images/example_image/c.png", width:100%),
-  image("../images/example_image/L+.png", width:100%),
-)
+#figure(
+  kind: image,
+  caption: [
+    Ví dụ minh hoạ các ảnh nội dung trong tập dữ liệu.
+  ],
+  grid(
+    columns: 3,
+    gutter: 8pt,
 
-#text[Ví dụ về một số ảnh Content]
+    image("../images/example_image/ダ.png", width: auto),
+    image("../images/example_image/c.png", width: auto),
+    image("../images/example_image/L+.png", width: auto),
+  )
+)
 
 - Ảnh tham chiếu phong cách (Style Images - $I_s$):
   - Là tập hợp một hoặc một vài hình ảnh ($k$-shot) chứa các ký tự bất kỳ mang phong cách $s$ mong muốn.
   - Mục đích: Cung cấp các đặc trưng thẩm mỹ (nét xước, độ đậm nhạt, serif...).
   - Trong bài toán cross-lingual, $I_s$ thường thuộc hệ ngôn ngữ nguồn (Source Language, ví dụ: Chinese) khác với ngôn ngữ của $I_c$.
 
-#grid(
-  columns: 3,
-  gutter: 5pt,
-  fill: rgb("ffffff"),     // nền chung cho các ô
-  inset: 4pt,             // padding trong mỗi ô
-  stroke: (0.5pt),        // đường kẻ lưới
-  image("../images/example_image/║║╥╟▒¿╦╬╝≥_chinese+产.png", width:100%),
-  image("../images/example_image/A-OTF-ShinMGoMin-Shadow-2_english+M+.png", width:100%),
-  image("../images/example_image/Bai zhou Tian zhen shu ti Font-Traditional Chinese_english+m.png", width:100%),
+#figure(
+  kind: image,
+  caption: [
+    Ví dụ minh hoạ các ảnh tham chiếu phong cách.
+  ],
+  grid(
+    columns: 3,
+    gutter: 8pt,
+
+    image("../images/example_image/║║╥╟▒¿╦╬╝≥_chinese+产.png", width: auto),
+    image("../images/example_image/A-OTF-ShinMGoMin-Shadow-2_english+M+.png", width: auto),
+    image("../images/example_image/Bai zhou Tian zhen shu ti Font-Traditional Chinese_english+m.png", width: auto),
+  )
 )
   
 === Định nghĩa đầu ra (Output)
