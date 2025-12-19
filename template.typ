@@ -1,6 +1,7 @@
 #import "@preview/showybox:2.0.1" : showybox
 #import "src/00_trang_bia.typ": trang_bia
 #import "src/01_trang_phu_bia.typ": trang_phu_bia
+#import "src/02_thong_tin_hoi_dong.typ": thong_tin_hoi_dong
 #import "@preview/codly:1.3.0": *
 
 
@@ -49,16 +50,17 @@
   set text(font: "Times New Roman", lang: "vi", size: 13pt)
   // set text(font: "New Computer Modern", lang: "vi", size: 13pt)
   set par(justify: true)
-  // ================= Trang Bia =====================
+
+  // ================= TRANG BÌA =====================
   trang_bia(title, authors)
   trang_phu_bia(title, authors)
-  // =================================================
+  // ================= THÔNG TIN HỘI ĐỒNG =====================
+  thong_tin_hoi_dong(0, 0, "A", "A", "B", "B", "C", "C")
 
   counter(page).update(0)
   set page(numbering: "i")
-  include "src/02_loi_cam_doan.typ"
-  include "src/03_loi_cam_on.typ"
-  include "src/04_tom_tat.typ"
+  include "src/03_loi_cam_doan.typ"
+  include "src/04_loi_cam_on.typ"
 
   show heading.where(level: 1): it => [
     #counter(figure.where(kind: image)).update(0)
@@ -80,7 +82,7 @@
     }
   ]
 
-  // ================= Muc Luc =====================
+  // ================= MỤC LỤCLỤC =====================
   {
     show outline.entry.where(level: 1): it => {
       v(20pt, weak: true)
@@ -172,6 +174,9 @@
     v(7pt)
     outline(title: none, target: figure.where(kind: table))
     pagebreak()
+    // ===== Danh sách các từ viết tắt =====
+    include "src/05_danh_sach_thuat_ngu.typ"
+    pagebreak()
     {
       show heading: none
       heading(numbering: none)[Danh mục giải thuật]
@@ -181,6 +186,10 @@
     outline(title: none, target: figure.where(kind: "algo"))
     pagebreak()
   }
+
+  // ================= TÓM TẮT =====================
+  include "src/06_tom_tat.typ"
+  pagebreak()
 
   // ===============================================
 

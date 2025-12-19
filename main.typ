@@ -10,10 +10,10 @@
 #set page(numbering: "1")
 #set heading(numbering: "1.1.", supplement: "Chương")
 
-#include "src/06_chuong_1.typ"
-#include "src/07_chuong_2.typ"
-#include "src/08_chuong_3.typ"
-#include "src/09_chuong_4.typ"
-#include "src/10_ket_luan.typ"
-#bibliography("ref.bib", style: "elsevier-vancouver", full: true)
-#include "src/11_phu_luc.typ"
+#include "src/07_chuong_1.typ"
+#include "src/08_chuong_2.typ"
+#include "src/09_chuong_3.typ"
+#include "src/10_chuong_4.typ"
+#include "src/11_ket_luan.typ"
+#bibliography("ref.bib", style: "elsevier-vancouver", full: false)
+#include "src/12_phu_luc.typ"
