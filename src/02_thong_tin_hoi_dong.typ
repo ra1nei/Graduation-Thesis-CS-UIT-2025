@@ -2,14 +2,10 @@
   show heading: none
   heading(numbering: none)[Thông tin hội đồng chấm khoá luận tốt nghiệp]
 }
+#align(center, text(16pt, strong("THÔNG TIN HỘI ĐỒNG CHẤM KHOÁ LUẬN TỐT NGHIỆP")))
 
 #let thong_tin_hoi_dong(so, ngay, mem1, role1, mem2, role2, mem3, role3) = {
-  align(center)[
-    #text(16pt, strong("THÔNG TIN HỘI ĐỒNG CHẤM KHOÁ LUẬN TỐT NGHIỆP"))    
-  ]
-
   v(10pt)
-
   align(center)[
     #text()[
       Hội đồng chấm khoá luận tốt nghiệp, thành lập theo Quyết định số #so ngày #ngay \
@@ -18,7 +14,6 @@
   ]
 
   v(18pt)
-
   grid(
     columns: (1fr, auto),
     row-gutter: 20pt,
@@ -28,5 +23,16 @@
     [#mem3], [*#role3*],
   )
 }
+
+#thong_tin_hoi_dong(
+  0000, 
+  0000, 
+  "xxxxxxxx", 
+  "xxxxxxxx", 
+  "xxxxxxxx", 
+  "xxxxxxxx",
+  "xxxxxxxx",
+  "xxxxxxxx"
+)
 
 #pagebreak()

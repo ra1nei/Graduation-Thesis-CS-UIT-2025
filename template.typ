@@ -55,25 +55,19 @@
 
   // ================= TRANG BÌA =====================
   trang_bia(title, authors)
-  trang_phu_bia(title, authors)
 
-  // ================= THÔNG TIN HỘI ĐỒNG =====================
-  thong_tin_hoi_dong(
-    0000, 
-    0000, 
-    "xxxxxxxx", 
-    "xxxxxxxx", 
-    "xxxxxxxx", 
-    "xxxxxxxx",
-    "xxxxxxxx",
-    "xxxxxxxx"
-  )
+  // ================= TRANG PHỤ BÌA =====================
+  trang_phu_bia(title, authors)
 
   set page(numbering: "i")
   counter(page).update(1)
-  
+  // ================= THÔNG TIN HỘI ĐỒNG =====================
   include "src/02_thong_tin_hoi_dong.typ"
+  
+  // ================= LỜI CAM ĐOAN =====================
   include "src/03_loi_cam_doan.typ"
+
+  // ================= LỜI CẢM ƠN =====================
   include "src/04_loi_cam_on.typ"
 
   show heading.where(level: 1): it => [

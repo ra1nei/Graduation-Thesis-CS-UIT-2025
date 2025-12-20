@@ -20,7 +20,7 @@ Em xin cam đoan: Khoá luận tốt nghiệp với đề tài "Tăng cường k
     \ \
     Sinh viên
     \ \ \ \ \
-    Trần Đình Khánh Đăng      ])
+    Trần Đình Khánh Đăng])
     ]
   )
 
