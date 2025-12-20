@@ -15,5 +15,6 @@
 #include "src/09_chuong_3.typ"
 #include "src/10_chuong_4.typ"
 #include "src/11_ket_luan.typ"
+#include "src/12_cong_bo_lien_quan.typ"
 #bibliography("ref.bib", style: "elsevier-vancouver", full: false)
-#include "src/12_phu_luc.typ"
+#include "src/13_phu_luc.typ"
