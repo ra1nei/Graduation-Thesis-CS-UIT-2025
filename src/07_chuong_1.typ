@@ -23,7 +23,7 @@ Vấn đề cốt lõi của bài toán đa ngôn ngữ nằm ở "khoảng các
 == Mô tả bài toán
 Phần này sẽ định nghĩa bài toán sinh phông chữ đa ngôn ngữ dưới dạng một bài toán chuyển đổi phong cách ảnh (Image-to-Image Translation)@Isola2017Pix2Pix@Liu2017UNIT@Zhu2017CycleGAN@Liu2019FUNIT có điều kiện.
 
-=== Định nghĩa đầu vào (Input)
+=== Định nghĩa đầu vào
 Mô hình nhận vào hai luồng thông tin chính:
 - Ảnh tham chiếu nội dung (Content Image - $I_c$):
   - Là một hình ảnh chứa ký tự mục tiêu $c$ (target glyph) trong một phông chữ tiêu chuẩn (ví dụ: Arial hoặc Noto Sans).
@@ -65,7 +65,7 @@ Mô hình nhận vào hai luồng thông tin chính:
   )
 )
   
-=== Định nghĩa đầu ra (Output)
+=== Định nghĩa đầu ra
 Ảnh được sinh ra (Generated Image - $I_"gen"$):
 - Là hình ảnh kết quả thể hiện ký tự $c$ nhưng mang phong cách $s$.
 - Yêu cầu: $I_"gen"$ phải giữ được cấu trúc nội dung của $I_c$ (đọc được là chữ gì) và mang đầy đủ đặc điểm thẩm mỹ của $I_s$ (nhìn giống font mẫu).

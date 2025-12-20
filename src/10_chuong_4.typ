@@ -34,7 +34,7 @@
 
 Chương này trình bày chi tiết *thiết lập thực nghiệm*, bao gồm mô tả bộ dữ liệu, các thước đo đánh giá và cấu hình huấn luyện chi tiết trên nền tảng phần cứng giới hạn. Tiếp theo, khoá luận sẽ đưa ra các *so sánh định lượng và định tính* giữa *phương pháp đề xuất (CL-SCR FontDiffuser)* với các *phương pháp tiên tiến hiện nay (State-of-the-Art)* nhằm chứng minh hiệu quả trong bài toán sinh phông chữ đa ngôn ngữ (Cross-lingual Font Generation) theo cả hai chiều: *từ Hán tự sang Latin* và *từ Latin sang Hán tự*.
 
-== Bộ dữ liệu (Datasets)
+== Bộ dữ liệu
 
 === Cấu trúc
 Để đảm bảo tính khách quan và khả năng so sánh công bằng với các nghiên cứu tiên tiến, khoá luận không tự xây dựng dữ liệu mới mà kế thừa *bộ dữ liệu chuẩn* từ công trình "Few-shot Font Style Transfer between Different Languages"@Li2021FTransGAN. Đây là tập dữ liệu chuyên biệt cho bài toán đa ngôn ngữ, bao gồm *818 bộ phông chữ song ngữ* với độ đa dạng phong cách cao, trải dài từ serif, sans-serif đến thư pháp và viết tay. Cấu trúc dữ liệu được tổ chức thành hai tập con tương tác chặt chẽ nhằm phục vụ bài toán chuyển đổi hai chiều: *tập ký tự Hán* chứa trung bình *800 ký tự* thông dụng (chuẩn GB2312) đóng vai trò miền đích phức tạp, và *tập ký tự Latin* bao gồm *52 ký tự* cơ bản. Đặc điểm cốt lõi của bộ dữ liệu này là sự *nhất quán tuyệt đối về phong cách* giữa hai hệ chữ trong cùng một bộ font, *cung cấp các cặp dữ liệu nhãn (Ground-truth)* tự nhiên giúp mô-đun CL-SCR học được sự tương quan phong cách xuyên ngôn ngữ.
@@ -106,7 +106,7 @@ Tiếp nối các bước xử lý thô, để đảm bảo tính tương thích
 
 == Thiết lập Thực nghiệm
 
-=== Cấu hình Huấn luyện (Implementation Details)
+=== Cấu hình Huấn luyện
 Các thí nghiệm được thực hiện trên môi trường tính toán đám mây Kaggle với *GPU NVIDIA Tesla P100 (16GB VRAM)*. Mã nguồn được triển khai trên nền tảng *PyTorch* và *thư viện Diffusers*.
 
 Quá trình huấn luyện tuân theo chiến lược hai giai đoạn (Two-stage training) với các siêu tham số được thiết lập cụ thể như sau dựa trên tài nguyên phần cứng giới hạn:
@@ -129,16 +129,16 @@ $ L_"total" = L_"MSE" + 0.01 dot L_"percep" + 0.5 dot L_"offset" + 0.01 dot L_"C
 
 *Lấy mẫu Hàng loạt (Batch Sampling):* Do khoá luận thực hiện đánh giá định lượng trên một lượng lớn mẫu, quy trình lấy mẫu được tự động hoá thông qua hàm batch_sampling, bao phủ cả hai hướng nghiên cứu.
 
-=== Kịch bản Đánh giá (Evaluation Scenarios)
+=== Kịch bản Đánh giá
 Để đánh giá toàn diện khả năng của mô hình, khoá luận thiết lập hai kịch bản kiểm thử với độ khó tăng dần (theo chuẩn của FontDiffuser và DG-Font@Xie2021DGFont):
 
 1. *SFUC (Seen Font, Unseen Character):* Font đã xuất hiện trong tập huấn luyện, nhưng ký tự sinh ra chưa từng thấy. Kịch bản này đánh giá khả năng *nội suy phong cách*.
 2. *UFSC (Unseen Font, Seen Character):* Font mới hoàn toàn (chưa từng xuất hiện trong quá trình huấn luyện). Đây là kịch bản quan trọng nhất để đánh giá khả năng *One-shot Generalization* của mô hình đối với phong cách lạ.
 
-== Các thước đo đánh giá (Evaluation Metrics)
+== Các thước đo đánh giá
 Để đảm bảo tính khách quan và toàn diện trong việc kiểm định chất lượng mô hình, khoá luận áp dụng hệ thống đánh giá đa chiều bao gồm cả các chỉ số định lượng tiêu chuẩn (Quantitative Metrics) và đánh giá định tính dựa trên cảm nhận người dùng (Subjective User Study).
 
-=== Chỉ số Định lượng (Quantitative Metrics)
+=== Chỉ số Định lượng
 Khoá luận sử dụng bộ 4 chỉ số tiêu chuẩn trong bài toán sinh ảnh để đánh giá chất lượng ảnh sinh ($x$) so với ảnh thật ($y$):
 
 ==== L1 (Mean Absolute Error)
@@ -150,8 +150,8 @@ Trong đó:
 - $y_i$: Giá trị cường độ điểm ảnh tại vị trí $i$ của ảnh mẫu (Ground Truth).
 Giá trị L1 càng nhỏ thể hiện sai số tái tạo càng thấp, tức ảnh sinh càng sát với ảnh gốc về mặt tín hiệu.
 
-==== SSIM@Wang2004SSIM (Structural Similarity Index)
-Độ đo *SSIM* đánh giá mức độ tương đồng về *cấu trúc, độ sáng và độ tương phản*. Khác với L1, SSIM mô phỏng cách mắt người cảm nhận sự thay đổi cấu trúc cục bộ:
+==== SSIM (Structural Similarity Index)
+Độ đo *SSIM@Wang2004SSIM* đánh giá mức độ tương đồng về *cấu trúc, độ sáng và độ tương phản*. Khác với L1, SSIM mô phỏng cách mắt người cảm nhận sự thay đổi cấu trúc cục bộ:
 $ "SSIM"(x, y) = ((2 mu_x mu_y + C_1)(2 sigma_(x y) + C_2))/((mu_x^2 + mu_y^2 + C_1)(sigma_x^2 + sigma_y^2 + C_2)) $
 Trong đó:
 - $mu_x, mu_y$: Giá trị trung bình cục bộ của ảnh $x$ và ảnh $y$ (đại diện cho độ sáng).
@@ -160,8 +160,8 @@ Trong đó:
 - $C_1, C_2$: Các hằng số nhỏ để đảm bảo tính ổn định khi mẫu số tiến tới 0 (thường được tính theo $C_1 = (k_1 L)^2$, $C_2 = (k_2 L)^2$ với $L$ là dải giá trị động của pixel).
 Giá trị SSIM nằm trong khoảng $[0,1]$, giá trị càng cao thể hiện chất lượng ảnh càng tốt.
 
-==== LPIPS@Zhang2018LPIPS (Learned Perceptual Image Patch Similarity)
-Độ đo *LPIPS* đánh giá *khoảng cách cảm nhận* dựa trên các đặc trưng trích xuất từ mạng nơ-ron sâu (thường là VGG hoặc AlexNet). Chỉ số này khắc phục nhược điểm của L1/SSIM khi xử lý các ảnh bị mờ nhẹ nhưng vẫn giống về ngữ nghĩa:
+==== LPIPS (Learned Perceptual Image Patch Similarity)
+Độ đo *LPIPS@Zhang2018LPIPS* đánh giá *khoảng cách cảm nhận* dựa trên các đặc trưng trích xuất từ mạng nơ-ron sâu (thường là VGG hoặc AlexNet). Chỉ số này khắc phục nhược điểm của L1/SSIM khi xử lý các ảnh bị mờ nhẹ nhưng vẫn giống về ngữ nghĩa:
 $ "LPIPS"(x,y) = sum_l 1 / (H_l W_l) sum_(h, w) ||w_l dot (f_l^x (h, w) - f_l^y (h, w))||_2^2 $
 Trong đó:
 - $f_l^x, f_l^y$: Bản đồ đặc trưng (feature map) tại lớp thứ $l$ của mạng nơ-ron trích xuất từ ảnh $x$ và $y$.
@@ -171,9 +171,9 @@ Trong đó:
 - $|| . ||_2^2$: Bình phương khoảng cách Euclid.
 Giá trị LPIPS càng thấp chứng tỏ ảnh sinh càng giống ảnh thật về mặt thị giác tự nhiên theo cảm nhận của mắt người.
 
-==== FID@Heusel2017TTUR (Fréchet Inception Distance)
-Độ đo *FID* đánh giá chất lượng tổng thể và độ đa dạng của tập ảnh sinh dựa trên khoảng cách thống kê giữa hai phân bố đặc trưng (thường được trích xuất từ lớp *Pool3* của mạng InceptionV3):
-$ "FID" = ||mu_r - mu_g||_2^2 + "Tr"(sum_r + sum_g - 2(sum_r sum_g)^(1/2) ) $
+==== FID (Fréchet Inception Distance)
+Độ đo *FID@Heusel2017TTUR* đánh giá chất lượng tổng thể và độ đa dạng của tập ảnh sinh dựa trên khoảng cách thống kê giữa hai phân bố đặc trưng (thường được trích xuất từ lớp *Pool3* của mạng InceptionV3):
+$ "FID"(r, g) = ||mu_r - mu_g||_2^2 + "Tr"(sum_r + sum_g - 2(sum_r sum_g)^(1/2) ) $
 Trong đó:
 - $mu_r, mu_g$: Vector trung bình đặc trưng (mean feature vector) của tập ảnh thật ($r$) và tập ảnh sinh ($g$).
 - $sum_r, sum_g$: Ma trận hiệp phương sai (covariance matrix) của tập ảnh thật và tập ảnh sinh.
@@ -185,7 +185,7 @@ Việc sử dụng đơn lẻ một độ đo không thể phản ánh toàn di�
 
 Sự kết hợp giữa SSIM (cấu trúc) và LPIPS (cảm nhận) là đặc biệt quan trọng trong bài toán Cross-lingual, nơi việc giữ cấu trúc chữ quan trọng ngang hàng với việc bắt chước phong cách.
 
-=== Đánh giá Định tính (Qualitative Study)
+=== Đánh giá Định tính
 Các chỉ số định lượng (Quantitative Metrics) như FID hay LPIPS, mặc dù khách quan, nhưng không thể mô phỏng hoàn toàn gu thẩm mỹ và khả năng đọc hiểu của con người. Do đó, để kiểm chứng tính thực tiễn của phương pháp đề xuất, Khoá luận thực hiện đánh giá định tính trên hai khía cạnh: *phân tích thị giác dựa trên chuyên môn (Visual Analysis)* và *khảo sát cảm nhận người dùng (User Study)*.
 
 ==== Quy trình Phân tích Trực quan (Visual Analysis Protocol)
@@ -277,7 +277,7 @@ Khoá luận sử dụng hai cấu hình mô hình cho hướng này: $"Ours"_"A
 
 Việc phân loại theo độ phức tạp này giúp khoá luận xác định mô-đun *CL-SCR* hoặc các kiến trúc lõi khác (*MCA*, *RSI*) hoạt động hiệu quả nhất ở mức độ phức tạp cấu trúc nào của phong cách Hán tự, từ đó cung cấp những cái nhìn sâu sắc hơn về khả năng học đặc trưng của mô hình khuếch tán.
 
-=== So sánh Định lượng (Quantitative Results)
+=== So sánh Định lượng
 
 Các bảng dưới đây trình bày kết quả so sánh giữa phương pháp đề xuất (Ours) với các baseline mạnh nhất hiện nay gồm DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont, DFS@Zhu2020FewShotTextStyle, FTransGAN@Li2021FTransGAN và trên 2 kịch bản UFSC và SFUC cho tác vụ chuyển đổi phong cách từ chữ Latin sang ảnh nguồn Hán và ngược lại.
 
@@ -389,13 +389,13 @@ Thứ hai, phân tích sâu về độ phức tạp nét (stroke complexity) th�
 
 Cuối cùng, mặc dù $"Ours"_"Medium"$ tối ưu về cấu trúc, nhưng $"Ours"_"All"$ lại đạt chỉ số FID tốt nhất trên tập UFSC (41.115). Điều này cho thấy *việc tiếp xúc với đa dạng các mức độ phức tạp trong quá trình huấn luyện giúp mô hình xây dựng được không gian biểu diễn phong cách phong phú nhất*, từ đó sinh ra các hình ảnh có độ tự nhiên cao nhất về mặt cảm nhận thị giác, ngay cả khi độ chính xác từng điểm ảnh (L1) thua kém nhẹ so với cấu hình chuyên biệt Medium.
 
-=== So sánh Định tính (Qualitative Analysis)
+=== So sánh Định tính
 Bên cạnh các chỉ số đo lường, việc phân tích trực quan là bước không thể thiếu để kiểm chứng khả năng xử lý các trường hợp khó của mô hình, đặc biệt là các lỗi cấu trúc mà các chỉ số thống kê như FID đôi khi không phản ánh hết. Khoá luận thực hiện phân tích dựa trên hình ảnh sinh ra từ hai chiều chuyển đổi đối lập.
 
-==== Phân tích Trực quan (Visual Analysis)
+==== Phân tích Trực quan
 // TODO (Me)
 
-==== Đánh giá Cảm nhận Người dùng (User Study)
+==== Đánh giá Cảm nhận Người dùng
 Dựa trên quy trình khảo sát mù (blind test) đã được thiết lập chi tiết tại @user-study-design, khoá luận tổng hợp kết quả bình chọn từ 20 tình nguyện viên trên tập dữ liệu kiểm thử ngẫu nhiên.
 
 #figure(
@@ -410,7 +410,7 @@ Xu hướng lựa chọn của người dùng có thể được lý giải thô
 
 Tóm lại, tỷ lệ ưu tiên cao trong khảo sát người dùng là minh chứng thực tiễn khẳng định phương pháp đề xuất đã đạt được điểm cân bằng tốt nhất giữa hai yêu cầu cốt lõi: giữ đúng chữ (Content) và thể hiện đúng kiểu (Style).
 
-== Nghiên cứu Bóc tách (Ablation Study)
+== Nghiên cứu Bóc tách
 Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nhằm định lượng đóng góp cụ thể của từng thành phần kỹ thuật trong phương pháp đề xuất. Để đảm bảo tính tập trung và sức thuyết phục của các kết luận, thay vì dàn trải thí nghiệm trên mọi biến thể, khoá luận cố định và lựa chọn hai cấu hình đại diện tiêu biểu nhất làm cơ sở so sánh:
 
   *1. Đối với hướng Latin $->$ Hán tự* (`e2c`)*:* Khoá luận sử dụng cấu hình $"Ours"_"AZ"$. Đây là cấu hình chịu áp lực tổng quát hoá lớn nhất (do phải xử lý style ngẫu nhiên) và cũng là cấu hình đạt hiệu năng cao nhất trong các thực nghiệm trước đó. Việc chứng minh hiệu quả trên cấu hình "khó" nhất này sẽ khẳng định tính đúng đắn và mạnh mẽ (robustness) của các cải tiến đề xuất.
@@ -712,7 +712,7 @@ _Lý giải:_ *SCR gốc* vốn được thiết kế cho bài toán đơn ngôn
 
 *Kết luận:* Tổng hợp lại, kết quả nghiên cứu bóc tách đã làm sáng tỏ vai trò riêng biệt và bổ trợ lẫn nhau của các thành phần kiến trúc. Trong khi *MCA* và *RSI* đóng vai trò là nền tảng cấu trúc không thể thiếu để ngăn chặn sự sụp đổ hình dáng ký tự, thì *CL-SCR* chính là nhân tố quyết định nâng tầm chất lượng thị giác và khả năng tổng quát hoá. Việc CL-SCR giúp giảm sâu chỉ số *FID* trên các *tập dữ liệu lạ (UFSC)* so với SCR gốc khẳng định rằng cơ chế tương phản đa ngôn ngữ là chìa khoá để mô hình vượt qua rào cản hình thái học, cho phép chuyển giao phong cách Latin sang Hán tự một cách tự nhiên và linh hoạt hơn.
 
-=== Ảnh hưởng của Tăng cường dữ liệu (Data Augmentation)
+=== Ảnh hưởng của Tăng cường dữ liệu
 Mục tiêu của nghiên cứu này là đánh giá vai trò của *chiến lược tăng cường dữ liệu*, cụ thể là kỹ thuật *Random Resized Crop* (cắt và thay đổi tỷ lệ ngẫu nhiên) được áp dụng trong quá trình huấn luyện mô-đun *CL-SCR*. Về mặt lý thuyết, việc tăng cường dữ liệu giúp mô hình học được *các đặc trưng phong cách bất biến theo tỷ lệ* và tránh hiện tượng *quá khớp (overfitting)*. Để kiểm chứng điều này, khoá luận *so sánh hiệu năng* của mô hình tiêu biểu ($"Ours"_"AZ"$ cho hướng `e2c` và $"Ours"_"All"$ cho hướng `c2e`) trong hai cấu hình: *có* và *không có Augmentation*.
 
 Kết quả thực nghiệm được trình bày chi tiết tại @tab:e2c_aug và @tab:c2e_aug.

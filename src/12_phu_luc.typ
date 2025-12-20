@@ -170,7 +170,7 @@ Mô-đun CL-SCR được thiết kế dựa trên mạng VGG-19 pre-trained đ�
 
 #pagebreak()
 
-== Chi phí Tính toán và Thời gian suy diễn <phuluc_thoigian>
+== Chi phí Tính toán và Thời gian <phuluc_thoigian>
 
 Do đặc thù của kiến trúc khuếch tán (Diffusion Models), phương pháp đề xuất có sự khác biệt rõ rệt về tài nguyên tiêu thụ so với các phương pháp GAN hay CNN truyền thống. Phần này bóc tách chi tiết thời gian huấn luyện và suy diễn.
 

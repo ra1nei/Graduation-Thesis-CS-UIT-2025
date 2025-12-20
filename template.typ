@@ -4,7 +4,6 @@
 #import "src/02_thong_tin_hoi_dong.typ": thong_tin_hoi_dong
 #import "@preview/codly:1.3.0": *
 
-
 #let heading_numbering(..nums) = {
   return str(counter(heading).get().first()) + "." + nums
   .pos()
@@ -34,6 +33,7 @@
     #label
   ]
 }
+
 #let output_box(content) = {
   showybox(
     breakable: true,
@@ -43,6 +43,7 @@
     content,
   )
 }
+
 // Project part
 #let project(title: "", authors: (), body) = {
   // Set the document's basic properties.
@@ -55,6 +56,7 @@
   // ================= TRANG BÌA =====================
   trang_bia(title, authors)
   trang_phu_bia(title, authors)
+
   // ================= THÔNG TIN HỘI ĐỒNG =====================
   thong_tin_hoi_dong(0, 0, "A", "A", "B", "B", "C", "C")
 
@@ -75,15 +77,13 @@
       block([
         #set par(first-line-indent: 0pt)
         #text(35pt, counter(heading).display())
-
         #text(35pt, it.body)
-
         #v(1cm)
       ])
     }
   ]
 
-  // ================= MỤC LỤCLỤC =====================
+  // ================= MỤC LỤC =====================
   {
     show outline.entry.where(level: 1): it => {
       v(20pt, weak: true)
@@ -102,7 +102,7 @@
     }
     show outline.entry.where(level: 2): it => {
       v(20pt, weak: true)
-      h(1.5em)
+      h(1.7em)
       if (it.element.numbering != none) {
         let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
         box(width: 1.7em, number)
@@ -114,7 +114,7 @@
     }
     show outline.entry.where(level: 3): it => {
       v(20pt, weak: true)
-      h(3.6em)
+      h(3.4em)
       if (it.element.numbering != none) {
         let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
         box(width: 2.4em, number)
@@ -124,6 +124,23 @@
       h(3pt)
       link(it.element.location())[#it.page()]
     }
+    show outline.entry.where(level: 4): it => {
+      v(20pt, weak: true)
+      h(5.1em)
+      if (it.element.numbering != none) {
+        let number = numbering(
+          it.element.numbering,
+          ..counter(heading).at(it.element.location())
+        )
+        box(width: 3.2em, number)
+      }
+
+      link(it.element.location())[ #it.element.body ]
+      box(width: 1fr, it.fill)
+      h(3pt)
+      link(it.element.location())[#it.page()]
+    }
+
     // show outline.entry.where(
     //   level: 3
     // ): it => {
@@ -141,15 +158,17 @@
     //     #link(it.element.location())[#it.page]
     //   ])
     // }
+    // 
     {
       show heading: none
       heading(numbering: none)[Mục lục]
     }
     align(center, text(16pt, [*MỤC LỤC*]))
     v(7pt)
-    outline(title: none, depth: 3)
+    outline(title: none, depth: 4)
     pagebreak()
   }
+  
   {
     // citation dup in caption
     // https://github.com/typst/typst/issues/1880
@@ -190,7 +209,6 @@
 
   // ================= TÓM TẮT =====================
   include "src/06_tom_tat.typ"
-  pagebreak()
 
   // ===============================================
 

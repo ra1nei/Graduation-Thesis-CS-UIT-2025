@@ -16,7 +16,7 @@ Trong chương trước, khoá luận đã phân tích các hạn chế của ph
 
 Cụ thể, khoá luận kế thừa kiến trúc tiên tiến *FontDiffuser*@Yang2024FontDiffuser làm mô hình cơ sở (baseline) và đề xuất một cải tiến quan trọng tại giai đoạn tinh chỉnh phong cách (Phase 2) mang tên *Cross-Lingual Style Contrastive Refinement (CL-SCR)*. Mục tiêu của cải tiến này là giải quyết vấn đề về sự không nhất quán phong cách khi chuyển đổi giữa các hệ ngôn ngữ có cấu trúc khác biệt (như từ chữ Latin sang Hán tự).
 
-Cấu trúc chương bao gồm: trình bày kiến trúc tổng thể của FontDiffuser@Yang2024FontDiffuser, phân tích cơ chế hoạt động của module SCR gốc, và cuối cùng là chi tiết về giải pháp CL-SCR được đề xuất cho bài toán đa ngôn ngữ.
+Cấu trúc chương bao gồm: trình bày kiến trúc tổng thể của FontDiffuser@Yang2024FontDiffuser, phân tích cơ chế hoạt động của mô-đun SCR gốc, và cuối cùng là chi tiết về giải pháp CL-SCR được đề xuất cho bài toán đa ngôn ngữ.
 
 == Kiến trúc nền tảng FontDiffuser
 
@@ -48,10 +48,11 @@ Mô hình nhận hai đầu vào chính:
 
 Quy trình huấn luyện được chia thành hai giai đoạn (phases) tuần tự nhằm đảm bảo chất lượng sinh ảnh tối ưu:
 
-=== Giai đoạn 1: Tái tạo cấu trúc (Reconstruction Phase)
+=== Giai đoạn 1: Tái tạo cấu trúc
 Mục tiêu của giai đoạn này là huấn luyện mô hình khuếch tán học cách khôi phục lại hình ảnh ký tự mục tiêu từ nhiễu, dựa trên điều kiện $x_c$ và $x_s$. Các thành phần cốt lõi bao gồm:
 - *Bộ mã hoá nội dung ($E_c$) và phong cách ($E_s$):* Trích xuất đặc trưng ngữ nghĩa.
-==== *Multi-scale Content Aggregation (MCA):* 
+
+==== Multi-scale Content Aggregation (MCA): 
 Đây là cơ chế tổng hợp đặc trưng đa tỉ lệ được thiết kế để giải quyết hạn chế của các phương pháp chỉ dựa vào một mức đặc trưng duy nhất. Khi sinh các ký tự phức tạp, một tầng đặc trưng đơn lẻ thường không thể đồng thời nắm bắt được cả bố cục tổng thể lẫn những chi tiết tinh vi như nét mảnh, bộ phận nhỏ hoặc các dấu thanh. MCA khắc phục điều này bằng cách trích xuất nhiều mức đặc trưng nội dung từ các tầng khác nhau của bộ mã hoá, sau đó đưa chúng vào các khối UNet tương ứng.
 
 Cụ thể, quy trình hoạt động như sau:
@@ -74,7 +75,7 @@ Nhờ MCA, mô hình có thể tái hiện chính xác cả những thành phầ
   caption: [Đặc trưng Content ở các khối khác nhau.]
 )
 
-==== *Reference-Structure Interaction (RSI):* 
+==== Reference-Structure Interaction (RSI):
 Giữa ảnh nguồn và ảnh đích thường tồn tại những khác biệt đáng kể về mặt cấu trúc (ví dụ: kích thước phông chữ) cũng như sự lệch lạc về vị trí không gian (spatial misalignment) giữa đặc trưng của UNet và đặc trưng tham chiếu. Để giải quyết vấn đề này, nhóm tác giả đã đề xuất khối Tương tác Cấu trúc - Tham chiếu (RSI). Khối này sử dụng mạng tích chập biến hình (Deformable Convolutional Networks - DCN) để thực hiện biến đổi cấu trúc ngay trên kết nối tắt (skip connection) của UNet.
 
 Điểm khác biệt so với các phương pháp trước đây là thay vì sử dụng CNN truyền thống để tính toán độ lệch (offset) $ delta_"offset"$ — vốn hạn chế trong việc nắm bắt thông tin toàn cục — nhóm tác giả đã tích hợp cơ chế Cross-Attention để kích hoạt các tương tác tầm xa (long-distance interactions).
@@ -92,18 +93,17 @@ $ I_R = "DCN"(r_i, delta_"offset") $
 
 Thông qua cơ chế này, RSI có khả năng trích xuất trực tiếp thông tin cấu trúc từ ảnh tham chiếu và điều chỉnh linh hoạt đặc trưng của ảnh nguồn, đảm bảo sự tương thích về phong cách mà không làm gãy vỡ các nét chi tiết.
 
-=== Giai đoạn 2: Tinh chỉnh phong cách (Style Refinement Phase)
-Mặc dù Giai đoạn 1 có thể tạo ra ký tự rõ nét, nhưng phong cách thường chưa được tách biệt hoàn toàn. Giai đoạn 2 cố định các trọng số của UNet và tập trung huấn luyện module *Style Contrastive Refinement (SCR)*. Module này đóng vai trò như một người hướng dẫn, sử dụng cơ chế học tương phản (Contrastive Learning) để ép buộc mô hình sinh ra ảnh có style vector gần với ảnh tham chiếu nhất có thể.
+=== Giai đoạn 2: Tinh chỉnh phong cách
+Mặc dù Giai đoạn 1 có thể tạo ra ký tự rõ nét, nhưng phong cách thường chưa được tách biệt hoàn toàn. Giai đoạn 2 cố định các trọng số của UNet và tập trung huấn luyện mô-đun *Style Contrastive Refinement (SCR)*. Mô-đun này đóng vai trò như một người hướng dẫn, sử dụng cơ chế học tương phản (Contrastive Learning) để ép buộc mô hình sinh ra ảnh có style vector gần với ảnh tham chiếu nhất có thể.
 
-
-== Phân tích Module Style Contrastive Refinement (SCR)
+== Phân tích Mô-đun Style Contrastive Refinement (SCR)
 
 === Động lực và Kiến trúc
 Trong bài toán sinh phông chữ (font generation), mục tiêu cốt lõi của việc sinh phông chữ là đạt được hiệu ứng bắt chước phong cách (style imitation) chính xác, độc lập với sự biến thiên về phong cách giữa ảnh nguồn và ảnh tham chiếu. Trong các mô hình sinh ảnh truyền thống, sự vướng víu (disentanglement) giữa đặc trưng phong cách và nội dung thường không hoàn hảo, dẫn đến kết quả phong cách không nhất quán. Để giải quyết vấn đề này, nhóm tác giả đề xuất một chiến lược mới: xây dựng mô-đun *Style Contrastive Refinement (SCR).*
 
-Mô-đun Style Contrastive Refinement (SCR) được đề xuất như một chiến lược mới để giải quyết vấn đề này. SCR hoạt động như một cơ chế học biểu diễn (representation learning module) và một bộ giám sát đặc trưng (feature supervisor). Nó không tham gia trực tiếp vào quá trình sinh ảnh pixel-wise của mô hình khuếch tán (diffusion model), mà có nhiệm vụ cung cấp tín hiệu điều hướng, đảm bảo phong cách của ảnh sinh ra ($x_0$) phải nhất quán với ảnh đích ($x_p$) ở cả cấp độ toàn cục và cục bộ.
+Mô-đun Style Contrastive Refinement (SCR) được đề xuất như một chiến lược mới để giải quyết vấn đề này. SCR hoạt động như một cơ chế học biểu diễn (representation learning mô-đun) và một bộ giám sát đặc trưng (feature supervisor). Nó không tham gia trực tiếp vào quá trình sinh ảnh pixel-wise của mô hình khuếch tán (diffusion model), mà có nhiệm vụ cung cấp tín hiệu điều hướng, đảm bảo phong cách của ảnh sinh ra ($x_0$) phải nhất quán với ảnh đích ($x_p$) ở cả cấp độ toàn cục và cục bộ.
 
-=== Kiến trúc Khai thác Phong cách (Style Extractor Architecture)
+=== Kiến trúc Khai thác Phong cách
 Kiến trúc của SCR, như được minh họa trong thiết kế hệ thống, bao gồm hai thành phần chính:
 
 #figure(
@@ -119,10 +119,10 @@ Kiến trúc của SCR, như được minh họa trong thiết kế hệ thống
   - Kết quả từ hai phép pooling được nối (concatenate) theo chiều kênh, tạo thành đặc trưng tổng hợp $F_g$.
   - Cuối cùng, $F_g$ được đưa qua các phép chiếu tuyến tính (linear projections) để thu được các *vector phong cách* $V = {v^0, v^1, ..., v^N}$. Các vector này đóng vai trò là đầu vào cho hàm mất mát tương phản.
 
-=== Cơ chế Học Tương phản và Hàm Mất mát (Contrastive Learning and Loss Function)
+=== Cơ chế Học Tương phản và Hàm Mất mát
 SCR sử dụng chiến lược học tương phản (Contrastive Learning), vận dụng hàm mất mát $L_"sc"$ để điều hướng mô hình khuếch tán.
 
-==== Chiến lược Thiết lập Mẫu (Sampling Strategy)
+==== Chiến lược Thiết lập Mẫu
 Để đảm bảo tính liên quan về nội dung nhưng phân biệt rõ ràng về phong cách, SCR lựa chọn mẫu cẩn thận:
 - *Mẫu sinh ra (Generated Sample - $x_0$):* Ảnh được tạo ra bởi mô hình khuếch tán.
 - *Mẫu dương (Positive Sample - $x_p$):* Là ảnh đích (target image) mang phong cách mong muốn.
@@ -145,7 +145,7 @@ Trong đó:
 
 Thông qua việc tối thiểu hoá hàm mất mát này, mô hình được định hướng để kéo vector phong cách của ảnh sinh lại gần vector của ảnh đích, đồng thời đẩy xa khỏi các vector của các phong cách không mong muốn.
 
-== Kết hợp vào Mục tiêu Huấn luyện (Training Objective)
+== Kết hợp vào Mục tiêu Huấn luyện
 Để đạt được sự cân bằng giữa việc tái tạo nội dung chính xác và bắt chước phong cách tinh tế, quy trình huấn luyện của FontDiffuser áp dụng chiến lược *hai giai đoạn*: *từ thô đến tinh (coarse-to-fine two-phase strategy).*
 
 1. *Giai đoạn 1: Tái tạo Cơ bản (Phase 1 - Coarse Stage)*: 
@@ -186,7 +186,7 @@ Mô-đun SCR tiêu chuẩn (Standard SCR) hoạt động dựa trên giả đị
 
 Cụ thể, bộ trích xuất đặc trưng StyleExtractor (sử dụng các tầng VGG pre-trained) có xu hướng "học vẹt" các đặc điểm cấu trúc dày đặc của Hán tự thay vì trích xuất phong cách trừu tượng. Khi gặp các ký tự Latin với cấu trúc thưa, sự chênh lệch miền (domain gap) khiến vector phong cách $v_"gen"$ và $v_"target"$ không còn tương đồng trong không gian tiềm ẩn.
 
-=== Thiết kế module CL-SCR
+=== Thiết kế mô-đun CL-SCR
 Để giải quyết vấn đề này, khoá luận đề xuất mô-đun *Cross-Lingual SCR (CL-SCR)*. Dựa trên mã nguồn đã xây dựng, CL-SCR không thay đổi kiến trúc cốt lõi của StyleExtractor hay Projector, mà thay đổi *chiến lược lấy mẫu (sampling strategy)* và *cơ chế tính hàm mất mát đa luồng*.
 
 ==== Chiến lược lấy mẫu mở rộng
@@ -224,7 +224,7 @@ $ L_"Total"^(2) = L_"MSE" + lambda_"content" L_"content" + lambda_"offset" L_"of
 Trong đó:
 - $L_"MSE"$ đảm bảo ảnh sinh ra không bị biến dạng quá nhiều so với ảnh gốc.
 - $L_"content"$ (Content Perceptual Loss) giữ gìn cấu trúc nét chữ.
-- $L_"offset"$ kiểm soát độ dịch chuyển của module RSI.
+- $L_"offset"$ kiểm soát độ dịch chuyển của mô-đun RSI.
 - $L_"CL-SCR"$ đóng vai trò trọng tâm trong việc chuyển giao phong cách đa ngôn ngữ.
 
 Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các đặc trưng phong cách trừu tượng (như độ xước cọ, độ thanh mảnh) tốt hơn và áp dụng chính xác lên các ký tự Hán phức tạp.
