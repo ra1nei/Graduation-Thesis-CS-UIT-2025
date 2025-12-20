@@ -27,7 +27,7 @@ DG-Font@Xie2021DGFont tiếp cận bài toán sinh phông chữ theo hướng *k
 Đóng góp cốt lõi của mô hình là mô-đun *Feature Deformation Skip Connection (FDSC)*. Cơ chế này hoạt động bằng cách dự đoán các bản đồ dịch chuyển (displacement maps) từ đặc trưng nội dung và phong cách, sau đó áp dụng *tích chập biến dạng (deformable convolution)* lên các đặc trưng cấp thấp. Điều này cho phép mô hình "uốn nắn" cấu trúc không gian của ký tự nguồn sao cho khớp với dáng vẻ của ký tự đích trước khi đưa vào bộ trộn (Mixer) để sinh ảnh cuối cùng. Mặc dù đạt hiệu quả cao trong việc bảo toàn cấu trúc, DG-Font vẫn tồn tại nhược điểm cố hữu của dòng GAN là sự mất ổn định khi huấn luyện; đối với các ký tự có sự biến đổi topo học quá lớn (ví dụ từ nét thanh sang nét đậm phá cách), ảnh sinh ra dễ bị hiện tượng đứt nét (broken strokes) hoặc mờ nhoè.
 
 #figure(
-    image("../images/DG/main_new.png", width: 100%),
+    image("../images/DG-Font/overview.png", width: 100%),
     caption: [Kiến trúc mạng DG-Font. Mô-đun FDSC đóng vai trò nòng cốt trong việc học biến dạng hình học giữa các ký tự.]
   )
 
@@ -37,7 +37,7 @@ CF-Font@Wang2023CFFont tiếp cận bài toán sinh phông chữ few-shot theo h
 Đóng góp cốt lõi của nghiên cứu là mô-đun *Content Fusion Module (CFM)*. Cơ chế này hoạt động bằng cách dự đoán bộ trọng số nhiệt (fusion weights) để *tổ hợp tuyến tính* các đặc trưng nội dung từ các font cơ sở. Thay vì phải "uốn nắn" khó khăn từ một hình dạng cố định, mô hình có thể linh hoạt pha trộn các đặc điểm hình học từ nhiều nguồn khác nhau để tạo ra một "khung xương" nội dung tiệm cận nhất với font mục tiêu. Chiến lược này giúp giảm thiểu đáng kể việc mất mát thông tin cấu trúc, tuy nhiên cũng đánh đổi bằng chi phí tính toán cao hơn do phải xử lý đa luồng đầu vào. Ngoài ra, nếu tập font cơ sở không đủ bao quát không gian topo, ảnh sinh ra có thể xuất hiện các vết mờ hoặc bóng ma (ghosting artifacts) tại các vùng giao thoa nét.
 
 #figure(
-  image("../images/CF/TeaserV2.0.pdf", width: 100%),
+  image("../images/CF-Font/overview.pdf", width: 100%),
   caption: [Minh hoạ cơ chế Content Fusion: Các đặc trưng từ tập font cơ sở (Source) được tổ hợp tuyến tính dựa trên bộ trọng số dự đoán (Weights) để xấp xỉ cấu trúc hình học của font mục tiêu.]
 )
 
@@ -77,7 +77,7 @@ Nguyên lý cơ bản gồm hai giai đoạn:
 Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một loạt các bước. Điều này tương tự như chuỗi Markov, trong đó mỗi bước làm giảm nhẹ dữ liệu bằng cách thêm nhiễu Gauss:
 
 #figure(
-  image("../images/forward_process.png"),
+  image("../images/diffusion_forward_process.png"),
   caption: [Quá trình Khuếch tán xuôi.]
 )
 
@@ -103,7 +103,7 @@ $ dash(alpha)_t = product_(s=1)^t alpha_s $
 Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng cách khử nhiễu bằng một loạt các bước đảo ngược quá trình khuếch tán xuôi.
 
 #figure(
-  image("../images/backward_process.png"),
+  image("../images/diffusion_backward_process.png"),
   caption: [Quá trình Khuếch tán ngược.]
 )
 

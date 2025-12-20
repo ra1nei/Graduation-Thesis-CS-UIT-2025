@@ -213,14 +213,14 @@ Các chỉ số định lượng (Quantitative Metrics) như FID hay LPIPS, mặ
 Bộ dữ liệu khảo sát được xây dựng từ *20 bộ mẫu ngẫu nhiên* trích xuất từ tập kiểm thử (Test Set), *bao gồm các mẫu đại diện cho cả hai kịch bản chuyển đổi phong cách:* *từ Hán tự sang Latin* và *từ Latin sang Hán tự*. Trong mỗi câu hỏi, tình nguyện viên được yêu cầu so sánh kết quả sinh ảnh giữa các mô hình khác nhau. Cụ thể, trong mỗi câu hỏi, tình nguyện viên được cung cấp hai dữ liệu đầu vào gồm: một *ảnh nội dung (Content Image)* để xác định cấu trúc ký tự và một *ảnh tham chiếu (Reference Style)* để xác định phong cách mục tiêu.
 
 #figure(
-  image("../images/content1.png", width: 100%),
+  image("../images/userscore_question.png", width: 100%),
   caption: [Ví dụ về ảnh nội dung và ảnh tham chiếu.]
 )
 
 Dựa trên hai dữ liệu này, người tham gia được yêu cầu quan sát các *ảnh kết quả* được sinh ra bởi 5 mô hình khác nhau (bao gồm DG-Font, CF-Font, DFS, FTransGAN và Phương pháp đề xuất Ours). Vị trí hiển thị của các ảnh kết quả này được *xáo trộn ngẫu nhiên* nhằm loại bỏ thiên kiến vị trí. Nhiệm vụ của tình nguyện viên là chọn ra bức ảnh duy nhất mà họ đánh giá là tối ưu nhất dựa trên hai tiêu chí: *độ nhất quán phong cách* so với ảnh tham chiếu và *chất lượng hình ảnh tổng thể* (độ sắc nét và tính toàn vẹn cấu trúc).
 
 #figure(
-  image("../images/gen1.png", width: 100%),
+  image("../images/userscore_answer.png", width: 100%),
   caption: [Ví dụ về các kết quả mà người tham khảo sát có thể chọn.]
 )
 
@@ -731,7 +731,7 @@ Bên cạnh các chỉ số đo lường, việc phân tích trực quan là bư
 Dựa trên quy trình khảo sát mù (blind test) đã được thiết lập chi tiết tại @user-study-design, khoá luận tổng hợp kết quả bình chọn từ 20 tình nguyện viên trên tập dữ liệu kiểm thử ngẫu nhiên.
 
 #figure(
-    image("../images/user score.png", width: 100%),
+    image("../images/userscore_chart.png", width: 100%),
     caption: [Biểu đồ so sánh tỷ lệ ưu tiên của người dùng giữa phương pháp đề xuất (Ours) và các phương pháp SOTA khác. Kết quả cho thấy sự vượt trội về độ hài lòng thị giác của mô hình tích hợp CL-SCR.]
   )
 
