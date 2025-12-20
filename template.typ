@@ -82,8 +82,9 @@
       block([
         #set par(first-line-indent: 0pt)
         #text(35pt, counter(heading).display())
+        #v(0.1cm)
         #text(35pt, it.body)
-        #v(1cm)
+        #v(0.5cm)
       ])
     }
   ]
