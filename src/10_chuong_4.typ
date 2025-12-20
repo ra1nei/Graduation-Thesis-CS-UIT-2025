@@ -29,6 +29,24 @@
   )
 )
 
+#let glyph-grid2(chars, base, font) = grid(
+  columns: (45pt,) * chars.len(),
+  inset: 1pt,
+  ..chars.map(char =>
+    box(
+      width: 50pt,
+      height: 50pt,
+      // align: center,
+      image(
+        base + font + "_" + char + ".png",
+        width: 40pt,
+        height: 40pt,
+        fit: "contain"
+      )
+    )
+  )
+)
+
 #let s1 = "默首音".clusters()
 #let s2 = "tdk".clusters()
 
@@ -91,9 +109,7 @@ Chương này trình bày chi tiết *thiết lập thực nghiệm*, bao gồm 
     ..image-row("../images/dataset_example/font10"),
   ),
 
-  caption: [
-    Minh hoạ hai hệ chữ trong cùng một bộ font.
-  ]
+  caption: [Minh hoạ hai hệ chữ trong cùng một bộ font.]
 )
 
 
@@ -198,7 +214,7 @@ Bộ dữ liệu khảo sát được xây dựng từ *20 bộ mẫu ngẫu nhi
 
 #figure(
   image("../images/content1.png", width: 100%),
-  caption: [Ví dụ về ảnh nội dung và ảnh tham chiếu .]
+  caption: [Ví dụ về ảnh nội dung và ảnh tham chiếu.]
 )
 
 Dựa trên hai dữ liệu này, người tham gia được yêu cầu quan sát các *ảnh kết quả* được sinh ra bởi 5 mô hình khác nhau (bao gồm DG-Font, CF-Font, DFS, FTransGAN và Phương pháp đề xuất Ours). Vị trí hiển thị của các ảnh kết quả này được *xáo trộn ngẫu nhiên* nhằm loại bỏ thiên kiến vị trí. Nhiệm vụ của tình nguyện viên là chọn ra bức ảnh duy nhất mà họ đánh giá là tối ưu nhất dựa trên hai tiêu chí: *độ nhất quán phong cách* so với ảnh tham chiếu và *chất lượng hình ảnh tổng thể* (độ sắc nét và tính toàn vẹn cấu trúc).
@@ -294,8 +310,8 @@ Các bảng dưới đây trình bày kết quả so sánh giữa phương pháp
     table.hline(),
     [DG-Font@Xie2021DGFont], [0.2773], [0.2702], [0.4023], [106.3833],
     [CF-Font@Wang2023CFFont], [0.2659], [0.2740], [0.3979], [91.2134],
-    [DFS@Zhu2020FewShotTextStyle], [*0.1844*], [#underline[0.3900]], [0.3548], [40.4561],
-    [FTransGAN@Li2021FTransGAN], [], [], [], [],
+    [DFS@Zhu2020FewShotTextStyle], [0.2131], [0.3558], [0.3812], [45.4212],
+    [FTransGAN@Li2021FTransGAN], [*0.1844*], [#underline[0.3900]], [0.3548], [40.4561],
     [FontDiffuser (Baseline)@Yang2024FontDiffuser], [0.1976], [0.3775], [0.2968], [14.6871],
     table.hline(stroke: 0.5pt),
     [$"Ours"_"A"$ (w/ CL-SCR)], [#underline[0.1927]], [*0.3912*], [*0.2868*], [#underline[12.3964]],
@@ -316,8 +332,8 @@ Các bảng dưới đây trình bày kết quả so sánh giữa phương pháp
     table.hline(),
     [DG-Font@Xie2021DGFont], [0.2797], [0.2654], [0.3649], [54.0974],
     [CF-Font@Wang2023CFFont], [0.2638], [0.2716], [0.3615], [51.3925],
-    [DFS@Zhu2020FewShotTextStyle], [*0.2089*], [0.3048], [0.3876], [62.7206],
-    [FTransGAN@Li2021FTransGAN], [], [], [], [],
+    [DFS@Zhu2020FewShotTextStyle], [*0.2008*], [0.3048], [0.3876], [62.7206],
+    [FTransGAN@Li2021FTransGAN], [#underline[0.2089]], [0.3109], [0.3329], [42.1053],
     [FontDiffuser (Baseline)@Yang2024FontDiffuser], [0.2283], [0.2946], [0.3184], [29.0999],
     table.hline(stroke: 0.5pt),
     [$"Ours"_"A"$ (w/ CL-SCR)], [0.2218], [#underline[0.3144]], [*0.2892*], [#underline[17.8373]], 
@@ -326,11 +342,168 @@ Các bảng dưới đây trình bày kết quả so sánh giữa phương pháp
   caption: [Kết quả Định lượng cho Latin $->$ Hán tự (e2c) trên UFSC. #linebreak() Mũi tên chỉ hướng tốt hơn (thấp hơn hoặc cao hơn).]
 ) <tab:e2c_ufsc>
 
-Dựa trên số liệu từ @tab:e2c_sfuc và @tab:e2c_ufsc, có thể rút ra những đánh giá quan trọng về hiệu năng của phương pháp đề xuất so với các mô hình State-of-the-Art (SOTA). Điểm nổi bật nhất trong kết quả thực nghiệm là *sự cải thiện mang tính đột phá về chất lượng ảnh sinh*, được phản ánh rõ nét qua chỉ số *FID*. Trong kịch bản SFUC (Seen Font), mô hình $"Ours"_"AZ"$ đạt FID là *11.769*, giảm *khoảng 20%* so với baseline mạnh nhất là FontDiffuser@Yang2024FontDiffuser (14.687) và bỏ xa các phương pháp GAN truyền thống. Tuy nhiên, sức mạnh thực sự của mô hình được thể hiện ở kịch bản khó hơn là UFSC (Unseen Font), nơi mô hình phải sinh ảnh từ các font chưa từng thấy. Tại đây, $"Ours"_"AZ"$ vẫn duy trì phong độ ấn tượng với FID 13.551, thấp hơn tới 53% so với FontDiffuser (29.100). Điều này chứng minh rằng mô-đun CL-SCR đã giải quyết triệt để vấn đề "domain gap" giữa chữ Hán và chữ Latin, giúp ảnh sinh ra có độ tự nhiên cao và phân bố sát với ảnh thật, thay vì bị nhiễu hoặc méo mó như mô hình gốc.
+Dựa trên số liệu từ @tab:e2c_sfuc và @tab:e2c_ufsc, có thể rút ra những đánh giá quan trọng về hiệu năng của phương pháp đề xuất so với các mô hình State-of-the-Art (SOTA).
 
-Bên cạnh độ tự nhiên, khả năng *bảo toàn cấu trúc* cũng được duy trì ở mức cao. Về chỉ số tương đồng cấu trúc *SSIM*, phương pháp đề xuất $"Ours"_"AZ"$ dẫn đầu ở cả hai kịch bản (0.389 và 0.320), cho thấy các nét chữ Latin được tái tạo sắc nét. Một điểm đáng lưu ý là mặc dù mô hình *DFS@Zhu2020FewShotTextStyle* đạt kết quả tốt nhất về sai số điểm ảnh *L1* (0.1844 ở SFUC), nhưng chỉ số FID của nó lại rất cao (40.456). Đây là minh chứng cho hiện tượng *nghịch lý L1*: các mô hình như DFS@Zhu2020FewShotTextStyle hay FTransGAN@Li2021FTransGAN thường tối ưu hoá bằng cách sinh ra các ảnh "trung bình cộng" bị mờ (blurry) để giảm thiểu sai số pixel, trong khi phương pháp đề xuất dựa trên Diffusion chấp nhận L1 cao hơn một chút để tạo ra các *chi tiết tần số cao* sắc nét và chân thực hơn. Do đó, sự đánh đổi nhỏ về L1 là hoàn toàn hợp lý để đạt được chất lượng thị giác vượt trội.
+*Thứ nhất, về chất lượng thị giác và độ tự nhiên của ảnh sinh:* Kết quả thực nghiệm cho thấy sự cải thiện mang tính đột phá được phản ánh qua chỉ số FID. Trong kịch bản SFUC (Seen Font), biến thể tốt nhất $"Ours"_"AZ"$ đạt FID là *11.769*, giảm khoảng *20%* so với baseline mạnh nhất là FontDiffuser@Yang2024FontDiffuser (14.687) và bỏ xa các phương pháp GAN truyền thống. Sức mạnh thực sự của mô hình được thể hiện rõ nét hơn ở kịch bản khó UFSC (Unseen Font), nơi mô hình phải sinh ảnh từ các font chưa từng thấy. Tại đây, $"Ours"_"AZ"$ đạt FID *13.551*, thấp hơn tới *53%* so với FontDiffuser (29.100). Điều này chứng minh mô-đun CL-SCR đã giải quyết hiệu quả vấn đề "domain gap" (khoảng cách miền dữ liệu) giữa chữ Hán và chữ Latin, giúp ảnh sinh ra có phân bố sát với ảnh thật thay vì bị nhiễu hoặc méo mó.
 
-Cuối cùng, sự so sánh nội bộ giữa hai biến thể tham chiếu ($"Ours"_"A"$ và $"Ours"_"AZ"$) làm nổi bật tính ổn định của mô hình. Kết quả thực nghiệm cho thấy $"Ours"_"AZ"$ đạt hiệu suất vượt trội hơn hẳn so với $"Ours"_"A"$ trên cả hai kịch bản, đặc biệt là sự chênh lệch lớn về FID ở UFSC (13.55 so với 17.84). Điều này dẫn đến kết luận quan trọng rằng mô hình tích hợp CL-SCR có khả năng trích xuất *đặc trưng phong cách bất biến* cực tốt. Việc được huấn luyện với các ký tự ngẫu nhiên (A-Z) thay vì cố định (A) giúp mô hình không bị *học thuộc lòng (overfit)* vào cấu trúc hình học của một ký tự cụ thể, mà thực sự "hiểu" được bản chất của phong cách (như độ đậm nhạt, serif, texture), từ đó đảm bảo độ linh hoạt cao trong các ứng dụng thực tế.
+*Thứ hai, về khả năng bảo toàn cấu trúc và nghịch lý L1:* Phương pháp đề xuất dẫn đầu về chỉ số tương đồng cấu trúc SSIM ở cả hai kịch bản (đạt *0.391* ở SFUC và *0.320* ở UFSC), cho thấy các nét chữ được tái tạo sắc nét và đúng cấu trúc.Một điểm đáng lưu ý là mô hình FTransGAN@Li2021FTransGAN đạt kết quả tốt nhất về sai số điểm ảnh L1 (0.1844 ở SFUC), nhưng chỉ số FID của nó lại rất cao (40.456). Đây là minh chứng điển hình cho "nghịch lý L1": các mô hình hồi quy (như FTransGAN hay DFS) thường tối ưu hóa bằng cách sinh ra các ảnh "trung bình cộng" bị mờ để giảm thiểu sai số pixel tuyệt đối. Ngược lại, phương pháp đề xuất chấp nhận chỉ số L1 cao hơn một chút để tái tạo các chi tiết tần số cao, mang lại độ sắc nét và tính chân thực vượt trội cho thị giác con người.
+
+// TODO
+#figure(
+  grid(
+    columns: (auto, auto, auto),
+    gutter: 0.5pt,
+    inset: 6pt,
+    stroke: none,
+    align: horizon,
+
+    // ===== SFUC e2c =====
+    grid.cell(
+      rowspan: 8,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*SFUC*],
+    ),
+    grid.vline(),
+
+    [Ảnh nội dung],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "Content"
+    ),
+
+    [Ảnh phong cách],
+    glyph-grid2(
+      ("B", "I", "N", "U", "V"),
+      "../images/eval/eng2chi/",
+      "Content"
+    ),
+
+    [DG-Font],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "DG"
+    ),
+
+    [CF-Font],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "CF"
+    ),
+
+    [DFS],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "DFS"
+    ),
+
+    [FTransGAN],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "FTransGAN"
+    ),
+
+    grid.hline(),
+
+    [$"Ours"_"AZ"$],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "FontDiffuser"
+    ),
+
+    [*Target*],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "GroundTruth"
+    ),
+  ),
+  caption: [So sánh ảnh sinh trên tập SFUC cho kịch bản English-to-Chinese (E2C) giữa các phương pháp và ground truth.]
+)
+
+#figure(
+  grid(
+    columns: (auto, auto, auto),
+    gutter: 0.5pt,
+    inset: 6pt,
+    stroke: none,
+    align: horizon,
+
+    // ===== UFSC e2c =====
+    grid.cell(
+      rowspan: 8,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC*],
+    ),
+    grid.vline(),
+
+    [Ảnh nội dung],
+    glyph-grid2(
+      ("毛", "毫", "民", "气", "水"),
+      "../images/eval/eng2chi_style/",
+      "FontDiffuser"
+    ),
+
+    [Ảnh phong cách],
+    glyph-grid2(
+      ("B", "I", "N", "U", "V"),
+      "../images/eval/eng2chi/",
+      "Content"
+    ),
+
+    [DG-Font],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "DG"
+    ),
+
+    [CF-Font],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "CF"
+    ),
+
+    [DFS],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "DFS"
+    ),
+
+    [FTransGAN],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "FTransGAN"
+    ),
+
+    grid.hline(),
+
+    [$"Ours"_"AZ"$],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "FontDiffuser"
+    ),
+
+    [*Target*],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "GroundTruth"
+    ),
+  ),
+  caption: [So sánh ảnh sinh trên tập UFSC cho kịch bản English-to-Chinese (E2C) giữa các phương pháp và ground truth.]
+)
+
+*Thứ ba, hiệu quả của chiến lược tham chiếu ngẫu nhiên (A vs. AZ):* Sự so sánh nội bộ giữa hai biến thể ($"Ours"_"A"$ và $"Ours"_"AZ"$) khẳng định tầm quan trọng của việc đa dạng hóa dữ liệu đầu vào. $"Ours"_"AZ"$ đạt hiệu suất vượt trội hơn hẳn so với $"Ours"_"A"$, đặc biệt là sự chênh lệch lớn về FID ở kịch bản UFSC (*13.55* so với *17.84*). Điều này cho thấy việc huấn luyện với các ký tự ngẫu nhiên (A-Z) giúp mô hình trích xuất được đặc trưng phong cách bất biến thay vì học thuộc lòng (overfit) vào cấu trúc hình học của ký tự 'A'. Nhờ đó, mô hình "hiểu" được bản chất của phong cách (như độ đậm nhạt, serif, texture) để áp dụng linh hoạt cho các font chữ lạ, thay vì chỉ sao chép máy móc.
 
 ==== Tác vụ chuyển đổi phong cách từ chữ Hán sang ảnh nguồn Latin (c2e)
 #figure(
@@ -346,7 +519,7 @@ Cuối cùng, sự so sánh nội bộ giữa hai biến thể tham chiếu ($"O
     [DG-Font@Xie2021DGFont], [0.1462], [0.5542], [0.2821], [74.1655],
     [CF-Font@Wang2023CFFont], [0.1402], [0.5621], [0.2790], [67.1241],
     [DFS@Zhu2020FewShotTextStyle], [0.1083], [0.6140], [0.2585], [40.4042],
-    [FTransGAN@Li2021FTransGAN], [], [], [], [],
+    [FTransGAN@Li2021FTransGAN], [0.1381], [0.5291], [0.2851], [55.5859],
     [FontDiffuser (Baseline)@Yang2024FontDiffuser], [0.1223], [0.6107], [0.2270], [21.2234],
     table.hline(stroke: 0.5pt),
     [$"Ours"_"All"$ (w/ CL-SCR)], [0.1083], [0.6406], [0.2019], [14.7298], 
@@ -370,7 +543,7 @@ Cuối cùng, sự so sánh nội bộ giữa hai biến thể tham chiếu ($"O
     [DG-Font@Xie2021DGFont], [0.1397], [0.5624], [0.2751], [89.8197],
     [CF-Font@Wang2023CFFont], [0.1317], [0.5756], [0.2726], [84.3787],
     [DFS@Zhu2020FewShotTextStyle], [0.1139], [0.5819], [0.2907], [75.2760],
-    [FTransGAN@Li2021FTransGAN], [], [], [], [],
+    [FTransGAN@Li2021FTransGAN], [0.1456], [0.4949], [0.3023], [88.4450],
     [FontDiffuser (Baseline)@Yang2024FontDiffuser], [0.1370], [0.5731], [0.2476], [59.5788],
     table.hline(stroke: 0.5pt),
     [$"Ours"_"All"$ (w/ CL-SCR)], [0.1090], [0.6377], [0.1985], [*41.1152*], 
@@ -381,13 +554,13 @@ Cuối cùng, sự so sánh nội bộ giữa hai biến thể tham chiếu ($"O
   caption: [Kết quả Định lượng cho Hán tự $->$ Latin (c2e) trên UFSC. #linebreak() Mũi tên chỉ hướng tốt hơn (thấp hơn hoặc cao hơn).]
 ) <tab:c2e_ufsc>
 
-Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực nghiệm cho thấy *phương pháp đề xuất (Ours) đạt được sự cải thiện toàn diện so với các mô hình SOTA*, đồng thời hé lộ mối tương quan thú vị giữa độ phức tạp của Hán tự và hiệu quả chuyển đổi phong cách.
+Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực nghiệm cho thấy *phương pháp đề xuất (Ours) đạt được sự cải thiện toàn diện so với các mô hình SOTA*, đồng thời hé lộ mối tương quan thú vị giữa độ phức tạp của Hán tự nguồn và hiệu quả chuyển đổi phong cách lên chữ Latin.
 
-Thứ nhất, xét về hiệu năng tổng thể, mô hình đề xuất vượt trội hoàn toàn so với Baseline FontDiffuser@Yang2024FontDiffuser ở cả hai kịch bản. Trên tập dữ liệu quen thuộc SFUC, cấu hình $"Ours"_"Easy"$ *đạt mức FID thấp kỷ lục 14.656*, *giảm khoảng 31% so với Baseline (21.223)*. Sự chênh lệch càng trở nên rõ rệt hơn ở kịch bản khó UFSC (Unseen Font), nơi $"Ours"_"All"$ *đạt FID 41.115*, thấp hơn đáng kể so với mức *59.579 của Baseline*. Điều này khẳng định rằng mô-đun CL-SCR không chỉ hiệu quả trong việc tinh chỉnh phong cách nội tại mà còn giúp mô hình tổng quát hoá tốt hơn khi phải đối mặt với các phong cách Hán tự lạ lẫm, phức tạp để áp dụng lên cấu trúc Latin đơn giản. So với các phương pháp GAN (DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont) hay FTransGAN@Li2021FTransGAN vốn có chỉ số FID rất cao (trên 80 ở UFSC), phương pháp đề xuất chứng minh ưu thế tuyệt đối về độ tự nhiên và tính thẩm mỹ của ảnh sinh.
+*Thứ nhất, về hiệu năng tổng thể và khả năng tổng quát hóa:* Mô hình đề xuất vượt trội hoàn toàn so với Baseline FontDiffuser@Yang2024FontDiffuser ở cả hai kịch bản. Trên tập dữ liệu quen thuộc SFUC, cấu hình $"Ours"_"Easy"$ đạt mức FID thấp kỷ lục 14.656, giảm khoảng 31% so với Baseline (21.223). Sự chênh lệch càng trở nên rõ rệt hơn ở kịch bản khó UFSC (Unseen Font), nơi $"Ours"_"All"$ đạt FID 41.115, thấp hơn đáng kể so với mức 59.579 của Baseline.Khi so sánh với các phương pháp GAN (như DG-Font, CF-Font, FTransGAN), vốn có chỉ số FID rất cao (trên 80 tại UFSC), phương pháp đề xuất chứng minh ưu thế tuyệt đối về độ tự nhiên và tính thẩm mỹ. Điều này khẳng định mô-đun CL-SCR không chỉ hiệu quả trong việc tinh chỉnh phong cách nội tại mà còn giúp mô hình tổng quát hóa tốt hơn khi phải áp dụng các phong cách Hán tự lạ lẫm, phức tạp lên cấu trúc Latin đơn giản.
 
-Thứ hai, phân tích sâu về độ phức tạp nét (stroke complexity) thông qua các biến thể Easy, Medium và Hard mang lại những góc nhìn giá trị. Tại bảng @tab:c2e_ufsc, có thể thấy cấu hình $"Ours"_"Medium"$ *đạt kết quả tốt nhất về các chỉ số cấu trúc và điểm ảnh (L1 thấp nhất 0.1029, SSIM cao nhất 0.6466)*. Điều này gợi ý rằng *các Hán tự có số nét trung bình (11-20 nét) là điểm ngọt để trích xuất phong cách*: chúng cung cấp đủ thông tin về bút pháp và kết cấu (hơn Easy) nhưng không gây ra quá nhiều nhiễu cấu trúc (structural noise) như các ký tự Hard (trên 21 nét). Khi sử dụng các ký tự quá phức tạp (Hard) để chuyển phong cách sang chữ Latin (vốn rất đơn giản), mô hình dễ gặp khó khăn trong việc lược bỏ các chi tiết thừa, dẫn đến chỉ số FID và L1 của $"Ours"_"Hard"$ thường kém hơn so với Easy và Medium.
+*Thứ hai, phân tích sâu về độ phức tạp nét (stroke complexity) thông qua các biến thể Easy, Medium và Hard mang Thứ hai, phân tích điểm tốt về độ phức tạp nét:* Việc phân tách dữ liệu thành Easy, Medium và Hard mang lại những góc nhìn giá trị về cơ chế học phong cách. Tại bảng @tab:c2e_ufsc, cấu hình $"Ours"_"Medium"$ đạt kết quả tốt nhất về các chỉ số cấu trúc và điểm ảnh (*L1 thấp nhất 0.1029, SSIM cao nhất 0.6466*).Điều này gợi ý rằng các Hán tự có số nét trung bình (11-20 nét) là *"điểm ngọt" để trích xuất phong cách*: chúng cung cấp đủ thông tin về bút pháp và kết cấu (tốt hơn Easy) nhưng không gây ra quá nhiều nhiễu cấu trúc như các ký tự Hard (trên 21 nét). Vì chữ Latin có cấu trúc hình học rất đơn giản, việc sử dụng các ký tự nguồn quá phức tạp (Hard) khiến mô hình gặp khó khăn trong việc lọc bỏ các chi tiết thừa, dẫn đến hiệu suất tái tạo cấu trúc (SSIM) thấp hơn.
 
-Cuối cùng, mặc dù $"Ours"_"Medium"$ tối ưu về cấu trúc, nhưng $"Ours"_"All"$ lại đạt chỉ số FID tốt nhất trên tập UFSC (41.115). Điều này cho thấy *việc tiếp xúc với đa dạng các mức độ phức tạp trong quá trình huấn luyện giúp mô hình xây dựng được không gian biểu diễn phong cách phong phú nhất*, từ đó sinh ra các hình ảnh có độ tự nhiên cao nhất về mặt cảm nhận thị giác, ngay cả khi độ chính xác từng điểm ảnh (L1) thua kém nhẹ so với cấu hình chuyên biệt Medium.
+*Thứ ba, sự đánh đổi giữa độ chính xác và độ tự nhiên:* Một điểm đáng lưu ý là mặc dù $"Ours"_"Medium"$ tối ưu về các chỉ số kỹ thuật (L1/SSIM), nhưng $"Ours"_"All"$ lại đạt chỉ số *FID tốt nhất* trên tập UFSC (*41.115*). Điều này cho thấy việc tiếp xúc với đa dạng các mức độ phức tạp trong quá trình huấn luyện (All) giúp mô hình xây dựng được không gian biểu diễn phong cách phong phú và liên tục nhất. Nhờ đó, ảnh sinh ra có độ tự nhiên cao nhất về mặt cảm nhận thị giác, ngay cả khi độ khớp chính xác từng điểm ảnh thua kém nhẹ so với việc chỉ huấn luyện trên tập Medium.
 
 === So sánh Định tính
 Bên cạnh các chỉ số đo lường, việc phân tích trực quan là bước không thể thiếu để kiểm chứng khả năng xử lý các trường hợp khó của mô hình, đặc biệt là các lỗi cấu trúc mà các chỉ số thống kê như FID đôi khi không phản ánh hết. Khoá luận thực hiện phân tích dựa trên hình ảnh sinh ra từ hai chiều chuyển đổi đối lập.
@@ -486,9 +659,7 @@ Kết quả thực nghiệm trên hai hướng chuyển đổi được trình b
     [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
   ),
 
-  caption: [
-    Ảnh hưởng của các thành phần M, R, S và CL đến hiệu năng mô hình trên tác vụ Latin → Hán tự.
-  ]
+  caption: [Ảnh hưởng của các thành phần M, R, S và CL đến hiệu năng mô hình trên tác vụ Latin → Hán tự.]
 ) <tab:e2c_module>
 
 
@@ -551,9 +722,7 @@ Kết quả thực nghiệm trên hai hướng chuyển đổi được trình b
     [*0.1090*], [*0.6377*], [*0.1985*], [*41.1152*],
   ),
 
-  caption: [
-    Ảnh hưởng của các thành phần M, R, S và CL đến hiệu năng mô hình trên tác vụ Hán tự → Latin.
-  ]
+  caption: [Ảnh hưởng của các thành phần M, R, S và CL đến hiệu năng mô hình trên tác vụ Hán tự → Latin.]
 ) <tab:c2e_module>
 
 
@@ -704,9 +873,7 @@ _Lý giải:_ *SCR gốc* vốn được thiết kế cho bài toán đơn ngôn
     ),
   ),
 
-  caption: [
-    So sánh kết quả sinh ảnh giữa các mô-đun khác nhau
-    trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).
+  caption: [So sánh kết quả sinh ảnh giữa các mô-đun khác nhau trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).
   ]
 )
 
@@ -894,9 +1061,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
     ),
   ),
 
-  caption: [
-    So sánh kết quả sinh ảnh giữa mô hình có và không áp dụng tăng cường dữ liệu trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).
-  ]
+  caption: [So sánh kết quả sinh ảnh giữa mô hình có và không áp dụng tăng cường dữ liệu trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).]
 )
 
 *Kết luận:* Dựa trên phân tích trên, khoá luận khẳng định *chiến lược Tăng cường dữ liệu* là thành phần không thể thiếu, đặc biệt quan trọng để nâng cao hiệu suất trên các *dữ liệu chưa từng biết (Unseen Domains)*, mặc dù có thể đánh đổi một lượng nhỏ hiệu năng trên các dữ liệu đã biết.
@@ -1121,10 +1286,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
     ),
   ),
 
-  caption: [
-    So sánh kết quả sinh ảnh giữa các chế độ mất mát khác nhau
-    trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).
-  ]
+  caption: [So sánh kết quả sinh ảnh giữa các chế độ mất mát khác nhau trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (`e2c` và `c2e`).]
 )
 
 
@@ -1355,9 +1517,7 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
     ),
   ),
 
-  caption: [
-    So sánh kết quả sinh ảnh giữa các số lượng mẫu âm khác nhau
-    trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (`e2c` và `c2e`).
+  caption: [So sánh kết quả sinh ảnh giữa các số lượng mẫu âm khác nhau trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (`e2c` và `c2e`).
   ]
 ) <tab:dinhtinh_neg>
 

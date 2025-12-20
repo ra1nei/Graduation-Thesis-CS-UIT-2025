@@ -32,9 +32,7 @@ Mô hình nhận vào hai luồng thông tin chính:
 
 #figure(
   kind: image,
-  caption: [
-    Ví dụ minh hoạ các ảnh nội dung trong tập dữ liệu.
-  ],
+  caption: [Ví dụ minh hoạ các ảnh nội dung trong tập dữ liệu.],
   grid(
     columns: 3,
     gutter: 8pt,
@@ -52,9 +50,7 @@ Mô hình nhận vào hai luồng thông tin chính:
 
 #figure(
   kind: image,
-  caption: [
-    Ví dụ minh hoạ các ảnh tham chiếu phong cách.
-  ],
+  caption: [Ví dụ minh hoạ các ảnh tham chiếu phong cách.],
   grid(
     columns: 3,
     gutter: 8pt,
