@@ -96,7 +96,7 @@ Thông qua cơ chế này, RSI có khả năng trích xuất trực tiếp thôn
 === Giai đoạn 2: Tinh chỉnh phong cách
 Mặc dù Giai đoạn 1 có thể tạo ra ký tự rõ nét, nhưng phong cách thường chưa được tách biệt hoàn toàn. Giai đoạn 2 cố định các trọng số của UNet và tập trung huấn luyện mô-đun *Style Contrastive Refinement (SCR)*. Mô-đun này đóng vai trò như một người hướng dẫn, sử dụng cơ chế học tương phản (Contrastive Learning) để ép buộc mô hình sinh ra ảnh có style vector gần với ảnh tham chiếu nhất có thể.
 
-== Phân tích Mô-đun Style Contrastive Refinement (SCR)
+== Phân tích Mô-đun Style Contrastive Refinement (SCR) <phantich_scr>
 
 === Động lực và Kiến trúc
 Trong bài toán sinh phông chữ (font generation), mục tiêu cốt lõi của việc sinh phông chữ là đạt được hiệu ứng bắt chước phong cách (style imitation) chính xác, độc lập với sự biến thiên về phong cách giữa ảnh nguồn và ảnh tham chiếu. Trong các mô hình sinh ảnh truyền thống, sự vướng víu (disentanglement) giữa đặc trưng phong cách và nội dung thường không hoàn hảo, dẫn đến kết quả phong cách không nhất quán. Để giải quyết vấn đề này, nhóm tác giả đề xuất một chiến lược mới: xây dựng mô-đun *Style Contrastive Refinement (SCR).*
@@ -112,7 +112,7 @@ Kiến trúc của SCR, như được minh họa trong thiết kế hệ thống
 )
 
 1. *Bộ trích xuất Đặc trưng (Style Extractor):*
-  - Sử dụng một mạng *VGG* (lấy cảm hứng từ Zhang et al. 2022) để nhúng ảnh phông chữ, khai thác các đặc tính phong cách và cấu trúc.
+  - Sử dụng một mạng *VGG* (lấy cảm hứng từ Zhang et al. 2022@Sun2018PyramidGAN) để nhúng ảnh phông chữ, khai thác các đặc tính phong cách và cấu trúc.
   - Để bao phủ đầy đủ cả phong cách cục bộ (như nét bút, serifs) và toàn cục (như độ đậm, độ nghiêng), bộ trích xuất chọn ra $N$ tầng feature maps, ký hiệu là $F_v = {f_v^0, f_v^1, ..., f_v^N}$.
 2. *Bộ chiếu Đặc trưng (Style Projector):* 
   - Các feature maps $F_v$ được đưa vào bộ chiếu. Tại đây, áp dụng đồng thời *average pooling* và *maximum pooling* để trích xuất các đặc trưng kênh toàn cục khác nhau.
@@ -134,7 +134,7 @@ SCR sử dụng chiến lược học tương phản (Contrastive Learning), v�
 ==== Định nghĩa hàm mất mát
 Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE@Oord2018CPC* được tính tổng trên $N$ tầng đặc trưng:
 
-$ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $
+$ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $ <L_sc_equa>
 
 Trong đó: 
 - $"Extrac"$ biểu thị bộ trích xuất phong cách: $V_0 = "Extrac"(x_0)$, $V_p = "Extrac"(x_p)$, $V_n = "Extrac"(x_n)$.
@@ -177,27 +177,27 @@ Trong giai đoạn này, các trọng số được giữ nguyên cho các thàn
 - $lambda_"off"^2 = 0.5$ (trọng số độ lệch RSI)
 - $lambda_"sc"^2 = 0.01$ (trọng số tương phản phong cách)
 
-Việc bổ sung $L_"sc"$ (như đã định nghĩa ở Phương trình 4 trong phần phân tích SCR) đóng vai trò then chốt trong việc đảm bảo ảnh đầu ra không chỉ đúng về cấu trúc (nhờ $L_"cp", L_"offset"$) mà còn đạt độ chân thực cao về phong cách nghệ thuật.
+Việc bổ sung $L_"sc"$ (như đã định nghĩa ở Phương trình @L_sc_equa trong phần phân tích SCR (@phantich_scr)) đóng vai trò then chốt trong việc đảm bảo ảnh đầu ra không chỉ đúng về cấu trúc (nhờ $L_"cp", L_"offset"$) mà còn đạt độ chân thực cao về phong cách nghệ thuật.
 
 == Cải tiến đề xuất: Cross-Lingual Style Contrastive Refinement (CL-SCR)
 
 === Hạn chế của SCR trong bối cảnh đa ngôn ngữ
-Mô-đun SCR tiêu chuẩn (Standard SCR) hoạt động dựa trên giả định rằng ảnh nguồn và ảnh tham chiếu chia sẻ cùng một không gian hình thái (cùng một ngôn ngữ). Tuy nhiên, khi mở rộng sang bài toán *Cross-Lingual Font Generation* (Huấn luyện trên dữ liệu tiếng Latin đơn giản $D_"source"$, ứng dụng sang chữ cái Hán $D_"target"$ phức tạp), SCR bộc lộ điểm yếu về *thiên kiến cấu trúc (structural bias)*.
+Mô-đun SCR tiêu chuẩn (Standard SCR) hoạt động dựa trên giả định rằng ảnh nguồn và ảnh tham chiếu chia sẻ cùng một không gian hình thái (cùng một ngôn ngữ). Tuy nhiên, khi mở rộng sang bài toán *Cross-Lingual Font Generation* (Huấn luyện trên dữ liệu tiếng Latin đơn giản $D_"source"$, ứng dụng sang chữ cái Hán $D_"target"$ phức tạp và ngược lại), SCR bộc lộ điểm yếu về *thiên kiến cấu trúc (structural bias)*.
 
 Cụ thể, bộ trích xuất đặc trưng StyleExtractor (sử dụng các tầng VGG pre-trained) có xu hướng "học vẹt" các đặc điểm cấu trúc dày đặc của Hán tự thay vì trích xuất phong cách trừu tượng. Khi gặp các ký tự Latin với cấu trúc thưa, sự chênh lệch miền (domain gap) khiến vector phong cách $v_"gen"$ và $v_"target"$ không còn tương đồng trong không gian tiềm ẩn.
 
 === Thiết kế mô-đun CL-SCR
-Để giải quyết vấn đề này, khoá luận đề xuất mô-đun *Cross-Lingual SCR (CL-SCR)*. Dựa trên mã nguồn đã xây dựng, CL-SCR không thay đổi kiến trúc cốt lõi của StyleExtractor hay Projector, mà thay đổi *chiến lược lấy mẫu (sampling strategy)* và *cơ chế tính hàm mất mát đa luồng*.
+Để giải quyết vấn đề này, khoá luận đề xuất mô-đun *Cross-Lingual SCR (CL-SCR)*. Dựa trên mã nguồn đã xây dựng, CL-SCR không thay đổi kiến trúc cốt lõi của StyleExtractor hay Projector, mà thay đổi *chiến lược lấy mẫu* và *cơ chế tính hàm mất mát đa luồng*.
 
 ==== Chiến lược lấy mẫu mở rộng
 Thay vì chỉ sử dụng cặp mẫu dương/âm đơn thuần (Intra-lingual), CL-SCR thiết lập đầu vào cho hàm forward của mô hình bao gồm hai luồng dữ liệu song song:
 1. *Luồng Nội miền (Intra-Lingual Flow)*:
   - Anchor ($x_"gen"$): Ảnh sinh ra từ mô hình Diffusion.
-  - Intra-Positive ($x_"pos"^"intra"$): Ảnh cùng nội dung ký tự, cùng phong cách (Ground Truth tiếng Trung). Giúp mô hình giữ vững cấu trúc cơ bản.
+  - Intra-Positive ($x_"pos"^"intra"$): Ảnh cùng nội dung ký tự, cùng phong cách (Ground Truth). Giúp mô hình giữ vững cấu trúc cơ bản.
   - Intra-Negative ($x_"neg"^"intra"$): Ảnh cùng nội dung, khác phong cách.
 2. *Luồng Xuyên miền (Cross-Lingual Flow - Điểm cải tiến chính)*:
-  - Cross-Positive ($x_"pos"^"cross"$): Các ảnh thuộc ngôn ngữ đích (Chữ cái Latin) mang cùng Style ID với ảnh tham chiếu. Mục tiêu là ép buộc bộ Projector phải ánh xạ các đặc trưng từ hai ngôn ngữ khác nhau về cùng một cụm vector nếu chúng có cùng phong cách.
-  - Cross-Negative ($x_"neg"^"cross"$): Các ảnh thuộc ngôn ngữ đích có cấu trúc nét tương đồng nhưng khác phong cách (Hard Negative Mining).
+  - Cross-Positive ($x_"pos"^"cross"$): Các ảnh thuộc ngôn ngữ đích mang cùng Style ID với ảnh tham chiếu. Mục tiêu là ép buộc bộ Projector phải ánh xạ các đặc trưng từ hai ngôn ngữ khác nhau về cùng một cụm vector nếu chúng có cùng phong cách.
+  - Cross-Negative ($x_"neg"^"cross"$): Các ảnh thuộc ngôn ngữ đích có cấu trúc nét tương đồng nhưng khác phong cách.
 
 ==== Cơ chế tính toán Loss hỗn hợp
 Hàm mất mát CL-SCR được định nghĩa là tổ hợp tuyến tính giữa mất mát nội miền và mất mát xuyên miền:
@@ -227,7 +227,7 @@ Trong đó:
 - $L_"offset"$ kiểm soát độ dịch chuyển của mô-đun RSI.
 - $L_"CL-SCR"$ đóng vai trò trọng tâm trong việc chuyển giao phong cách đa ngôn ngữ.
 
-Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các đặc trưng phong cách trừu tượng (như độ xước cọ, độ thanh mảnh) tốt hơn và áp dụng chính xác lên các ký tự Hán phức tạp.
+Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các đặc trưng phong cách trừu tượng (như độ xước cọ, độ thanh mảnh) tốt hơn và áp dụng chính xác lên các ký tự Hán phức tạp và ngược lại.
 
 #pagebreak()
 == Đề xuất thuật toán tính CL-SCR
