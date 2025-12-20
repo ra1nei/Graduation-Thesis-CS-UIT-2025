@@ -23,7 +23,7 @@
 
       #v(1.5cm)
       #align(center)[
-        #text(14pt, strong("KHÓA LUẬN TỐT NGHIỆP"))
+        #text(14pt, strong("KHOÁ LUẬN TỐT NGHIỆP"))
       ]
       
       #v(2cm)

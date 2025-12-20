@@ -52,7 +52,7 @@ Quy trình huấn luyện được chia thành hai giai đoạn (phases) tuần 
 Mục tiêu của giai đoạn này là huấn luyện mô hình khuếch tán học cách khôi phục lại hình ảnh ký tự mục tiêu từ nhiễu, dựa trên điều kiện $x_c$ và $x_s$. Các thành phần cốt lõi bao gồm:
 - *Bộ mã hoá nội dung ($E_c$) và phong cách ($E_s$):* Trích xuất đặc trưng ngữ nghĩa.
 
-==== Multi-scale Content Aggregation (MCA): 
+==== Multi-scale Content Aggregation (MCA) 
 Đây là cơ chế tổng hợp đặc trưng đa tỉ lệ được thiết kế để giải quyết hạn chế của các phương pháp chỉ dựa vào một mức đặc trưng duy nhất. Khi sinh các ký tự phức tạp, một tầng đặc trưng đơn lẻ thường không thể đồng thời nắm bắt được cả bố cục tổng thể lẫn những chi tiết tinh vi như nét mảnh, bộ phận nhỏ hoặc các dấu thanh. MCA khắc phục điều này bằng cách trích xuất nhiều mức đặc trưng nội dung từ các tầng khác nhau của bộ mã hoá, sau đó đưa chúng vào các khối UNet tương ứng.
 
 Cụ thể, quy trình hoạt động như sau:
@@ -75,7 +75,7 @@ Nhờ MCA, mô hình có thể tái hiện chính xác cả những thành phầ
   caption: [Đặc trưng Content ở các khối khác nhau.]
 )
 
-==== Reference-Structure Interaction (RSI):
+==== Reference-Structure Interaction (RSI)
 Giữa ảnh nguồn và ảnh đích thường tồn tại những khác biệt đáng kể về mặt cấu trúc (ví dụ: kích thước phông chữ) cũng như sự lệch lạc về vị trí không gian (spatial misalignment) giữa đặc trưng của UNet và đặc trưng tham chiếu. Để giải quyết vấn đề này, nhóm tác giả đã đề xuất khối Tương tác Cấu trúc - Tham chiếu (RSI). Khối này sử dụng mạng tích chập biến hình (Deformable Convolutional Networks - DCN) để thực hiện biến đổi cấu trúc ngay trên kết nối tắt (skip connection) của UNet.
 
 Điểm khác biệt so với các phương pháp trước đây là thay vì sử dụng CNN truyền thống để tính toán độ lệch (offset) $ delta_"offset"$ — vốn hạn chế trong việc nắm bắt thông tin toàn cục — nhóm tác giả đã tích hợp cơ chế Cross-Attention để kích hoạt các tương tác tầm xa (long-distance interactions).

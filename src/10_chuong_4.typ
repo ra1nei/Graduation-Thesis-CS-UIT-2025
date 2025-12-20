@@ -281,7 +281,7 @@ Việc phân loại theo độ phức tạp này giúp khoá luận xác định
 
 Các bảng dưới đây trình bày kết quả so sánh giữa phương pháp đề xuất (Ours) với các baseline mạnh nhất hiện nay gồm DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont, DFS@Zhu2020FewShotTextStyle, FTransGAN@Li2021FTransGAN và trên 2 kịch bản UFSC và SFUC cho tác vụ chuyển đổi phong cách từ chữ Latin sang ảnh nguồn Hán và ngược lại.
 
-==== Tác vụ chuyển đổi phong cách từ chữ Latin sang ảnh nguồn Hán (e2c).
+==== Tác vụ chuyển đổi phong cách từ chữ Latin sang ảnh nguồn Hán (e2c)
 #figure(
   table(
     columns: (auto, auto, auto, auto, auto),
@@ -332,7 +332,7 @@ Bên cạnh độ tự nhiên, khả năng *bảo toàn cấu trúc* cũng đư�
 
 Cuối cùng, sự so sánh nội bộ giữa hai biến thể tham chiếu ($"Ours"_"A"$ và $"Ours"_"AZ"$) làm nổi bật tính ổn định của mô hình. Kết quả thực nghiệm cho thấy $"Ours"_"AZ"$ đạt hiệu suất vượt trội hơn hẳn so với $"Ours"_"A"$ trên cả hai kịch bản, đặc biệt là sự chênh lệch lớn về FID ở UFSC (13.55 so với 17.84). Điều này dẫn đến kết luận quan trọng rằng mô hình tích hợp CL-SCR có khả năng trích xuất *đặc trưng phong cách bất biến* cực tốt. Việc được huấn luyện với các ký tự ngẫu nhiên (A-Z) thay vì cố định (A) giúp mô hình không bị *học thuộc lòng (overfit)* vào cấu trúc hình học của một ký tự cụ thể, mà thực sự "hiểu" được bản chất của phong cách (như độ đậm nhạt, serif, texture), từ đó đảm bảo độ linh hoạt cao trong các ứng dụng thực tế.
 
-==== Tác vụ chuyển đổi phong cách từ chữ Hán sang ảnh nguồn Latin (c2e).
+==== Tác vụ chuyển đổi phong cách từ chữ Hán sang ảnh nguồn Latin (c2e)
 #figure(
   table(
     columns: (auto, auto, auto, auto, auto),

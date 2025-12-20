@@ -16,7 +16,7 @@ Em xin cam đoan: Khoá luận tốt nghiệp với đề tài "Tăng cường k
     inset: 2em,
     [
       #align(center, [
-        Hồ Chí Minh, ngày 10 tháng 12 năm 2025
+        Hồ Chí Minh, ngày 24 tháng 12 năm 2025
     \ \
     Sinh viên
     \ \ \ \ \

@@ -58,10 +58,21 @@
   trang_phu_bia(title, authors)
 
   // ================= THÔNG TIN HỘI ĐỒNG =====================
-  thong_tin_hoi_dong(0, 0, "A", "A", "B", "B", "C", "C")
+  thong_tin_hoi_dong(
+    0000, 
+    0000, 
+    "xxxxxxxx", 
+    "xxxxxxxx", 
+    "xxxxxxxx", 
+    "xxxxxxxx",
+    "xxxxxxxx",
+    "xxxxxxxx"
+  )
 
-  counter(page).update(0)
   set page(numbering: "i")
+  counter(page).update(1)
+  
+  include "src/02_thong_tin_hoi_dong.typ"
   include "src/03_loi_cam_doan.typ"
   include "src/04_loi_cam_on.typ"
 
@@ -168,7 +179,7 @@
     outline(title: none, depth: 4)
     pagebreak()
   }
-  
+
   {
     // citation dup in caption
     // https://github.com/typst/typst/issues/1880

@@ -1,6 +1,6 @@
 #{
   show heading: none
-  heading(numbering: none)[Bảng thuật ngữ]
+  heading(numbering: none)[Danh mục từ viết tắt]
 }
 #align(center, text(16pt, strong("DANH MỤC TỪ VIẾT TẮT")))
 
