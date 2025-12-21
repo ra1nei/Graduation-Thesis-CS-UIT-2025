@@ -2,7 +2,7 @@
 
 #[
   #set heading(numbering: "Chương 1.1")
-  = Kết Luận và Hướng Phát Triển <ketluan>
+  = Kết luận và Hướng phát triển <ketluan>
 ]
 
 == Kết quả đạt được

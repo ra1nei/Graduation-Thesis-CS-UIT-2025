@@ -34,7 +34,13 @@
 
       #v(0.5cm)
       #align(center)[
-        #text(18pt, strong("Enhancing One-shot Cross-Script Font Style Transfer using Diffusion"))
+        #pad(
+          left: 1cm,
+          right: 1cm,
+        )[
+          #set text(lang: "en")
+          #text(18pt, strong("Enhancing One-shot Cross-Script Font Style Transfer using Diffusion Model"))
+        ]
       ]
 
       #v(1.5cm)

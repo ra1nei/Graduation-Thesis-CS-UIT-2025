@@ -1,23 +1,17 @@
 #import "/template.typ" : *
 
-// Định nghĩa hàm hiển thị font toán học đẹp hơn (Calligraphic)
-#let scr(it) = math.class("normal", box({
-  show math.equation: set text(stylistic-set: 1)
-  $cal(it)$
-}))
-
 #[
   #set heading(numbering: "Chương 1.1")
-  = Cơ sở Lý thuyết và Tổng quan Tài liệu <chuong2>
+  = Cơ sở lý thuyết <chuong2>
 ]
 
 Trong chương này, khoá luận trình bày hệ thống cơ sở lý thuyết nền tảng về các mô hình sinh (Generative Models) và tổng quan tình hình nghiên cứu trong lĩnh vực sinh phông chữ tự động. Cấu trúc chương đi từ các phương pháp truyền thống dựa trên GAN@Goodfellow2014GAN, đến sự trỗi dậy của Mô hình khuếch tán (Diffusion Models)@SohlDickstein2015ICML. Đồng thời, phần cuối chương sẽ tập trung phân tích sâu về các kỹ thuật biểu diễn phong cách (Style Representation) và những thách thức đặc thù trong bài toán chuyển đổi đa ngôn ngữ, nhằm làm rõ động lực nghiên cứu cho phương pháp đề xuất tại Chương 3.
 
-== Tổng quan về các phương pháp Sinh phông chữ
+== Một số phương pháp tiếp cận cho bài toán Sinh phông chữ (Font Generation)
 
 Lĩnh vực sinh phông chữ (Font Generation) đã trải qua một sự chuyển dịch mạnh mẽ về mặt công nghệ trong thập kỷ qua. Các phương pháp hiện nay có thể được chia thành hai nhóm chính dựa trên mô hình lõi: Mạng đối nghịch sinh (GANs)@Goodfellow2014GAN và Mô hình khuếch tán (Diffusion Models)@SohlDickstein2015ICML.
 
-=== Các phương pháp dựa trên GAN
+=== Các phương pháp dựa trên GAN (Generative Adversarial Networks)
 
 Trước sự bùng nổ của Diffusion Models@SohlDickstein2015ICML vào năm 2023, Generative Adversarial Networks (GAN)@Goodfellow2014GAN là hướng tiếp cận chủ đạo (State-of-the-art) cho bài toán này. Các nghiên cứu GAN thường tập trung giải quyết vấn đề tách biệt nội dung (content) và phong cách (style).
 
@@ -62,17 +56,22 @@ FTransGAN@Li2021FTransGAN là một trong những mô hình tiên phong giải q
   caption: [Tổng quan kiến trúc FTransGAN.] 
 )
 
-=== Mô hình khuếch tán
+=== Mô hình khuếch tán (Diffusion Models)
 
 Gần đây, Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models) đã tạo nên một cuộc cách mạng trong lĩnh vực thị giác máy tính. Khác với GAN@Goodfellow2014GAN – vốn dựa trên việc lừa mô hình phân biệt, Diffusion Model mô phỏng quá trình nhiệt động lực học để biến đổi dần dần từ nhiễu sang dữ liệu có ý nghĩa. Trong phạm vi khoá luận này, khoá luận tập trung vào Mô hình Khuếch tán Khử nhiễu Xác suất (Denoising Diffusion Probabilistic Models - DDPM)@Ho2020DDPM, biến thể phổ biến nhất và là nền tảng của phương pháp FontDiffuser.
 
-Nguyên lý cơ bản gồm hai giai đoạn:
-- *Quá trình Khuếch tán xuôi:* phá huỷ dữ liệu một cách có kiểm soát bằng cách thêm nhiễu Gaussian nhiều bước.  
-- *Quá trình Khuếch tán ngược:* học cách loại bỏ nhiễu từng bước để tái tạo lại dữ liệu gốc.  
+#untab_para[Nguyên lý cơ bản gồm hai giai đoạn:]
+#tab_eq[
+  *_Quá trình Khuếch tán xuôi_*: phá huỷ dữ liệu một cách có kiểm soát bằng cách thêm nhiễu Gaussian nhiều bước.  
 
-Điều này tương tự như việc ta học cách "tô dần" một bức tranh từ nền trắng nhiễu cho đến khi ra ảnh rõ nét.
+  *_Quá trình Khuếch tán ngược_*: học cách loại bỏ nhiễu từng bước để tái tạo lại dữ liệu gốc.
+  ]
 
-===== Quá trình Khuếch tán xuôi
+#untab_para[
+  Điều này tương tự như việc ta học cách "tô dần" một bức tranh từ nền trắng nhiễu cho đến khi ra ảnh rõ nét.
+  ]
+
+===== Quá trình Khuếch tán xuôi (Forward Diffusion Process)
 
 Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một loạt các bước. Điều này tương tự như chuỗi Markov, trong đó mỗi bước làm giảm nhẹ dữ liệu bằng cách thêm nhiễu Gauss:
 
@@ -84,13 +83,19 @@ Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một 
 Về mặt toán học, có thể được biểu diễn như sau:
 $ q(x_t|x_(t-1))= scr(N)(x_t;sqrt(1-beta_t)x_(t-1),beta_t I) $
 
-- $ x_0$: ảnh gốc (clean image).
-- $x_t$: ảnh ở bước t sau khi thêm nhiễu.
-- $beta_t$: hệ số nhiễu nhỏ (thường $beta_t in [10^(-4), 0.02]$).  
-- $I$: ma trận đơn vị, đảm bảo nhiễu độc lập và đẳng hướng.
+Trong đó:
+#tab_eq[
+  *$x_0$*: ảnh gốc (clean image).
+  
+  *$x_t$*: ảnh ở bước t sau khi thêm nhiễu.
+
+  *$beta_t$*: hệ số nhiễu nhỏ (thường $beta_t in [10^(-4), 0.02]$).  
+
+  *$I$*: ma trận đơn vị, đảm bảo nhiễu độc lập và đẳng hướng.
+]
 
 Do tính chất của Gaussian, ta có thể suy ra trực tiếp từ $x_0$ đến $x_t$:
-$ x_t = sqrt(dash(alpha)_t) x_0 + sqrt(1 - dash(alpha)_t)epsilon.alt, "   " epsilon.alt ~ scr(N)(0,I) $
+$ x_t = sqrt(dash(alpha)_t) x_0 + sqrt(1 - dash(alpha)_t)epsilon.alt, "   " epsilon.alt ~ N(0,I) $
 
 trong đó:
 $ alpha_t = 1 - beta_t $
@@ -98,7 +103,7 @@ $ dash(alpha)_t = product_(s=1)^t alpha_s $
 
 Điều này rất quan trọng vì giúp ta không cần sinh tuần tự từng bước mà vẫn có thể lấy mẫu trực tiếp ở bước t bất kì (quan trọng khi huấn luyện batch lớn).
 
-===== Quá trình Khuếch tán ngược
+===== Quá trình Khuếch tán ngược (Reverse Diffusion Process)
 
 Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng cách khử nhiễu bằng một loạt các bước đảo ngược quá trình khuếch tán xuôi.
 
@@ -108,7 +113,7 @@ Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng c
 )
 
 Về mặt toán học, có thể được biểu diễn như sau:
-$ p_theta (x_(t-1)|x_t) = scr(N)(x_(t-1);mu_theta (x_t, t), sum_theta (x_t, t)) $
+$ p_theta (x_(t-1)|x_t) = N(x_(t-1);mu_theta (x_t, t), sum_theta (x_t, t)) $
 
 với $mu_theta$ được tính như sau:
 
@@ -121,19 +126,26 @@ Trong huấn luyện, mô hình được tối ưu để giảm sai số giữa 
 ===== Loss function
 Hàm mất mát được sử dụng phổ biến nhất là *Mean Squared Error (MSE)*:
 
-$ scr(L)_"simple" = EE_(t, x_0, epsilon.alt) [bar.v.double epsilon.alt - epsilon.alt_theta (x_t, t) bar.v.double ^2] $
+$ L_"simple" = EE_(t, x_0, epsilon.alt) [bar.v.double epsilon.alt - epsilon.alt_theta (x_t, t) bar.v.double ^2] $
 
 Điều này tương đương với việc tối đa hoá khả năng tái tạo phân phối dữ liệu gốc (variational lower bound). Các nghiên cứu gần đây (v-prediction, hybrid loss) cho thấy việc dự đoán trực tiếp $v_t$ hoặc $x_0$ có thể cải thiện chất lượng ảnh sinh, nhưng MSE vẫn là chuẩn mực trong nhiều ứng dụng như FontDiffuser.
 
 ==== FontDiffuser (AAAI 2024)
 FontDiffuser@Yang2024FontDiffuser là công trình tiên phong áp dụng thành công Diffusion Model vào bài toán One-shot Font Generation. Pipeline của mô hình giải quyết ba vấn đề cốt lõi:
-- *Bảo toàn cấu trúc:* Sử dụng khối *MCA (Multi-Scale Content Aggregation)* để tổng hợp thông tin cấu trúc từ toàn cục đến chi tiết.
-- *Xử lý biến dạng:* Sử dụng khối *RSI (Reference-Structure Interaction)* thay thế cho các phương pháp biến dạng cũ, giúp tương thích tốt hơn giữa cấu trúc ảnh nguồn và phong cách ảnh đích.
-- *Học phong cách:* Sử dụng mô-đun *SCR (Style Contrastive Refinement)* để tinh chỉnh biểu diễn phong cách.
 
-Đây chính là mô hình cơ sở (baseline) mà khoá luận này lựa chọn để kế thừa và phát triển.
+#tab_eq[
+  *_Bảo toàn cấu trúc_*: Sử dụng khối *MCA (Multi-Scale Content Aggregation)* để tổng hợp thông tin cấu trúc từ toàn cục đến chi tiết.
 
-== Lý thuyết về Biểu diễn Phong cách
+  *_Xử lý biến dạng_*: Sử dụng khối *RSI (Reference-Structure Interaction)* thay thế cho các phương pháp biến dạng cũ, giúp tương thích tốt hơn giữa cấu trúc ảnh nguồn và phong cách ảnh đích.
+
+  *_Học phong cách_*: Sử dụng mô-đun *SCR (Style Contrastive Refinement)* để tinh chỉnh biểu diễn phong cách.
+]
+
+#untab_para[
+  Đây chính là mô hình cơ sở (baseline) mà khoá luận này lựa chọn để kế thừa và phát triển.
+]
+
+== Một số phương pháp tiếp cận cho bài toán Biểu diễn Phong cách (Style Representation)
 
 Trong bài toán sinh phông chữ One-shot, đặc biệt là trong bối cảnh chuyển đổi đa ngôn ngữ (Cross-Lingual), việc trích xuất và biểu diễn chính xác "phong cách" (style) là yếu tố quyết định sự thành bại của mô hình.
 
@@ -141,13 +153,11 @@ Trong bài toán sinh phông chữ One-shot, đặc biệt là trong bối cản
 Các phương pháp sơ khai (như Gatys et al.@Gatys2015NeuralStyle) thường sử dụng Ma trận Gram (Gram Matrix) tính toán trên các bản đồ đặc trưng (feature maps) của mạng VGG pre-trained để định nghĩa phong cách.
 Tuy nhiên, phương pháp này chủ yếu nắm bắt các đặc trưng về chất liệu (texture) và hoạ tiết cục bộ. Đối với ký tự, "phong cách" không chỉ là vân bề mặt mà còn bao gồm các yếu tố hình học cấp cao như: độ gãy khúc, kiểu chân chữ (serif/sans-serif), và cách kết thúc nét (stroke ending). Gram Matrix thường thất bại trong việc hướng dẫn mô hình áp dụng các đặc trưng này lên các cấu trúc hình học mới, dẫn đến kết quả bị biến dạng hoặc chỉ đơn thuần là phủ texture lên ảnh nội dung.
 
-=== Học tương phản
-Để khắc phục hạn chế trên, các nghiên cứu hiện đại (trong đó có FontDiffuser) chuyển sang hướng *Học biểu diễn tương phản (Contrastive Representation Learning)*. Tư tưởng cốt lõi là học một không gian embedding phong cách (style latent space) sao cho:
-- Các mẫu có cùng phong cách (Positive samples) được kéo lại gần nhau.
-- Các mẫu khác phong cách (Negative samples) bị đẩy ra xa nhau.
+=== Học tương phản (Contrastive Learning)
+Để khắc phục hạn chế trên, các nghiên cứu hiện đại (trong đó có FontDiffuser@Yang2024FontDiffuser) chuyển sang hướng *Học biểu diễn tương phản (Contrastive Representation Learning)*. Tư tưởng cốt lõi là học một không gian embedding phong cách (style latent space) sao cho *các mẫu có _cùng phong cách_ (Positive samples)* được *_kéo lại gần_ nhau* và *các mẫu _khác phong cách_ (Negative samples)* bị *_đẩy ra xa_ nhau*.
 
 Hàm mất mát InfoNCE@Oord2018CPC thường được sử dụng để tối ưu hoá không gian này:
-$ scr(L)_"NCE" = - log (exp("sim"(z, z^+)\/tau) / (exp("sim"(z, z^+)\/tau) + sum_(k) exp("sim"(z, z_k^-)\/tau))) $
+$ L_"NCE" = - log (exp("sim"(z, z^+)\/tau) / (exp("sim"(z, z^+)\/tau) + sum_(k) exp("sim"(z, z_k^-)\/tau))) $
 
 Trong FontDiffuser, mô-đun SCR áp dụng tư tưởng này để giám sát bộ mã hoá phong cách. Tuy nhiên, mô-đun này ban đầu được thiết kế cho cùng một ngôn ngữ (Hán $arrow.r$ Hán). Khi áp dụng sang bài toán Cross-Lingual, đặc biệt là dùng chữ Latin làm mẫu phong cách, các phương pháp chọn mẫu âm (negative selection) thông thường trở nên kém hiệu quả do khoảng cách miền (domain gap) quá lớn giữa hai hệ chữ.
 

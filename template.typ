@@ -44,6 +44,18 @@
   )
 }
 
+#let tab_eq(body, space: 1.2em, indent: 1.5em) = [
+  #set par(first-line-indent: indent, hanging-indent: indent, spacing: space)
+  #body
+  #set par(hanging-indent: 0pt)
+]
+
+#let untab_para(body) = [
+  #set par(first-line-indent: 0pt)
+  #body
+  #set par(first-line-indent: 1.5em)
+]
+
 // Project part
 #let project(title: "", authors: (), body) = {
   // Set the document's basic properties.
@@ -108,7 +120,7 @@
     }
     show outline.entry.where(level: 2): it => {
       v(20pt, weak: true)
-      h(1.7em)
+      h(1.5em)
       if (it.element.numbering != none) {
         let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
         box(width: 1.7em, number)
@@ -120,7 +132,7 @@
     }
     show outline.entry.where(level: 3): it => {
       v(20pt, weak: true)
-      h(3.4em)
+      h(3em)
       if (it.element.numbering != none) {
         let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
         box(width: 2.4em, number)
@@ -132,7 +144,7 @@
     }
     show outline.entry.where(level: 4): it => {
       v(20pt, weak: true)
-      h(5.1em)
+      h(4.5em)
       if (it.element.numbering != none) {
         let number = numbering(
           it.element.numbering,
@@ -255,7 +267,7 @@
 
   // show heading: set text(13pt)
 
-  set par(first-line-indent: (amount: 1.5em, all: true), leading: 0.8em, spacing: 1.5em)
+  set par(first-line-indent: (amount: 1.5em, all: false), leading: 0.8em, spacing: 1.5em)
   set block(spacing: 1.2em)
   set list(indent: 0.8em)
   show heading: set block(spacing: 1.5em)

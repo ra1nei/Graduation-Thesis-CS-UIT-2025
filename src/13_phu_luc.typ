@@ -208,7 +208,7 @@ Việc huấn luyện mô hình đề xuất (Ours) là một quy trình đa gia
 ) <tab:ours_training_breakdown>
 
 #pagebreak()
-*b) So sánh tổng thời gian huấn luyện với các Baseline:*
+#h(1.5em) *b) So sánh tổng thời gian huấn luyện với các Baseline:*
 
 So với các phương pháp hiện có, FontDiffuser yêu cầu thời gian huấn luyện dài hơn do bản chất hội tụ chậm của quá trình khử nhiễu và yêu cầu số bước lặp lớn.
 
