@@ -45,9 +45,9 @@
 #let s1 = "默首音".clusters()
 #let s2 = "tdk".clusters()
 
-Chương này trình bày chi tiết *thiết lập thực nghiệm*, bao gồm mô tả bộ dữ liệu, các thước đo đánh giá và cấu hình huấn luyện chi tiết trên nền tảng phần cứng giới hạn. Tiếp theo, khoá luận sẽ đưa ra các *so sánh định lượng và định tính* giữa *phương pháp đề xuất (CL-SCR FontDiffuser)* với các *phương pháp tiên tiến hiện nay (State-of-the-Art)* nhằm chứng minh hiệu quả trong bài toán sinh phông chữ đa ngôn ngữ (Cross-lingual Font Generation) theo cả hai chiều: *từ Hán tự sang Latin* và *từ Latin sang Hán tự*.
+Chương này trình bày chi tiết *thiết lập thực nghiệm*, bao gồm mô tả bộ dữ liệu, các thước đo đánh giá và cấu hình huấn luyện chi tiết trên nền tảng phần cứng giới hạn. Tiếp theo, khoá luận sẽ đưa ra các *so sánh định lượng và định tính* giữa *phương pháp đề xuất (CL-SCR FontDiffuser)* với các *phương pháp tiên tiến hiện nay (State-of-the-Art)* nhằm chứng minh hiệu quả trong bài toán sinh phông chữ đa ngôn ngữ (Cross-Lingual Font Generation) theo cả hai chiều: *từ Hán tự sang Latin* và *từ Latin sang Hán tự*.
 
-== Bộ dữ liệu
+== Bộ dữ liệu (Datasets)
 
 === Cấu trúc
 Để đảm bảo tính khách quan và khả năng so sánh công bằng với các nghiên cứu tiên tiến, khoá luận không tự xây dựng dữ liệu mới mà kế thừa *bộ dữ liệu chuẩn* từ công trình "Few-shot Font Style Transfer between Different Languages"@Li2021FTransGAN. Đây là tập dữ liệu chuyên biệt cho bài toán đa ngôn ngữ, bao gồm *818 bộ phông chữ song ngữ* với độ đa dạng phong cách cao, trải dài từ serif, sans-serif đến thư pháp và viết tay. Cấu trúc dữ liệu được tổ chức thành hai tập con tương tác chặt chẽ nhằm phục vụ bài toán chuyển đổi hai chiều: *tập ký tự Hán* chứa trung bình *800 ký tự* thông dụng (chuẩn GB2312) đóng vai trò miền đích phức tạp, và *tập ký tự Latin* bao gồm *52 ký tự* cơ bản. Đặc điểm cốt lõi của bộ dữ liệu này là sự *nhất quán tuyệt đối về phong cách* giữa hai hệ chữ trong cùng một bộ font, *cung cấp các cặp dữ liệu nhãn (Ground-truth)* tự nhiên giúp mô-đun CL-SCR học được sự tương quan phong cách xuyên ngôn ngữ.
@@ -97,7 +97,7 @@ Tiếp nối các bước xử lý thô, để đảm bảo tính tương thích
 
 == Thiết lập Thực nghiệm
 
-=== Cấu hình Huấn luyện
+=== Cấu hình Huấn luyện (Implementation Details)
 Các thí nghiệm được thực hiện trên môi trường tính toán đám mây Kaggle với *GPU NVIDIA Tesla P100 (16GB VRAM)*. Mã nguồn được triển khai trên nền tảng *PyTorch* và *thư viện Diffusers*.
 
 Quá trình huấn luyện tuân theo chiến lược *hai giai đoạn (Two-stage training)* với các siêu tham số được thiết lập cụ thể như sau dựa trên tài nguyên phần cứng giới hạn:
@@ -121,7 +121,7 @@ _*Cấu hình Lấy mẫu*_: Khoá luận sử dụng bộ giải *DPM-Solver++*
 
 _*Lấy mẫu Hàng loạt (Batch Sampling)*_: Do khoá luận thực hiện đánh giá định lượng trên một lượng lớn mẫu, quy trình lấy mẫu được tự động hoá thông qua hàm batch_sampling, bao phủ cả hai hướng nghiên cứu.
 
-=== Kịch bản Đánh giá
+=== Kịch bản Đánh giá (Evaluation Scenarios)
 Để đánh giá toàn diện khả năng của mô hình, khoá luận thiết lập *_hai_ kịch bản kiểm thử* với *độ khó _tăng dần_* (theo chuẩn của FontDiffuser@Yang2024FontDiffuser và DG-Font@Xie2021DGFont):
 
 #tab_eq[
@@ -130,11 +130,10 @@ _*Lấy mẫu Hàng loạt (Batch Sampling)*_: Do khoá luận thực hiện đ�
   _*UFSC (Unseen Font, Seen Character)*_: Font mới hoàn toàn (chưa từng xuất hiện trong quá trình huấn luyện). Đây là kịch bản quan trọng nhất để đánh giá khả năng *One-shot Generalization* của mô hình đối với phong cách lạ.
 ]
 
-
-== Các thước đo đánh giá
+== Các thước đo đánh giá (Evaluation Metrics)
 Để đảm bảo *tính khách quan* và *toàn diện* trong việc kiểm định chất lượng mô hình, khoá luận áp dụng hệ thống đánh giá đa chiều bao gồm cả các *chỉ số định lượng tiêu chuẩn (Quantitative Metrics)* và *đánh giá định tính dựa trên cảm nhận người dùng (Subjective User Study)*.
 
-=== Chỉ số Định lượng
+=== Chỉ số Định lượng (Quantitative Metrics)
 Khoá luận sử dụng bộ 4 chỉ số tiêu chuẩn trong bài toán sinh ảnh để đánh giá chất lượng ảnh sinh ($x$) so với ảnh thật ($y$):
 
 ==== L1 (Mean Absolute Error)
@@ -218,10 +217,10 @@ Trong đó:
 ==== Phân tích mối tương quan và Vai trò của bộ độ đo
 Việc sử dụng đơn lẻ một độ đo không thể phản ánh toàn diện hiệu năng của mô hình sinh phông chữ, do đó khoá luận kết hợp bốn độ đo trên theo *chiến lược đánh giá đa tầng*. Đầu tiên, ở tầng *đánh giá độ chính xác điểm ảnh (Pixel-level Accuracy)*, các chỉ số *L1* và *SSIM* đảm bảo rằng ảnh sinh ra không bị lệch lạc quá nhiều về vị trí không gian so với ảnh mẫu (Ground Truth). Tuy nhiên, đối với các mô hình sinh (Generative Models), việc tối ưu hoá quá mức L1 thường dẫn đến hiện tượng ảnh bị *làm mờ (blurring effect)* để giảm thiểu sai số trung bình. Để khắc phục, tầng thứ hai tập trung vào *đánh giá chất lượng cảm nhận (Perceptual Quality)* thông qua *LPIPS* và *FID*. Trong khi LPIPS đo lường sự tương đồng trong *không gian đặc trưng (Feature Space)* giúp mô hình được "tha thứ" cho những sai lệch nhỏ về pixel miễn là đặc điểm nhận dạng bảo toàn, thì FID đóng vai trò trọng tâm trong việc đánh giá mức độ *"thật" (realism)* và *tính đa dạng (diversity)*. 
 
-Sự kết hợp giữa SSIM (cấu trúc) và LPIPS (cảm nhận) là đặc biệt quan trọng trong bài toán Cross-lingual, nơi việc giữ cấu trúc chữ quan trọng ngang hàng với việc bắt chước phong cách.
+Sự kết hợp giữa SSIM (cấu trúc) và LPIPS (cảm nhận) là đặc biệt quan trọng trong bài toán Cross-Lingual, nơi việc giữ cấu trúc chữ quan trọng ngang hàng với việc bắt chước phong cách.
 
-=== Đánh giá Định tính
-Các chỉ số định lượng (Quantitative Metrics) như FID hay LPIPS, mặc dù khách quan, nhưng không thể mô phỏng hoàn toàn gu thẩm mỹ và khả năng đọc hiểu của con người. Do đó, để kiểm chứng tính thực tiễn của phương pháp đề xuất, Khoá luận thực hiện đánh giá định tính trên hai khía cạnh: *phân tích thị giác dựa trên chuyên môn (Visual Analysis)* và *khảo sát cảm nhận người dùng (User Study)*.
+=== Đánh giá Định tính (Qualitative Evaluation)
+Các chỉ số định lượng (Quantitative Metrics) như FID hay LPIPS, mặc dù khách quan, nhưng không thể mô phỏng hoàn toàn gu thẩm mỹ và khả năng đọc hiểu của con người. Do đó, để kiểm chứng tính thực tiễn của phương pháp đề xuất, Khoá luận thực hiện *đánh giá định tính* trên hai khía cạnh: *phân tích thị giác dựa trên chuyên môn (Visual Analysis)* và *khảo sát cảm nhận người dùng (User Study)*.
 
 ==== Quy trình Phân tích Trực quan (Visual Analysis Protocol)
 Để kiểm chứng chất lượng thực tế, khoá luận thực hiện *so sánh song song* giữa ảnh sinh ra từ mô hình đề xuất và các mô hình khác nhằm soi xét các *lỗi thị giác cụ thể* bằng mắt thường, tập trung vào việc quan sát xem các nét chữ — đặc biệt là những *nét mảnh* hoặc *các vùng giao nhau phức tạp* — có giữ được *độ liền mạch và dứt khoát* hay bị *đứt gãy*, đồng thời kiểm tra xem ảnh có gặp phải các lỗi "khó coi" như bị *mờ nhoè*, *lem luốc* hoặc xuất hiện các *vết mực thừa* khiến cấu trúc chữ bị biến dạng hay không.
@@ -248,14 +247,14 @@ _*Tiêu chí đánh giá*_: Thay vì chấm điểm phức tạp, người tham 
 == Kết quả Thực nghiệm và Thảo luận
 Trong chương này, khoá luận trình bày toàn bộ kết quả thực nghiệm của mô hình đề xuất. Nội dung bao gồm đánh giá định lượng và định tính chi tiết, nghiên cứu bóc tách (ablation study) về các thành phần kiến trúc, khảo sát người dùng, và phân tích các trường hợp thất bại. Các kết quả này được đối chiếu trực tiếp với nhiều mô hình sinh font hiện đại, bao gồm các mô hình *GAN-based* (DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont, DFS@Zhu2020FewShotTextStyle, FTransGAN@Li2021FTransGAN), mô hình *diffusion-based* (FontDiffuser@Yang2024FontDiffuser), và các phiên bản mô hình của khoá luận.
 
-Để đánh giá toàn diện khả năng chuyển đổi đa ngôn ngữ, khoá luận thực hiện thực nghiệm trên hai hướng chính với các mục tiêu nghiên cứu và cấu hình mô hình cụ thể, khẳng định giá trị nghiên cứu ngang nhau của bài toán Cross-lingual Font Generation:
+Để đánh giá toàn diện khả năng chuyển đổi đa ngôn ngữ, khoá luận thực hiện thực nghiệm trên hai hướng chính với các mục tiêu nghiên cứu và cấu hình mô hình cụ thể, khẳng định giá trị nghiên cứu ngang nhau của bài toán Cross-Lingual Font Generation:
 
-*1. Hướng Latin $->$ Hán tự*:
+1. *Hướng Latin $->$ Hán tự*:
 Đây là kịch bản kiểm tra khả năng *chuyển giao phong cách Latin* tinh tế lên *cấu trúc Hán tự* phức tạp. Trong kịch bản này, mô hình cần học các đặc trưng nét (như serif, độ dày nét, góc bo) của hệ chữ Latin và áp dụng chúng lên các ký tự Hán. Mục tiêu là kiểm tra hiệu quả của mô-đun *CL-SCR* trong việc tách biệt phong cách Latin khỏi nội dung Latin, đảm bảo sự nhất quán phong cách khi áp dụng lên hệ chữ có hình thái học khác biệt (Hán tự).
 
 Khoá luận sử dụng hai cấu hình mô hình cho hướng này: $"Ours"_"A"$ (sử dụng ký tự `A` làm ảnh phong cách tham chiếu) và $"Ours"_"AZ"$ (sử dụng ký tự ngẫu nhiên `trong khoảng A đến Z` làm ảnh phong cách tham chiếu).
 
-*2. Hướng Hán tự $->$ Latin*:
+2. *Hướng Hán tự $->$ Latin*:
 Đây là kịch bản kiểm tra khả năng *khái quát hoá phong cách Hán tự* phức tạp lên *cấu trúc Latin* đơn giản. Trong kịch bản này, mô hình phải học các đặc trưng phong cách đa dạng (ví dụ: nét bút lông, độ dày-mỏng bất đối xứng) từ Hán tự và áp dụng chúng lên cấu trúc Latin. Sự thành công trong hướng này chứng tỏ mô hình có thể trích xuất các đặc trưng phong cách bậc cao của Hán tự để áp dụng hợp lý lên các ký tự Latin có cấu trúc tuyến tính hơn.
 
 Đối với hướng Hán tự $->$ Latin, khoá luận tiến hành phân loại và đánh giá các kịch bản dựa trên *độ phức tạp của ký tự Hán tự* (số nét $M$) được sử dụng làm ảnh tham chiếu phong cách, nhằm phân tích độ nhạy của mô hình đối với sự đa dạng của nét:
@@ -313,7 +312,6 @@ Khoá luận sử dụng hai cấu hình mô hình cho hướng này: $"Ours"_"A
 Việc phân loại theo độ phức tạp này giúp khoá luận xác định mô-đun *CL-SCR* hoặc các kiến trúc lõi khác (*MCA*, *RSI*) hoạt động hiệu quả nhất ở mức độ phức tạp cấu trúc nào của phong cách Hán tự, từ đó cung cấp những cái nhìn sâu sắc hơn về khả năng học đặc trưng của mô hình khuếch tán.
 
 === So sánh Định lượng
-
 Các bảng dưới đây trình bày kết quả so sánh giữa phương pháp đề xuất (Ours) với các baseline mạnh nhất hiện nay gồm DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont, DFS@Zhu2020FewShotTextStyle, FTransGAN@Li2021FTransGAN và trên 2 kịch bản UFSC và SFUC cho tác vụ chuyển đổi phong cách từ chữ Latin sang ảnh nguồn Hán và ngược lại.
 
 ==== Tác vụ chuyển đổi phong cách từ chữ Latin sang ảnh nguồn Hán (e2c)
@@ -447,6 +445,7 @@ Dựa trên số liệu từ @tab:e2c_sfuc và @tab:e2c_ufsc, có thể rút ra 
   ),
   caption: [So sánh ảnh sinh trên tập SFUC cho kịch bản Latin $->$ Hán tự (e2c) \ giữa các phương pháp và ground truth.]
 ) <compare-e2c-sfuc>
+
 #pagebreak()
 
 #figure(
@@ -525,6 +524,7 @@ Dựa trên số liệu từ @tab:e2c_sfuc và @tab:e2c_ufsc, có thể rút ra 
   ),
   caption: [So sánh ảnh sinh trên tập UFSC cho kịch bản Latin $->$ Hán tự (e2c) \ giữa các phương pháp và ground truth.]
 ) <compare-e2c-ufsc>
+
 #pagebreak()
 
 ==== Tác vụ chuyển đổi phong cách từ chữ Hán sang ảnh nguồn Latin (c2e)
@@ -585,6 +585,7 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
 *Thứ ba, sự đánh đổi giữa độ chính xác và độ tự nhiên*: Một điểm đáng lưu ý là mặc dù việc sử dụng ảnh tham chiếu nhóm Medium ($"Ours"_"Medium"$) giúp tối ưu hóa các chỉ số kỹ thuật (L1/SSIM), nhưng cấu hình sử dụng toàn bộ không gian tham chiếu ($"Ours"_"All"$) lại đạt chỉ số *FID tốt nhất* trên tập UFSC (*41.115*). Điều này cho thấy việc đa dạng hóa độ phức tạp của ảnh đầu vào (input reference) giúp mô hình tiếp cận được không gian biểu diễn phong cách phong phú và liên tục hơn. Nhờ đó, ảnh sinh ra có độ tự nhiên cao nhất về mặt cảm nhận thị giác (visual perception), ngay cả khi độ khớp chính xác từng điểm ảnh thua kém nhẹ so với việc chỉ sử dụng nhóm ảnh mẫu Medium.
 
 #pagebreak()
+
 #figure(
   grid(
     columns: (auto, auto, auto),
@@ -663,6 +664,7 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
 ) <compare-c2e-sfuc>
 
 #pagebreak()
+
 #figure(
   grid(
     columns: (auto, auto, auto),
@@ -739,6 +741,7 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
   ),
   caption: [So sánh ảnh sinh trên tập UFSC cho kịch bản Hán tự $->$ Latin (c2e) \ giữa các phương pháp và ground truth.]
 ) <compare-c2e-ufsc>
+
 #pagebreak()
 
 === So sánh Định tính
@@ -924,13 +927,13 @@ Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nh�
 _*Nhận xét và Thảo luận*_:
 
 #untab_para[
-  Quan sát từ dữ liệu thực nghiệm cho thấy vai trò nền tảng không thể thay thế của các mô-đun *M* và *R*. Khi tích hợp hai mô-đun này vào mạng Baseline, hiệu năng mô hình có sự chuyển biến mang tính bước ngoặt, thể hiện qua việc *chỉ số FID giảm sâu* ở cả hai hướng nghiên cứu. Đơn cử như trong kịch bản e2c (UFSC), việc có M và R giúp FID giảm từ *70.36* xuống *29.10* (tương ứng với cấu hình FontDiffuser Gốc). Điều này khẳng định rằng mạng Diffusion thuần túy gặp rất nhiều khó khăn trong việc định hình cấu trúc ký tự phức tạp nếu chỉ dựa vào đặc trưng cấp cao; M và R chính là "bộ khung xương" cung cấp các đặc trưng nội dung chi tiết đa tầng và tinh chỉnh độ khớp không gian, giúp mô hình dựng hình chính xác các nét và bộ thủ.
+  Quan sát từ dữ liệu thực nghiệm cho thấy vai trò nền tảng không thể thay thế của các mô-đun *M* và *R*. Khi tích hợp hai mô-đun này vào mạng Baseline, hiệu năng mô hình có sự chuyển biến mang tính bước ngoặt, thể hiện qua việc *chỉ số FID giảm sâu* ở cả hai hướng nghiên cứu. Đơn cử như trong kịch bản e2c (UFSC), việc có M và R giúp FID giảm từ *70.36* xuống *29.10* (tương ứng với cấu hình FontDiffuser Gốc). Điều này khẳng định rằng mạng Diffusion thuần tuý gặp rất nhiều khó khăn trong việc định hình cấu trúc ký tự phức tạp nếu chỉ dựa vào đặc trưng cấp cao; M và R chính là "bộ khung xương" cung cấp các đặc trưng nội dung chi tiết đa tầng và tinh chỉnh độ khớp không gian, giúp mô hình dựng hình chính xác các nét và bộ thủ.
 ]
 
 Tuy nhiên, điểm nhấn quan trọng nhất nằm ở sự so sánh giữa mô-đun *S (SCR gốc)* và *CL (CL-SCR đề xuất)*. Kết quả thực nghiệm cho thấy *CL-SCR* vượt trội hơn hẳn so với SCR gốc, đặc biệt là trong các kịch bản khó *(Unseen Font)*. Cụ thể, trong hướng `e2c` (UFSC), việc thay thế S bằng CL giúp FID giảm mạnh từ *29.10* xuống *13.55*. Tương tự ở hướng `c2e` (UFSC), FID giảm từ *59.58* xuống *41.11*.
 
 #set par(first-line-indent: 0pt)
-_*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ngôn ngữ, nơi khoảng cách giữa các phong cách nhỏ hơn. Khi áp dụng cho bài toán đa ngôn ngữ (*Cross-lingual*), SCR gốc gặp khó khăn trong việc tách biệt triệt để phong cách khỏi nội dung do sự khác biệt lớn về hình thái học. Ngược lại, *CL-SCR* với *cơ chế tương phản đa miền và chiến lược lấy mẫu âm cải tiến* đã giúp mô hình "hiểu" và trích xuất được bản chất phong cách (như kết cấu, bút pháp) một cách trừu tượng hơn, qua đó đảm bảo chất lượng sinh ảnh ổn định và tự nhiên ngay cả với các font chữ mới lạ.
+_*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ngôn ngữ, nơi khoảng cách giữa các phong cách nhỏ hơn. Khi áp dụng cho bài toán đa ngôn ngữ (*Cross-Lingual*), SCR gốc gặp khó khăn trong việc tách biệt triệt để phong cách khỏi nội dung do sự khác biệt lớn về hình thái học. Ngược lại, *CL-SCR* với *cơ chế tương phản đa miền và chiến lược lấy mẫu âm cải tiến* đã giúp mô hình "hiểu" và trích xuất được bản chất phong cách (như kết cấu, bút pháp) một cách trừu tượng hơn, qua đó đảm bảo chất lượng sinh ảnh ổn định và tự nhiên ngay cả với các font chữ mới lạ.
 #set par(first-line-indent: 1.5em)
 
 #figure(
@@ -1726,7 +1729,6 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
   caption: [So sánh kết quả sinh ảnh giữa các số lượng mẫu âm khác nhau \ trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (e2c và c2e).
   ]
 ) <tab:dinhtinh_neg>
-
 
 _*Kết luận*_: Tổng kết lại, thực nghiệm về số lượng mẫu âm đã làm sáng tỏ một đặc điểm thú vị trong bài toán chuyển đổi phong cách xuyên ngôn ngữ: *sự tối giản lại mang lại hiệu quả tối ưu*. Trái với kỳ vọng rằng nhiều mẫu âm sẽ giúp học biểu diễn phong cách tốt hơn, kết quả cho thấy việc *giới hạn* $K=4$ giúp mô hình xây dựng được *không gian biểu diễn phong cách cô đọng*, tránh được hiện tượng quá khớp (overfitting) hoặc nhiễu loạn thông tin từ các mẫu âm dư thừa. Đặc biệt trên các tập dữ liệu chưa từng thấy (UFSC), cấu hình $K=4$ luôn duy trì vị thế dẫn đầu về chỉ số FID ở cả hai hướng chuyển đổi, chứng minh đây là *thiết lập tối ưu* để cân bằng giữa độ chính xác tái tạo và khả năng tổng quát hoá, đồng thời *giảm tải đáng kể chi phí huấn luyện*.
 
