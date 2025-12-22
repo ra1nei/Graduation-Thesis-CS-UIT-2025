@@ -30,12 +30,12 @@ Phần này sẽ định nghĩa bài toán sinh phông chữ đa ngôn ngữ dư
 
 === Định nghĩa Đầu vào (Input)
 Mô hình nhận vào hai luồng thông tin chính: #linebreak()
-#h(1.5em) _*Ảnh tham chiếu nội dung (Content Image - *_$I_c$)_*:*_
+#h(1.5em) _*Ảnh tham chiếu nội dung (Content Image - *_$I_c$):
 #tab_eq(indent: 3em, space: 1.2em)[
   Là một *hình ảnh chứa ký tự mục tiêu $c$ (target glyph)* trong một phông chữ tiêu chuẩn (ví dụ: Arial hoặc Noto Sans).
   #parbreak()
 
-  _*Mục đích:*_ *Cung cấp thông tin về cấu trúc hình học và định danh của ký tự cần sinh* (ví dụ: chữ 'A', chữ 'g').
+  _*Mục đích*_: *Cung cấp thông tin về cấu trúc hình học và định danh của ký tự cần sinh* (ví dụ: chữ 'A', chữ 'g').
   #parbreak()
 
   Trong bài toán cross-lingual, $I_c$ *thuộc _hệ ngôn ngữ đích_* (Target Language, ví dụ: Latin).
@@ -54,12 +54,12 @@ Mô hình nhận vào hai luồng thông tin chính: #linebreak()
   )
 )
 
-#h(1.5em) _*Ảnh tham chiếu phong cách (Style Images - *_$I_s$)_*:*_
+#h(1.5em) _*Ảnh tham chiếu phong cách (Style Images - *_$I_s$):
 #tab_eq(indent: 3em, space: 1.2em)[
   Là *tập hợp một hoặc một vài hình ảnh ($k$-shot)* chứa *các ký tự bất kỳ mang phong cách $s$ mong muốn*.
   #parbreak()
 
-  _*Mục đích:*_ *Cung cấp các đặc trưng thẩm mỹ (nét xước, độ đậm nhạt, serif...)*.
+  _*Mục đích*_: *Cung cấp các đặc trưng thẩm mỹ (nét xước, độ đậm nhạt, serif...)*.
   #parbreak()
 
   Trong bài toán cross-lingual, $I_s$ thường *thuộc _hệ ngôn ngữ nguồn_* (Source Language, ví dụ: Chinese) khác với ngôn ngữ của $I_c$.
@@ -79,9 +79,9 @@ Mô hình nhận vào hai luồng thông tin chính: #linebreak()
 )
   
 === Định nghĩa Đầu ra (Output)
-_*Ảnh được sinh ra (Generated Image - $I_"gen"$):*_ Là hình ảnh kết quả thể hiện ký tự $c$ nhưng mang phong cách $s$.
+_*Ảnh được sinh ra (Generated Image - $I_"gen"$)*_: Là hình ảnh kết quả thể hiện ký tự $c$ nhưng mang phong cách $s$.
 #linebreak()
-_*Yêu cầu:*_ $I_"gen"$ phải giữ được cấu trúc nội dung của $I_c$ (đọc được là chữ gì) và mang đầy đủ đặc điểm thẩm mỹ của $I_s$ (nhìn giống font mẫu).
+_*Yêu cầu*_: $I_"gen"$ phải giữ được cấu trúc nội dung của $I_c$ (đọc được là chữ gì) và mang đầy đủ đặc điểm thẩm mỹ của $I_s$ (nhìn giống font mẫu).
 
 === Mục tiêu toán học
 Mục tiêu là huấn luyện một hàm ánh xạ $G$ (Generator/Diffusion Model) sao cho:
@@ -109,46 +109,46 @@ Khoá luận này đề xuất mở rộng mô hình FontDiffuser để giải q
 Để đảm bảo tính khả thi và tập trung sâu vào giải pháp kỹ thuật, đề tài xác định rõ đối tượng và giới hạn phạm vi nghiên cứu như sau:
 
 === Đối tượng nghiên cứu
-_*Mô hình lý thuyết và phát triển:*_ Trọng tâm nghiên cứu được đặt vào *Mô hình sinh ảnh dựa trên cơ chế khuếch tán (Diffusion Models)*, lấy kiến trúc *FontDiffuser* làm nền tảng cốt lõi để cải tiến. Đề tài tập trung nghiên cứu các kỹ thuật *điều hướng phong cách (Style Guidance)* và cơ chế *học tương phản (Contrastive Learning)* trong không gian khuếch tán nhằm giải quyết bài toán chuyển đổi đa ngôn ngữ.
+_*Mô hình lý thuyết và phát triển*_: Trọng tâm nghiên cứu được đặt vào *Mô hình sinh ảnh dựa trên cơ chế khuếch tán (Diffusion Models)*, lấy kiến trúc *FontDiffuser* làm nền tảng cốt lõi để cải tiến. Đề tài tập trung nghiên cứu các kỹ thuật *điều hướng phong cách (Style Guidance)* và cơ chế *học tương phản (Contrastive Learning)* trong không gian khuếch tán nhằm giải quyết bài toán chuyển đổi đa ngôn ngữ.
 
-_*Mô hình đối chứng (Baseline):*_ Để thiết lập một hệ quy chiếu đánh giá toàn diện và làm nổi bật ưu thế của phương pháp đề xuất, khóa luận thực hiện so sánh với *hai nhóm phương pháp hiện có*. Nhóm thứ nhất bao gồm *các phương pháp dựa trên GAN@Goodfellow2014GAN tiên tiến* như *DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont, DFS@Zhu2020FewShotTextStyle và FTransGAN@Li2021FTransGAN*, nhằm chứng minh khả năng vượt trội của mô hình Khuếch tán trong việc tạo ra hình ảnh chất lượng cao và ổn định. Nhóm thứ hai là *mô hình FontDiffuser nguyên bản@Yang2024FontDiffuser*, được sử dụng để đối sánh trực tiếp nhằm định lượng chính xác hiệu quả đóng góp của các cải tiến kỹ thuật được đề xuất trong khóa luận (như mô-đun CL-SCR) so với thuật toán ban đầu.
+_*Mô hình đối chứng (Baseline)*_: Để thiết lập một hệ quy chiếu đánh giá toàn diện và làm nổi bật ưu thế của phương pháp đề xuất, khóa luận thực hiện so sánh với *hai nhóm phương pháp hiện có*. Nhóm thứ nhất bao gồm *các phương pháp dựa trên GAN@Goodfellow2014GAN tiên tiến* như *DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont, DFS@Zhu2020FewShotTextStyle và FTransGAN@Li2021FTransGAN*, nhằm chứng minh khả năng vượt trội của mô hình Khuếch tán trong việc tạo ra hình ảnh chất lượng cao và ổn định. Nhóm thứ hai là *mô hình FontDiffuser nguyên bản@Yang2024FontDiffuser*, được sử dụng để đối sánh trực tiếp nhằm định lượng chính xác hiệu quả đóng góp của các cải tiến kỹ thuật được đề xuất trong khóa luận (như mô-đun CL-SCR) so với thuật toán ban đầu.
 
-_*Đối tượng dữ liệu:*_ Khoá luận sử dụng *hai hệ chữ viết có đặc trưng hình thái đối lập*. Hệ chữ nguồn bao gồm các bộ phông chữ chứa ký tự Hán (theo chuẩn GB2312) với độ phức tạp cấu trúc đa dạng. Đối ứng với đó là hệ chữ đích gồm bộ 52 ký tự tiếng Anh cơ bản (26 chữ hoa và 26 chữ thường) thuộc hệ Latin.
+_*Đối tượng dữ liệu*_: Khoá luận sử dụng *hai hệ chữ viết có đặc trưng hình thái đối lập*. Hệ chữ nguồn bao gồm các bộ phông chữ chứa ký tự Hán (theo chuẩn GB2312) với độ phức tạp cấu trúc đa dạng. Đối ứng với đó là hệ chữ đích gồm bộ 52 ký tự tiếng Anh cơ bản (26 chữ hoa và 26 chữ thường) thuộc hệ Latin.
 
 === Phạm vi nghiên cứu
-_*Phạm vi về ngôn ngữ:*_ Đề tài tập trung nghiên cứu và thực nghiệm trên bài toán *chuyển đổi phong cách hai chiều (Bidirectional Transfer)* giữa Tiếng Anh (Latin) và Tiếng Trung Quốc (Hán). Việc lựa chọn cặp ngôn ngữ này nhằm giải quyết hai thách thức bổ trợ cho nhau. Ở hướng Latin sang Hán tự (`e2c`), thách thức nằm ở việc ngoại suy phong cách từ một hệ chữ đơn giản, cấu trúc thưa sang một hệ chữ phức tạp hơn rất nhiều, đòi hỏi mô hình phải học cách áp dụng phong cách lên các cấu trúc dày đặc mà không làm vỡ nét. Ngược lại, ở hướng Hán tự sang Latin (`c2e`), thách thức nằm ở việc trích xuất phong cách từ hệ chữ nhiều chi tiết để áp dụng lên hệ chữ đơn giản, buộc mô hình phải có khả năng tổng quát hóa cao để lọc bỏ các nhiễu cấu trúc.
+_*Phạm vi về ngôn ngữ*_: Đề tài tập trung nghiên cứu và thực nghiệm trên bài toán *chuyển đổi phong cách hai chiều (Bidirectional Transfer)* giữa Tiếng Anh (Latin) và Tiếng Trung Quốc (Hán). Việc lựa chọn cặp ngôn ngữ này nhằm giải quyết hai thách thức bổ trợ cho nhau. Ở hướng Latin sang Hán tự (`e2c`), thách thức nằm ở việc ngoại suy phong cách từ một hệ chữ đơn giản, cấu trúc thưa sang một hệ chữ phức tạp hơn rất nhiều, đòi hỏi mô hình phải học cách áp dụng phong cách lên các cấu trúc dày đặc mà không làm vỡ nét. Ngược lại, ở hướng Hán tự sang Latin (`c2e`), thách thức nằm ở việc trích xuất phong cách từ hệ chữ nhiều chi tiết để áp dụng lên hệ chữ đơn giản, buộc mô hình phải có khả năng tổng quát hóa cao để lọc bỏ các nhiễu cấu trúc.
 
-_*Phạm vi về bài toán:*_ Khoá luận tập trung vào *bài toán One-shot Generation*, trong đó mô hình chỉ được cung cấp một ký tự duy nhất làm ảnh tham chiếu phong cách (Style Reference) để sinh ra ký tự mục tiêu mang nội dung khác. Cụ thể, một ký tự Latin sẽ được dùng để định hình phong cách cho một Hán tự ở chiều xuôi, và một ký tự Hán sẽ được dùng để định hình phong cách cho một chữ cái Latin ở chiều ngược.
+_*Phạm vi về bài toán*_: Khoá luận tập trung vào *bài toán One-shot Generation*, trong đó mô hình chỉ được cung cấp một ký tự duy nhất làm ảnh tham chiếu phong cách (Style Reference) để sinh ra ký tự mục tiêu mang nội dung khác. Cụ thể, một ký tự Latin sẽ được dùng để định hình phong cách cho một Hán tự ở chiều xuôi, và một ký tự Hán sẽ được dùng để định hình phong cách cho một chữ cái Latin ở chiều ngược.
 
-_*Phạm vi về dữ liệu:*_ Sử dụng *các bộ dữ liệu phông chữ mã nguồn mở hỗ trợ đồng thời cả hai bảng mã*, ví dụ như các bộ font thuộc dự án Google Noto CJK hoặc các font nghệ thuật song ngữ. Điều này nhằm đảm bảo luôn tồn tại cặp dữ liệu đối chứng (Ground Truth) chính xác: cùng một bộ font phải chứa cả ký tự Hán và Latin tương ứng để phục vụ cho quá trình huấn luyện giám sát và đánh giá định lượng.
+_*Phạm vi về dữ liệu*_: Sử dụng *các bộ dữ liệu phông chữ mã nguồn mở hỗ trợ đồng thời cả hai bảng mã*, ví dụ như các bộ font thuộc dự án Google Noto CJK hoặc các font nghệ thuật song ngữ. Điều này nhằm đảm bảo luôn tồn tại cặp dữ liệu đối chứng (Ground Truth) chính xác: cùng một bộ font phải chứa cả ký tự Hán và Latin tương ứng để phục vụ cho quá trình huấn luyện giám sát và đánh giá định lượng.
 
 == Cấu trúc của khoá luận
 Phần còn lại của khoá luận này được trình bày như sau:
 
 #tab_eq[
-  *@chuong2 – Cơ sở lý thuyết:*
+  *@chuong2 – Cơ sở lý thuyết*.
   #parbreak()
   Trình bày các khái niệm nền tảng về bài toán sinh font chữ. Đồng thời, chương này tổng hợp và phân tích các phương pháp sinh font trước đây, bao gồm nhóm mô hình dựa trên GAN@Goodfellow2014GAN (DG-Font@Xie2021DGFont, CF-Font@Wang2023CFFont, DFS@Zhu2020FewShotTextStyle, FTransGAN@Li2021FTransGAN) và nhóm mô hình khuếch tán@SohlDickstein2015ICML (FontDiffuser@Yang2024FontDiffuser), chỉ ra ưu nhược điểm và xu hướng phát triển.
   #parbreak()
 
-  *@chuong3 – Phương pháp đề xuất:*
+  *@chuong3 – Phương pháp đề xuất*.
   #parbreak()
   Trình bày chi tiết pipeline gốc của FontDiffuser@Yang2024FontDiffuser, bao gồm hai giai đoạn huấn luyện (Giai đoạn 1 – Tái tạo cấu trúc, Giai đoạn 2 – Tinh chỉnh phong cách).
   Phân tích cơ chế hoạt động của các mô-đun chính như MCA (Multi-scale Content Aggregation), RSI (Reference-Structure Interaction) và SCR (Style Contrastive Refinement).
   Trên cơ sở đó, chương này giới thiệu ý tưởng cải tiến nhằm mở rộng khả năng chuyển phong cách đa ngôn ngữ (cross-lingual style transfer) thông qua việc thay thế và điều chỉnh mô-đun SCR.
   #parbreak()
 
-  *@chuong4 – Thực nghiệm và Đánh giá kết quả:*
+  *@chuong4 – Thực nghiệm và Đánh giá kết quả*.
   #parbreak()
   Chương này mô tả chi tiết quy trình thiết lập thực nghiệm, bao gồm việc xây dựng tập dữ liệu đa ngôn ngữ (Latin–Hán), cấu hình huấn luyện và các tiêu chí đánh giá được sử dụng (FID@Heusel2017TTUR, SSIM@Wang2004SSIM, LPIPS@Zhang2018LPIPS, L1, User Study). Đồng thời, chương trình bày các kết quả định lượng, định tính và đánh giá của con người, so sánh mô hình đề xuất (FontDiffuser + CL-SCR) với các mô hình nền tảng (GAN-based và Diffusion-based). Phần phân tích chuyên sâu sẽ đánh giá hiệu quả của mô-đun CL-SCR, nghiên cứu Ablation về các thành phần cải tiến, và thảo luận về ưu điểm, hạn chế cũng như ảnh hưởng của các tham số then chốt (như số lượng mẫu âm, Guidance Scale) đối với khả năng chuyển phong cách đa ngôn ngữ..
   #parbreak()
 
-  *@ketluan – Kết luận và Hướng phát triển:*
+  *@ketluan – Kết luận và Hướng phát triển*.
   #parbreak()
   Tóm tắt toàn bộ đóng góp chính của khóa luận, bao gồm việc tái hiện pipeline FontDiffuser và đề xuất CL-SCR cho cross-lingual font generation.
   Đề xuất các hướng nghiên cứu mở rộng, như mở rộng sang nhiều ngôn ngữ hơn (tiếng Việt, tiếng Nhật, tiếng Ả Rập), và áp dụng parameter-efficient fine-tuning (như LoRA@Hu2022LoRA hoặc Adapter@Houlsby2019PETL) để tối ưu tài nguyên huấn luyện.
 
-  *#link(<phuluc>)[Phụ lục] – Trình bày phụ lục của khoá luận:*
+  *#link(<phuluc>)[Phụ lục] – Trình bày phụ lục của khoá luận*.
   ]
 
 #pagebreak()
