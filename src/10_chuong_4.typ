@@ -767,7 +767,7 @@ Xu hướng lựa chọn của người dùng có thể được lý giải thô
 
 Tóm lại, tỷ lệ ưu tiên cao trong khảo sát người dùng là minh chứng thực tiễn khẳng định phương pháp đề xuất đã đạt được điểm cân bằng tốt nhất giữa hai yêu cầu cốt lõi: giữ đúng chữ (Content) và thể hiện đúng kiểu (Style).
 
-== Nghiên cứu Bóc tách
+== Nghiên cứu Bóc tách (Ablation Study)
 Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nhằm định lượng đóng góp cụ thể của từng thành phần kỹ thuật trong phương pháp đề xuất. Để đảm bảo tính tập trung và sức thuyết phục của các kết luận, thay vì dàn trải thí nghiệm trên mọi biến thể, khoá luận cố định và lựa chọn hai cấu hình đại diện tiêu biểu nhất làm cơ sở so sánh:
 
 #tab_eq[
@@ -1080,7 +1080,7 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
 
 _*Kết luận*_: Tổng hợp lại, kết quả nghiên cứu bóc tách đã làm sáng tỏ vai trò riêng biệt và bổ trợ lẫn nhau của các thành phần kiến trúc. Trong khi *MCA* và *RSI* đóng vai trò là nền tảng cấu trúc không thể thiếu để ngăn chặn sự sụp đổ hình dáng ký tự, thì *CL-SCR* chính là nhân tố quyết định nâng tầm chất lượng thị giác và khả năng tổng quát hoá. Việc CL-SCR giúp giảm sâu chỉ số *FID* trên các *tập dữ liệu lạ (UFSC)* so với SCR gốc khẳng định rằng cơ chế tương phản đa ngôn ngữ là chìa khoá để mô hình vượt qua rào cản hình thái học, cho phép chuyển giao phong cách Latin sang Hán tự một cách tự nhiên và linh hoạt hơn.
 
-=== Ảnh hưởng của Tăng cường dữ liệu
+=== Ảnh hưởng của Tăng cường dữ liệu (Data Augmentation)
 Mục tiêu của nghiên cứu này là đánh giá vai trò của *chiến lược tăng cường dữ liệu*, cụ thể là kỹ thuật *Random Resized Crop* (cắt và thay đổi tỷ lệ ngẫu nhiên) được áp dụng trong quá trình huấn luyện mô-đun *CL-SCR*. Về mặt lý thuyết, việc tăng cường dữ liệu giúp mô hình học được *các đặc trưng phong cách bất biến theo tỷ lệ* và tránh hiện tượng *quá khớp (overfitting)*. Để kiểm chứng điều này, khoá luận *so sánh hiệu năng* của mô hình tiêu biểu ($"Ours"_"AZ"$ cho hướng `e2c` và $"Ours"_"All"$ cho hướng `c2e`) trong hai cấu hình: *có* và *không có Augmentation*.
 
 Kết quả thực nghiệm được trình bày chi tiết tại @tab:e2c_aug và @tab:c2e_aug.
@@ -1270,7 +1270,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
 
 _*Kết luận*_: Dựa trên phân tích trên, khoá luận khẳng định *chiến lược Tăng cường dữ liệu* là thành phần không thể thiếu, đặc biệt quan trọng để nâng cao hiệu suất trên các *dữ liệu chưa từng biết (Unseen Domains)*, mặc dù có thể đánh đổi một lượng nhỏ hiệu năng trên các dữ liệu đã biết.
 
-=== Ảnh hưởng của Chế độ hàm loss
+=== Ảnh hưởng của Chế độ hàm loss (Loss Mode)
 Trong kiến trúc *CL-SCR*, hàm mất mát *InfoNCE@Oord2018InfoNCE* đóng vai trò điều hướng không gian biểu diễn phong cách. khoá luận khảo sát *ba biến thể chiến lược huấn luyện* được định nghĩa trong tham số `loss_mode`:
 `scr_intra`: Chỉ sử dụng mẫu âm nội miền (Intra-domain). Ví dụ: so sánh Style Latin với các Style Latin khác.
 `scr_cross`: Chỉ sử dụng mẫu âm xuyên miền (Cross-domain). Ví dụ: so sánh Style Latin với Style Hán tự.
@@ -1498,7 +1498,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
 
 _*Kết luận*_: Tổng kết lại, đối với bài toán tổng quát, *chiến lược* `scr_both` *là lựa chọn an toàn và ổn định nhất* để cân bằng giữa độ chính xác và tính tự nhiên. Tuy nhiên, thực nghiệm cũng mở ra một góc nhìn quan trọng: khi miền nguồn có lượng thông tin phong phú như Hán tự, *chiến lược học nội miền* (`scr_intra`) *cũng mang lại hiệu quả rất ấn tượng*, gợi ý tiềm năng tối ưu hoá chi phí huấn luyện cho các ứng dụng cụ thể mà không nhất thiết phải phụ thuộc vào dữ liệu cặp đôi xuyên ngôn ngữ.
 
-=== Ảnh hưởng của số lượng mẫu âm
+=== Ảnh hưởng của Số lượng mẫu âm (Negative Sample Numbers)
 Trong khuôn khổ của *phương pháp học tương phản (Contrastive Learning)*, *số lượng mẫu âm ($K$)* đóng vai trò quan trọng trong việc định hình không gian biểu diễn đặc trưng. Theo lý thuyết thông thường, việc tăng số lượng mẫu âm thường giúp mô hình phân biệt tốt hơn giữa các đặc trưng phong cách, từ đó học được các biểu diễn phong phú hơn. Để kiểm chứng giả thuyết này trong bối cảnh sinh phông chữ đa ngôn ngữ, khoá luận tiến hành thực nghiệm với các giá trị *$K$ lần lượt là 4, 8 và 16* trên cả hai hướng chuyển đổi. Kết quả chi tiết được tổng hợp tại @tab:e2c_numneg và @tab:c2e_numneg.
 
 #figure(
