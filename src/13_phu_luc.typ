@@ -253,7 +253,7 @@ Bảng dưới đây so sánh thời gian trung bình để sinh ra *một ký t
     align: horizon,
     stroke: 0.5pt,
     table.header(
-      [*Mô hình*], [*Cơ chế sinh*], [*Số bước \ chuyển tiếp* \ (Forward Passes)], [*Thời gian / 1 ảnh*]
+      [*Mô hình*], [*Cơ chế sinh*], [*Số bước \ chuyển tiếp* \ (Forward Passes)], [*Thời gian \ / 1 ảnh*]
     ),
     table.hline(),
     
