@@ -19,6 +19,6 @@ Thứ nhất, mở rộng phạm vi ngôn ngữ. Hiện tại mô hình mới ch
 
 Thứ hai, tối ưu hoá tài nguyên huấn luyện. Mô hình Diffusion hiện tại đòi hỏi chi phí tính toán lớn. Để khắc phục, khoá luận đề xuất áp dụng các kỹ thuật *tinh chỉnh hiệu quả tham số (Parameter-Efficient Fine-Tuning - PEFT)* như *LoRA*@Hu2022LoRA hoặc *Adapter*@Houlsby2019PETL. Việc này sẽ cho phép huấn luyện mô hình trên các GPU phổ thông mà không làm suy giảm đáng kể chất lượng sinh ảnh.
 
-Cuối cùng, về khả năng xử lý phong cách cực đoan, mô hình đôi khi gặp khó khăn với các phông chữ thư pháp biến dạng cao. Giải pháp tiềm năng là tích hợp các cơ chế *chú ý biến dạng (Deformable Attention)* mạnh mẽ hơn hoặc kết hợp với *biểu diễn vector (Vector Graphics)* để nắm bắt tốt hơn các đường cong phức tạp thay vì chỉ dựa vào ảnh raster thuần túy.
+Cuối cùng, về khả năng xử lý phong cách cực đoan, mô hình đôi khi gặp khó khăn với các phông chữ thư pháp biến dạng cao. Giải pháp tiềm năng là tích hợp các cơ chế *chú ý biến dạng (Deformable Attention)* mạnh mẽ hơn hoặc kết hợp với *biểu diễn vector (Vector Graphics)* để nắm bắt tốt hơn các đường cong phức tạp thay vì chỉ dựa vào ảnh raster thuần tuý.
 
 #pagebreak()
