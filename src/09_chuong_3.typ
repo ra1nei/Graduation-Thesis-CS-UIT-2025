@@ -22,17 +22,19 @@ FontDiffuser được thiết kế dưới dạng một mô hình khuếch tán 
 )
 
 Mô hình nhận hai đầu vào chính:
-- *Ảnh nội dung (Source Image) $x_c$*: Cung cấp thông tin về cấu trúc nét, bố cục của ký tự gốc (ví dụ: một chữ cái Arial cơ bản).
-#figure(
-  image("../images/example_image/丈.png", width: 20%),
-  caption: [Ví dụ về ảnh nội dung.]
-)
+#tab_eq[
+  *_Ảnh nội dung (Source Image)_ $x_c$*: Cung cấp thông tin về cấu trúc nét, bố cục của ký tự gốc (ví dụ: một chữ cái Arial cơ bản).
+  #figure(
+    image("../images/example_image/丈.png", width: 20%),
+    caption: [Ví dụ về ảnh nội dung.]
+  )
 
-- *Ảnh phong cách (Reference Image) $x_s$*: Cung cấp thông tin về kiểu dáng, độ đậm nhạt, serif, và các đặc trưng thẩm mỹ (ví dụ: một chữ cái thư pháp).
-#figure(
-  image("../images/example_image/A-OTF-ShinMGoMin-Shadow-2_english+M+.png", width: 20%),
-  caption: [Ví dụ về ảnh phong cách.]
-)
+  #h(1.5em) *_Ảnh phong cách (Reference Image)_ $x_s$*: Cung cấp thông tin về kiểu dáng, độ đậm nhạt, serif, và các đặc trưng thẩm mỹ (ví dụ: một chữ cái thư pháp).
+  #figure(
+    image("../images/example_image/A-OTF-ShinMGoMin-Shadow-2_english+M+.png", width: 20%),
+    caption: [Ví dụ về ảnh phong cách.]
+  )
+]
 
 Đầu ra của mô hình là ảnh $x_0$ – một ký tự mới mang nội dung của $x_c$ nhưng khoác lên mình phong cách của $x_s$.
 #figure(
@@ -80,8 +82,9 @@ Quy trình cụ thể diễn ra như sau:
   2. Tại mỗi tầng, RSI tiếp nhận các đặc trưng từ UNet ($r_i$) và bản đồ cấu trúc tương ứng ($f_s^i$). Cả hai được làm phẳng (flatten) thành chuỗi vector $S_r$ và $S_s$.
 
   3. Cơ chế Cross-Attention được áp dụng để tính toán vùng quan tâm (region of interest) thông qua phép chiếu tuyến tính $phi.alt$:
+
   #tab_eq(indent: 3em)[
-    *Query (Q)*: Được tạo ra từ đặc trưng tham chiếu $S_s (phi.alt_q (S_s))$.
+    #h(3em) *Query (Q)*: Được tạo ra từ đặc trưng tham chiếu $S_s (phi.alt_q (S_s))$.
 
     *Key (K) và Value (V)*: Được tạo ra từ đặc trưng UNet $S_r (phi.alt_k (S_r), phi.alt_v (S_r))$.  
   ]
@@ -98,79 +101,7 @@ Thông qua cơ chế này, RSI có khả năng trích xuất trực tiếp thôn
 === Giai đoạn 2 - Tinh chỉnh phong cách (Style Refinement Phase)
 Mặc dù Giai đoạn 1 có thể tạo ra ký tự rõ nét, nhưng phong cách thường chưa được tách biệt hoàn toàn. Giai đoạn 2 cố định các trọng số của UNet và tập trung huấn luyện mô-đun *Style Contrastive Refinement (SCR)*. Mô-đun này đóng vai trò như một người hướng dẫn, sử dụng cơ chế học tương phản (Contrastive Learning) để ép buộc mô hình sinh ra ảnh có style vector gần với ảnh tham chiếu nhất có thể.
 
-== Mô-đun Style Contrastive Refinement (SCR Module) <phantich_scr>
-
-Trong bài toán sinh phông chữ (font generation), mục tiêu cốt lõi của việc sinh phông chữ là đạt được hiệu ứng bắt chước phong cách (style imitation) chính xác, độc lập với sự biến thiên về phong cách giữa ảnh nguồn và ảnh tham chiếu. Trong các mô hình sinh ảnh truyền thống, sự vướng víu (disentanglement) giữa đặc trưng phong cách và nội dung thường không hoàn hảo, dẫn đến kết quả phong cách không nhất quán. Để giải quyết vấn đề này, nhóm tác giả đề xuất một chiến lược mới: xây dựng mô-đun *Style Contrastive Refinement (SCR)*.
-
-Mô-đun Style Contrastive Refinement (SCR) được đề xuất như một chiến lược mới để giải quyết vấn đề này. SCR hoạt động như một cơ chế học biểu diễn (representation learning mô-đun) và một bộ giám sát đặc trưng (feature supervisor). Nó không tham gia trực tiếp vào quá trình sinh ảnh pixel-wise của mô hình khuếch tán (diffusion model), mà có nhiệm vụ cung cấp tín hiệu điều hướng, đảm bảo phong cách của ảnh sinh ra ($x_0$) phải nhất quán với ảnh đích ($x_p$) ở cả cấp độ toàn cục và cục bộ.
-
-=== Kiến trúc Khai thác Phong cách
-Kiến trúc của SCR, như được minh họa trong thiết kế hệ thống, bao gồm hai thành phần chính:
-
-#figure(
-  image("../images/FontDiffuser/Style Contrastive Refinement.png"),
-  caption: [Minh hoạ mô-đun SCR.]
-)
-
-1. *Bộ trích xuất Đặc trưng (Style Extractor)*:
-#tab_eq[
-  #h(1.5em) Sử dụng một mạng *VGG* (lấy cảm hứng từ Zhang et al. 2022@Sun2018PyramidGAN) để nhúng ảnh phông chữ, khai thác các đặc tính phong cách và cấu trúc.
-
-  Để bao phủ đầy đủ cả phong cách cục bộ (như nét bút, serifs) và toàn cục (như độ đậm, độ nghiêng), bộ trích xuất chọn ra $N$ tầng feature maps, ký hiệu là $F_v = {f_v^0, f_v^1, ..., f_v^N}$.
-]
-
-2. *Bộ chiếu Đặc trưng (Style Projector)*: 
-  - Các feature maps $F_v$ được đưa vào bộ chiếu. Tại đây, áp dụng đồng thời *average pooling* và *maximum pooling* để trích xuất các đặc trưng kênh toàn cục khác nhau.
-  - Kết quả từ hai phép pooling được nối (concatenate) theo chiều kênh, tạo thành đặc trưng tổng hợp $F_g$.
-  - Cuối cùng, $F_g$ được đưa qua các phép chiếu tuyến tính (linear projections) để thu được các *vector phong cách* $V = {v^0, v^1, ..., v^N}$. Các vector này đóng vai trò là đầu vào cho hàm mất mát tương phản.
-
-=== Cơ chế Học Tương phản và Hàm Mất mát
-SCR sử dụng chiến lược học tương phản (Contrastive Learning), vận dụng hàm mất mát $L_"sc"$ để điều hướng mô hình khuếch tán.
-
-==== Chiến lược Thiết lập Mẫu
-Để đảm bảo tính liên quan về nội dung nhưng phân biệt rõ ràng về phong cách, SCR lựa chọn mẫu cẩn thận:
-#tab_eq[
-  *Mẫu sinh ra (Generated Sample - $x_0$)*: Ảnh được tạo ra bởi mô hình khuếch tán.
-
-  *Mẫu dương (Positive Sample - $x_p$)*: Là ảnh đích (target image) mang phong cách mong muốn. Để tăng cường *tính bền vững (robustness)* của quá trình bắt chước phong cách, một chiến lược tăng cường dữ liệu (augmentation strategy) được áp dụng trên $x_p$, bao gồm *cắt ngẫu nhiên (random cropping)* và *thay đổi kích thước ngẫu nhiên (random resizing)*.
-
-  *Mẫu âm (Negative Samples - $x_n$)*: Là $K$ mẫu ảnh có *cùng nội dung* ký tự với $x_p$ và $x_0$ nhưng mang *phong cách khác biệt*.
-]
-
-
-// DEBUG: Chèn hình ví dụ ở đây
-
-==== Định nghĩa hàm mất mát
-Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE@Oord2018InfoNCE* được tính tổng trên $N$ tầng đặc trưng:
-
-$ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $ <L_sc_equa>
-
-Trong đó:
-#tab_eq[
-  *$L_"sc"$*: Giá trị hàm mất mát tương phản phong cách.
-
-  *$N$*: Tổng số tầng đặc trưng được sử dụng để trích xuất và so sánh.
-
-  *$l$*: Chỉ số đại diện cho tầng đặc trưng đang xét (từ $0$ đến $N-1$).
-
-  *$v_0^l$*: Vector đặc trưng lớp $l$ của ảnh sinh (ảnh kết quả cần tối ưu).
-
-  *$v_p^l$*: Vector đặc trưng lớp $l$ của ảnh dương/ảnh mẫu (ảnh chứa phong cách mục tiêu).
-  
-  *$v_(n_i)^l$*: Vector đặc trưng lớp $l$ của ảnh âm thứ $i$ (các ảnh khác phong cách cần loại bỏ).
-
-  *$K$*: Số lượng mẫu ảnh âm được sử dụng để so sánh trong công thức.
-
-  *$v dot v'$*: Phép nhân vô hướng, biểu thị độ tương đồng Cosine giữa hai vector (đo mức độ giống nhau về phong cách).
-
-  *$tau$*: Tham số nhiệt độ (được thiết lập là $0.07$), dùng để điều chỉnh độ nhạy của hàm mất mát.
-]
-
-#untab_para[
-  Thông qua việc tối thiểu hoá hàm mất mát này, mô hình được định hướng để kéo vector phong cách của ảnh sinh lại gần vector của ảnh đích, đồng thời đẩy xa khỏi các vector của các phong cách không mong muốn.
-]
-
-== Kết hợp vào Mục tiêu Huấn luyện
+=== Kết hợp vào Mục tiêu Huấn luyện
 Để đạt được sự cân bằng giữa việc tái tạo nội dung chính xác và bắt chước phong cách tinh tế, quy trình huấn luyện của FontDiffuser áp dụng chiến lược *hai giai đoạn*: *từ thô đến tinh (coarse-to-fine two-phase strategy)*.
 
 1. *Giai đoạn 1 - Tái tạo Cấu trúc (Phase 1 - Coarse Stage)*: 
@@ -212,6 +143,81 @@ Trong giai đoạn này, các trọng số được giữ nguyên cho các thàn
 
 #untab_para[
   Việc bổ sung $L_"sc"$ (như đã định nghĩa ở Phương trình @L_sc_equa trong phần phân tích SCR (@phantich_scr)) đóng vai trò then chốt trong việc đảm bảo ảnh đầu ra không chỉ đúng về cấu trúc (nhờ $L_"cp", L_"offset"$) mà còn đạt độ chân thực cao về phong cách nghệ thuật.
+]
+
+== Mô-đun Style Contrastive Refinement (SCR Module) <phantich_scr>
+
+Trong bài toán sinh phông chữ (font generation), mục tiêu cốt lõi của việc sinh phông chữ là đạt được hiệu ứng bắt chước phong cách (style imitation) chính xác, độc lập với sự biến thiên về phong cách giữa ảnh nguồn và ảnh tham chiếu. Trong các mô hình sinh ảnh truyền thống, sự vướng víu (disentanglement) giữa đặc trưng phong cách và nội dung thường không hoàn hảo, dẫn đến kết quả phong cách không nhất quán. Để giải quyết vấn đề này, nhóm tác giả đề xuất một chiến lược mới: xây dựng mô-đun *Style Contrastive Refinement (SCR)*.
+
+Mô-đun Style Contrastive Refinement (SCR) được đề xuất như một chiến lược mới để giải quyết vấn đề này. SCR hoạt động như một cơ chế học biểu diễn (representation learning mô-đun) và một bộ giám sát đặc trưng (feature supervisor). Nó không tham gia trực tiếp vào quá trình sinh ảnh pixel-wise của mô hình khuếch tán (diffusion model), mà có nhiệm vụ cung cấp tín hiệu điều hướng, đảm bảo phong cách của ảnh sinh ra ($x_0$) phải nhất quán với ảnh đích ($x_p$) ở cả cấp độ toàn cục và cục bộ.
+
+=== Kiến trúc Khai thác Phong cách
+Kiến trúc của SCR, như được minh họa trong thiết kế hệ thống, bao gồm hai thành phần chính:
+
+#figure(
+  image("../images/FontDiffuser/Style Contrastive Refinement.png"),
+  caption: [Minh hoạ mô-đun SCR.]
+)
+
+1. *Bộ trích xuất Đặc trưng (Style Extractor)*:
+#tab_eq[
+  #h(1.5em) Sử dụng một mạng *VGG* (lấy cảm hứng từ Zhang et al. 2022@Sun2018PyramidGAN) để nhúng ảnh phông chữ, khai thác các đặc tính phong cách và cấu trúc.
+
+  Để bao phủ đầy đủ cả phong cách cục bộ (như nét bút, serifs) và toàn cục (như độ đậm, độ nghiêng), bộ trích xuất chọn ra $N$ tầng feature maps, ký hiệu là $F_v = {f_v^0, f_v^1, ..., f_v^N}$.
+]
+
+2. *Bộ chiếu Đặc trưng (Style Projector)*: 
+
+#tab_eq(indent: 1.5em)[
+  #h(1.5em) Các feature maps $F_v$ được đưa vào bộ chiếu. Tại đây, áp dụng đồng thời *average pooling* và *maximum pooling* để trích xuất các đặc trưng kênh toàn cục khác nhau.
+
+  Kết quả từ hai phép pooling được nối (concatenate) theo chiều kênh, tạo thành đặc trưng tổng hợp $F_g$.
+
+  Cuối cùng, $F_g$ được đưa qua các phép chiếu tuyến tính (linear projections) để thu được các *vector phong cách* $V = {v^0, v^1, ..., v^N}$. Các vector này đóng vai trò là đầu vào cho hàm mất mát tương phản.
+]
+
+=== Cơ chế Học Tương phản và Hàm Mất mát
+SCR sử dụng chiến lược học tương phản (Contrastive Learning), vận dụng hàm mất mát $L_"sc"$ để điều hướng mô hình khuếch tán.
+
+==== Chiến lược Thiết lập Mẫu
+Để đảm bảo tính liên quan về nội dung nhưng phân biệt rõ ràng về phong cách, SCR lựa chọn mẫu cẩn thận:
+#tab_eq[
+  *Mẫu sinh ra (Generated Sample - $x_0$)*: Ảnh được tạo ra bởi mô hình khuếch tán.
+
+  *Mẫu dương (Positive Sample - $x_p$)*: Là ảnh đích (target image) mang phong cách mong muốn. Để tăng cường *tính bền vững (robustness)* của quá trình bắt chước phong cách, một chiến lược tăng cường dữ liệu (augmentation strategy) được áp dụng trên $x_p$, bao gồm *cắt ngẫu nhiên (random cropping)* và *thay đổi kích thước ngẫu nhiên (random resizing)*.
+
+  *Mẫu âm (Negative Samples - $x_n$)*: Là $K$ mẫu ảnh có *cùng nội dung* ký tự với $x_p$ và $x_0$ nhưng mang *phong cách khác biệt*.
+]
+
+
+// DEBUG: Chèn hình ví dụ ở đây
+
+==== Định nghĩa hàm mất mát
+Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE@Oord2018InfoNCE* được tính tổng trên $N$ tầng đặc trưng:
+
+$ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $ <L_sc_equa>
+
+Trong đó:
+#tab_eq[
+  *$N$*: Tổng số tầng đặc trưng được sử dụng để trích xuất và so sánh.
+
+  *$l$*: Chỉ số đại diện cho tầng đặc trưng đang xét (từ $0$ đến $N-1$).
+
+  *$v_0^l$*: Vector đặc trưng lớp $l$ của ảnh sinh (ảnh kết quả cần tối ưu).
+
+  *$v_p^l$*: Vector đặc trưng lớp $l$ của ảnh dương/ảnh mẫu (ảnh chứa phong cách mục tiêu).
+  
+  *$v_(n_i)^l$*: Vector đặc trưng lớp $l$ của ảnh âm thứ $i$ (các ảnh khác phong cách cần loại bỏ).
+
+  *$K$*: Số lượng mẫu ảnh âm được sử dụng để so sánh trong công thức.
+
+  *$v dot v'$*: Phép nhân vô hướng, biểu thị độ tương đồng Cosine giữa hai vector (đo mức độ giống nhau về phong cách).
+
+  *$tau$*: Tham số nhiệt độ (được thiết lập là $0.07$), dùng để điều chỉnh độ nhạy của hàm mất mát.
+]
+
+#untab_para[
+  Thông qua việc tối thiểu hoá hàm mất mát này, mô hình được định hướng để kéo vector phong cách của ảnh sinh lại gần vector của ảnh đích, đồng thời đẩy xa khỏi các vector của các phong cách không mong muốn.
 ]
 
 == Cải tiến đề xuất: Cross-Lingual Style Contrastive Refinement (CL-SCR)
