@@ -46,7 +46,7 @@ Mô hình nhận hai đầu vào chính:
 
 Quy trình huấn luyện được chia thành hai giai đoạn (phases) tuần tự nhằm đảm bảo chất lượng sinh ảnh tối ưu:
 
-=== Giai đoạn 1 - Tái tạo cấu trúc
+=== Giai đoạn 1 - Tái tạo cấu trúc (Reconstruction Phase)
 Mục tiêu của giai đoạn này là huấn luyện mô hình khuếch tán học cách khôi phục lại hình ảnh ký tự mục tiêu từ nhiễu, dựa trên điều kiện $x_c$ và $x_s$. Các thành phần cốt lõi bao gồm *Bộ mã hoá nội dung ($E_c$) và phong cách ($E_s$)* - dùng để *trích xuất đặc trưng ngữ nghĩa*.
 
 ==== Multi-scale Content Aggregation (MCA) 
@@ -99,10 +99,10 @@ Quy trình cụ thể diễn ra như sau:
 
 Thông qua cơ chế này, RSI có khả năng trích xuất trực tiếp thông tin cấu trúc từ ảnh tham chiếu và điều chỉnh linh hoạt đặc trưng của ảnh nguồn, đảm bảo sự tương thích về phong cách mà không làm gãy vỡ các nét chi tiết.
 
-=== Giai đoạn 2 - Tinh chỉnh phong cách
+=== Giai đoạn 2 - Tinh chỉnh phong cách (Style Refinement Phase)
 Mặc dù Giai đoạn 1 có thể tạo ra ký tự rõ nét, nhưng phong cách thường chưa được tách biệt hoàn toàn. Giai đoạn 2 cố định các trọng số của UNet và tập trung huấn luyện mô-đun *Style Contrastive Refinement (SCR)*. Mô-đun này đóng vai trò như một người hướng dẫn, sử dụng cơ chế học tương phản (Contrastive Learning) để ép buộc mô hình sinh ra ảnh có style vector gần với ảnh tham chiếu nhất có thể.
 
-== Mô-đun Style Contrastive Refinement (SCR) <phantich_scr>
+== Mô-đun Style Contrastive Refinement (SCR Module) <phantich_scr>
 
 Trong bài toán sinh phông chữ (font generation), mục tiêu cốt lõi của việc sinh phông chữ là đạt được hiệu ứng bắt chước phong cách (style imitation) chính xác, độc lập với sự biến thiên về phong cách giữa ảnh nguồn và ảnh tham chiếu. Trong các mô hình sinh ảnh truyền thống, sự vướng víu (disentanglement) giữa đặc trưng phong cách và nội dung thường không hoàn hảo, dẫn đến kết quả phong cách không nhất quán. Để giải quyết vấn đề này, nhóm tác giả đề xuất một chiến lược mới: xây dựng mô-đun *Style Contrastive Refinement (SCR)*.
 
