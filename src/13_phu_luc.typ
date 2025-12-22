@@ -1,4 +1,5 @@
 #import "/template.typ": *
+#set text(lang: "vi")
 
 #[
   #set heading(numbering: none, supplement: [Phụ lục])
@@ -45,7 +46,7 @@ Mạng UNet đóng vai trò là bộ xương sống (backbone) trong mô hình k
     [Up block], [3], [$128 times H times W$], [$64 times H times W$],
     [Conv block], [1], [$64 times H times W$], [$3 times H times W$],
   ),
-  caption: [Chi tiết kiến trúc mạng UNet trong FontDiffuser. Trong đó: MCA là khối Tổng hợp nội dung đa quy mô, SI là khối Chèn phong cách (Style Insertion) sử dụng cơ chế Cross-Attention.]
+  caption: [Chi tiết kiến trúc mạng UNet trong FontDiffuser. \ Trong đó: MCA là khối Tổng hợp nội dung đa quy mô, \ SI là khối Chèn phong cách (Style Insertion) sử dụng cơ chế Cross-Attention.]
 ) <tab:unet_arch>
 
 #pagebreak()
@@ -91,7 +92,7 @@ Mô-đun CL-SCR được thiết kế dựa trên mạng VGG-19 pre-trained đ�
     [Dynamic Sampling (Intra/Cross)], [$K=4$ mẫu âm / step],
     [Loss Computation], [Scalar ($cal(L)_"CL-SCR"$)],
   ),
-  caption: [Chi tiết kiến trúc và luồng dữ liệu của mô-đun CL-SCR. Các ký hiệu $"ReLU"^x_1$ biểu thị lớp kích hoạt đầu tiên trong mỗi khối VGG.]
+  caption: [Chi tiết kiến trúc và luồng dữ liệu của mô-đun CL-SCR. \ Các ký hiệu $"ReLU"^x_1$ biểu thị lớp kích hoạt đầu tiên trong mỗi khối VGG.]
 ) <tab:cl_scr_arch>
 
 #pagebreak()
@@ -144,7 +145,7 @@ Mô-đun CL-SCR được thiết kế dựa trên mạng VGG-19 pre-trained đ�
     table.hline(),
     
     // Giai đoạn 1
-    table.cell(rowspan: 8, align: horizon)[*Giai đoạn 1: \ Tái tạo cấu trúc*],
+    table.cell(rowspan: 8, align: horizon)[*Giai đoạn 1*: \ *Tái tạo cấu trúc*],
     [Độ phân giải ảnh \ (Resolution)], [$64 times 64$],
     [Kích thước Batch \ (Batch Size)], [$4$],
     [Tổng số bước lặp \ (Max Steps)], [$400,000$],
@@ -155,7 +156,7 @@ Mô-đun CL-SCR được thiết kế dựa trên mạng VGG-19 pre-trained đ�
     [Phần cứng], [1 $times$ NVIDIA Tesla P100],
 
     // Giai đoạn 2
-    table.cell(rowspan: 8, align: horizon)[*Giai đoạn 2: \ Tinh chỉnh phong cách* \ (w/ CL-SCR)],
+    table.cell(rowspan: 8, align: horizon)[*Giai đoạn 2*: \ *Tinh chỉnh phong cách* \ (w/ CL-SCR)],
     [Kích thước Batch \ (Batch Size)], [$4$],
     [Tổng số bước lặp \ (Max Steps)], [$30,000$],
     [Tốc độ học \ (Learning Rate)], [$1 times 10^(-5)$ (Constant)],
@@ -178,7 +179,7 @@ Do đặc thù của kiến trúc khuếch tán (Diffusion Models), phương ph�
 
 Việc huấn luyện mô hình đề xuất (Ours) là một quy trình đa giai đoạn, đòi hỏi tài nguyên tính toán đáng kể để đảm bảo sự hội tụ của cả cấu trúc và phong cách.
 
-*a) Chi tiết các giai đoạn huấn luyện của phương pháp đề xuất (Ours Breakdown):*
+a) *Chi tiết các giai đoạn huấn luyện của phương pháp đề xuất (Ours Breakdown)*:
 
 @tab:ours_training_breakdown dưới đây liệt kê thời gian tiêu tốn cho từng thành phần riêng biệt khi huấn luyện trên cấu hình phần cứng tham chiếu (01 GPU NVIDIA Tesla P100).
 
@@ -201,14 +202,14 @@ Việc huấn luyện mô hình đề xuất (Ours) là một quy trình đa gia
     [Phase 2], [Giai đoạn Tinh chỉnh \ (Refinement)], [$30,000$], [4], [$approx$ 12 giờ],
     
     table.hline(stroke: 1pt),
-    table.cell(colspan: 4, align: right)[*Tổng thời gian huấn luyện toàn bộ Pipeline:*],
+    table.cell(colspan: 4, align: right)[*Tổng thời gian huấn luyện toàn bộ Pipeline*],
     [*$approx$ 5 ngày*],
   ),
   caption: [Thời gian huấn luyện cho từng giai đoạn của phương pháp đề xuất (Ours).]
 ) <tab:ours_training_breakdown>
 
 #pagebreak()
-#h(1.5em) *b) So sánh tổng thời gian huấn luyện với các Baseline:*
+#h(1.5em) b) *So sánh tổng thời gian huấn luyện với các Baseline*:
 
 So với các phương pháp hiện có, FontDiffuser yêu cầu thời gian huấn luyện dài hơn do bản chất hội tụ chậm của quá trình khử nhiễu và yêu cầu số bước lặp lớn.
 
@@ -234,7 +235,7 @@ So với các phương pháp hiện có, FontDiffuser yêu cầu thời gian hu�
     
     [*Ours (FontDiffuser)*], [*Diffusion \ (Denoising)*], [*Lâu* \ ($approx$ 5 ngày)],
   ),
-  caption: [So sánh tổng thời gian huấn luyện giữa phương pháp đề xuất và các Baseline.]
+  caption: [So sánh tổng thời gian huấn luyện \ giữa phương pháp đề xuất và các Baseline.]
 ) <tab:training_comparison>
 
 #pagebreak()
@@ -252,7 +253,7 @@ Bảng dưới đây so sánh thời gian trung bình để sinh ra *một ký t
     align: horizon,
     stroke: 0.5pt,
     table.header(
-      [*Mô hình*], [*Cơ chế sinh*], [*Số bước chuyển tiếp* \ (Forward Passes)], [*Thời gian / 1 ảnh*]
+      [*Mô hình*], [*Cơ chế sinh*], [*Số bước \ chuyển tiếp* \ (Forward Passes)], [*Thời gian / 1 ảnh*]
     ),
     table.hline(),
     
