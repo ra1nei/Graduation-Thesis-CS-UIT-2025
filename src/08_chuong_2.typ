@@ -156,7 +156,7 @@ Tuy nhiên, phương pháp này chủ yếu nắm bắt các đặc trưng về 
 === Học tương phản (Contrastive Learning)
 Để khắc phục hạn chế trên, các nghiên cứu hiện đại (trong đó có FontDiffuser@Yang2024FontDiffuser) chuyển sang hướng *Học biểu diễn tương phản (Contrastive Representation Learning)*. Tư tưởng cốt lõi là học một không gian embedding phong cách (style latent space) sao cho *các mẫu có _cùng phong cách_ (Positive samples)* được *_kéo lại gần_ nhau* và *các mẫu _khác phong cách_ (Negative samples)* bị *_đẩy ra xa_ nhau*.
 
-Hàm mất mát InfoNCE@Oord2018CPC thường được sử dụng để tối ưu hoá không gian này:
+Hàm mất mát InfoNCE@Oord2018InfoNCE thường được sử dụng để tối ưu hoá không gian này:
 $ L_"NCE" = - log (exp("sim"(z, z^+)\/tau) / (exp("sim"(z, z^+)\/tau) + sum_(k) exp("sim"(z, z_k^-)\/tau))) $
 
 Trong FontDiffuser, mô-đun SCR áp dụng tư tưởng này để giám sát bộ mã hoá phong cách. Tuy nhiên, mô-đun này ban đầu được thiết kế cho cùng một ngôn ngữ (Hán $arrow.r$ Hán). Khi áp dụng sang bài toán Cross-Lingual, đặc biệt là dùng chữ Latin làm mẫu phong cách, các phương pháp chọn mẫu âm (negative selection) thông thường trở nên kém hiệu quả do khoảng cách miền (domain gap) quá lớn giữa hai hệ chữ.

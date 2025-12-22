@@ -1,5 +1,4 @@
 #import "/template.typ" : *
-// #import "@preview/scripting:0.1.0": *
 
 #[
   #set heading(numbering: "Chương 1.1")
@@ -175,7 +174,7 @@ Trong đó:
 ]
 
 ==== LPIPS (Learned Perceptual Image Patch Similarity)
-Độ đo *LPIPS@Zhang2018LPIPS* đánh giá *khoảng cách cảm nhận* dựa trên các đặc trưng trích xuất từ mạng nơ-ron sâu (thường là VGG hoặc AlexNet). Chỉ số này khắc phục nhược điểm của L1/SSIM khi xử lý các ảnh bị mờ nhẹ nhưng vẫn giống về ngữ nghĩa:
+Độ đo *LPIPS@Zhang2018LPIPS* đánh giá *khoảng cách cảm nhận* dựa trên các đặc trưng trích xuất từ mạng nơ-ron sâu (thường là VGG@SimonyanZ14aVGG hoặc AlexNet@KrizhevskySH12AlexNet). Chỉ số này khắc phục nhược điểm của L1/SSIM khi xử lý các ảnh bị mờ nhẹ nhưng vẫn giống về ngữ nghĩa:
 $ "LPIPS"(x,y) = sum_l 1 / (H_l W_l) sum_(h, w) ||w_l dot (f_l^x (h, w) - f_l^y (h, w))||_2^2 $
 
 Trong đó:
@@ -196,7 +195,7 @@ Trong đó:
 ]
 
 ==== FID (Fréchet Inception Distance)
-Độ đo *FID@Heusel2017TTUR* đánh giá chất lượng tổng thể và độ đa dạng của tập ảnh sinh dựa trên khoảng cách thống kê giữa hai phân bố đặc trưng (thường được trích xuất từ lớp *Pool3* của mạng InceptionV3):
+Độ đo *FID@Heusel2017FID* đánh giá chất lượng tổng thể và độ đa dạng của tập ảnh sinh dựa trên khoảng cách thống kê giữa hai phân bố đặc trưng (thường được trích xuất từ lớp *Pool3* của mạng InceptionV3):
 $ "FID"(r, g) = ||mu_r - mu_g||_2^2 + "Tr"(sum_r + sum_g - 2(sum_r sum_g)^(1/2) ) $
 
 Trong đó:
@@ -1272,7 +1271,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
 _*Kết luận*_: Dựa trên phân tích trên, khoá luận khẳng định *chiến lược Tăng cường dữ liệu* là thành phần không thể thiếu, đặc biệt quan trọng để nâng cao hiệu suất trên các *dữ liệu chưa từng biết (Unseen Domains)*, mặc dù có thể đánh đổi một lượng nhỏ hiệu năng trên các dữ liệu đã biết.
 
 === Ảnh hưởng của Chế độ hàm loss
-Trong kiến trúc *CL-SCR*, hàm mất mát *InfoNCE@Oord2018CPC* đóng vai trò điều hướng không gian biểu diễn phong cách. khoá luận khảo sát *ba biến thể chiến lược huấn luyện* được định nghĩa trong tham số `loss_mode`:
+Trong kiến trúc *CL-SCR*, hàm mất mát *InfoNCE@Oord2018InfoNCE* đóng vai trò điều hướng không gian biểu diễn phong cách. khoá luận khảo sát *ba biến thể chiến lược huấn luyện* được định nghĩa trong tham số `loss_mode`:
 `scr_intra`: Chỉ sử dụng mẫu âm nội miền (Intra-domain). Ví dụ: so sánh Style Latin với các Style Latin khác.
 `scr_cross`: Chỉ sử dụng mẫu âm xuyên miền (Cross-domain). Ví dụ: so sánh Style Latin với Style Hán tự.
 `scr_both`: Kết hợp cả hai với trọng số $alpha_"intra" = 0.3$ và $beta_"cross"=0.7$.

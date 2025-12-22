@@ -1,9 +1,5 @@
 #import "/template.typ" : *
 #import "@preview/algo:0.3.4": algo, i, d, comment, code
-#let scr(it) = math.class("normal", box({
-  show math.equation: set text(stylistic-set: 1)
-  $cal(it)$
-}))
 
 #[
   #set heading(numbering: "Chương 1.1")
@@ -145,7 +141,7 @@ SCR sử dụng chiến lược học tương phản (Contrastive Learning), v�
 // DEBUG: Chèn hình ví dụ ở đây
 
 ==== Định nghĩa hàm mất mát
-Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE@Oord2018CPC* được tính tổng trên $N$ tầng đặc trưng:
+Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE@Oord2018InfoNCE* được tính tổng trên $N$ tầng đặc trưng:
 
 $ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $ <L_sc_equa>
 
@@ -188,7 +184,7 @@ Chi tiết các thành phần:
   *_Hàm mất mát Khuếch tán Tiêu chuẩn_ ($L_"MSE"$)*: Đây là hàm mất mát cơ bản của mô hình khuếch tán, chịu trách nhiệm tính toán sai số giữa nhiễu dự đoán $epsilon_theta$ và nhiễu thực tế $epsilon$ tại bước thời gian $t$, với điều kiện đầu vào là ảnh nội dung $x_c$ và ảnh phong cách $x_s$:
   $ L_"MSE" = ||epsilon - epsilon_theta(x_t, t, x_c, x_s)||^2 $
   
-  #h(1.5em) *_Hàm mất mát Nhận thức Nội dung_ ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Khoá luận sử dụng các đặc trưng được mã hoá bởi mạng VGG ($scr("VGG")_l(dot)$) trên $L$ tầng được chọn:
+  #h(1.5em) *_Hàm mất mát Nhận thức Nội dung_ ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Khoá luận sử dụng các đặc trưng được mã hoá bởi mạng VGG@SimonyanZ14aVGG ($"VGG"_l(dot)$) trên $L$ tầng được chọn:
   $ L_"cp" = sum_(l=1)^L ||"VGG"_l (x_0) - "VGG"_l (x_"target")|| $
   
   #h(1.5em) *_Hàm mất mát Độ lệch_($L_"offset"$ - Offset Loss)*: Được thiết kế riêng cho mô-đun RSI (Reference-Structure Interaction), hàm này ràng buộc độ lớn của các vector dịch chuyển $delta_"offset"$ nhằm ngăn chặn các biến dạng cấu trúc quá mức, trong đó mean là phép tính trung bình:
@@ -223,7 +219,7 @@ Trong giai đoạn này, các trọng số được giữ nguyên cho các thàn
 === Hạn chế của SCR trong bối cảnh đa ngôn ngữ
 Mô-đun SCR tiêu chuẩn (Standard SCR) hoạt động dựa trên giả định rằng ảnh nguồn và ảnh tham chiếu chia sẻ cùng một không gian hình thái (cùng một ngôn ngữ). Tuy nhiên, khi mở rộng sang bài toán *Cross-Lingual Font Generation* (Huấn luyện trên dữ liệu tiếng Latin đơn giản $D_"source"$, ứng dụng sang chữ cái Hán $D_"target"$ phức tạp và ngược lại), SCR bộc lộ điểm yếu về *thiên kiến cấu trúc (structural bias)*.
 
-Cụ thể, bộ trích xuất đặc trưng StyleExtractor (sử dụng các tầng VGG pre-trained) có xu hướng "học vẹt" các đặc điểm cấu trúc dày đặc của Hán tự thay vì trích xuất phong cách trừu tượng. Khi gặp các ký tự Latin với cấu trúc thưa, sự chênh lệch miền (domain gap) khiến vector phong cách $v_"gen"$ và $v_"target"$ không còn tương đồng trong không gian tiềm ẩn.
+Cụ thể, bộ trích xuất đặc trưng StyleExtractor (sử dụng các tầng VGG@SimonyanZ14aVGG pre-trained) có xu hướng "học vẹt" các đặc điểm cấu trúc dày đặc của Hán tự thay vì trích xuất phong cách trừu tượng. Khi gặp các ký tự Latin với cấu trúc thưa, sự chênh lệch miền (domain gap) khiến vector phong cách $v_"gen"$ và $v_"target"$ không còn tương đồng trong không gian tiềm ẩn.
 
 === Thiết kế mô-đun CL-SCR
 Để giải quyết vấn đề này, khoá luận đề xuất mô-đun *Cross-Lingual SCR (CL-SCR)*. Dựa trên mã nguồn đã xây dựng, CL-SCR không thay đổi kiến trúc cốt lõi của StyleExtractor hay Projector, mà thay đổi *chiến lược lấy mẫu* và *cơ chế tính hàm mất mát đa luồng*.
