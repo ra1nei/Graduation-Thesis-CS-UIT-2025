@@ -71,7 +71,7 @@ Gần đây, Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models) đ
   Điều này tương tự như việc ta học cách "tô dần" một bức tranh từ nền trắng nhiễu cho đến khi ra ảnh rõ nét.
   ]
 
-===== Quá trình Khuếch tán xuôi (Forward Diffusion Process)
+==== Quá trình Khuếch tán xuôi (Forward Diffusion Process)
 
 Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một loạt các bước. Điều này tương tự như chuỗi Markov, trong đó mỗi bước làm giảm nhẹ dữ liệu bằng cách thêm nhiễu Gauss:
 
@@ -103,7 +103,7 @@ $ dash(alpha)_t = product_(s=1)^t alpha_s $
 
 Điều này rất quan trọng vì giúp ta không cần sinh tuần tự từng bước mà vẫn có thể lấy mẫu trực tiếp ở bước t bất kì (quan trọng khi huấn luyện batch lớn).
 
-===== Quá trình Khuếch tán ngược (Reverse Diffusion Process)
+==== Quá trình Khuếch tán ngược (Reverse Diffusion Process)
 
 Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng cách khử nhiễu bằng một loạt các bước đảo ngược quá trình khuếch tán xuôi.
 
@@ -123,7 +123,7 @@ $ mu_theta (x_t, t) = 1/sqrt(alpha_t)(x_t - (beta_t)/(sqrt(1 - dash(alpha)_t)) e
 
 Trong huấn luyện, mô hình được tối ưu để giảm sai số giữa $epsilon.alt_theta (x_t, t)$ và nhiễu thực $epsilon.alt$ mà ta đã thêm ở forward process.
 
-===== Loss function
+==== Hàm mất mát (Loss function)
 Hàm mất mát được sử dụng phổ biến nhất là *Mean Squared Error (MSE)*:
 
 $ L_"simple" = EE_(t, x_0, epsilon.alt) [bar.v.double epsilon.alt - epsilon.alt_theta (x_t, t) bar.v.double ^2] $
@@ -159,7 +159,24 @@ Tuy nhiên, phương pháp này chủ yếu nắm bắt các đặc trưng về 
 Hàm mất mát InfoNCE@Oord2018InfoNCE thường được sử dụng để tối ưu hoá không gian này:
 $ L_"NCE" = - log (exp("sim"(z, z^+)\/tau) / (exp("sim"(z, z^+)\/tau) + sum_(k) exp("sim"(z, z_k^-)\/tau))) $
 
-Trong FontDiffuser, mô-đun SCR áp dụng tư tưởng này để giám sát bộ mã hoá phong cách. Tuy nhiên, mô-đun này ban đầu được thiết kế cho cùng một ngôn ngữ (Hán $arrow.r$ Hán). Khi áp dụng sang bài toán Cross-Lingual, đặc biệt là dùng chữ Latin làm mẫu phong cách, các phương pháp chọn mẫu âm (negative selection) thông thường trở nên kém hiệu quả do khoảng cách miền (domain gap) quá lớn giữa hai hệ chữ.
+Trong đó:
+#tab_eq[
+  *$z$*: Vector đặc trưng (feature representation) hoặc biểu diễn tiềm ẩn của mẫu dữ liệu đang xét (thường được gọi là mẫu neo - anchor).
+
+  *$z^+$*: Biểu diễn đặc trưng của mẫu dương (positive sample) – đây là mẫu tương đồng hoặc thuộc cùng một lớp với $z$ mà mô hình cần học để tối đa hóa độ tương đồng.
+
+  *$z^-_k$*: Biểu diễn đặc trưng của mẫu âm (negative sample) thứ $k$ trong tập dữ liệu – đây là các mẫu khác lớp hoặc không tương đồng với $z$ mà mô hình cần phân biệt và đẩy xa trong không gian đặc trưng.
+
+  *$"sim"(dot, dot)$*: Hàm đo độ tương đồng giữa hai vector (similarity function), trong ngữ cảnh này thường là độ tương đồng Cosine (Cosine Similarity), tính toán góc giữa hai vector trong không gian đặc trưng.
+  
+  *$tau$*: Tham số nhiệt độ (temperature parameter), là một siêu tham số (hyperparameter) dương giúp điều chỉnh độ nhạy của hàm mất mát. Giá trị $tau$ nhỏ giúp mô hình tập trung hơn vào các mẫu âm khó phân biệt (hard negatives), trong khi $tau$ lớn giúp quá trình huấn luyện mượt mà hơn.
+  
+  *$sum_k$*: Phép tổng thực hiện trên tất cả các mẫu âm (negative samples) có trong batch hoặc hàng đợi (queue) hiện tại.
+]
+
+#untab_para[
+  Trong FontDiffuser, mô-đun SCR áp dụng tư tưởng này để giám sát bộ mã hoá phong cách. Tuy nhiên, mô-đun này ban đầu được thiết kế cho cùng một ngôn ngữ (Hán $->$ Hán). Khi mở rộng sang bài toán Cross-Lingual *(chuyển đổi qua lại giữa Latin và Hán)*, sự khác biệt quá lớn về cấu trúc giữa hai hệ chữ tạo ra một khoảng cách miền (domain gap) sâu sắc, khiến các chiến lược chọn mẫu âm (negative selection) thông thường trở nên kém hiệu quả.
+]
 
 == Thách thức trong bài toán Cross-Lingual: Chuyển đổi Hai chiều giữa Latin và Hán tự
 
