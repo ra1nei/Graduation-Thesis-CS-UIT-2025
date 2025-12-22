@@ -159,24 +159,6 @@
       link(it.element.location())[#it.page()]
     }
 
-    // show outline.entry.where(
-    //   level: 3
-    // ): it => {
-    //   v(20pt, weak: true)
-    //   pad(left: 5.6em, top: -5pt, bottom: -25pt, [
-    //     #h(-2.7em)
-    //     #if (it.element.numbering != none) {
-    //       let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
-    //       box(width: 2.3em, number)
-    //     }
-    //     #link(it.element.location())[ #it.element.body]
-    //     #h(3pt)
-    //     #box(width: 1fr, it.fill)
-    //     #h(3pt)
-    //     #link(it.element.location())[#it.page]
-    //   ])
-    // }
-    // 
     {
       show heading: none
       heading(numbering: none)[Mục lục]
@@ -212,7 +194,8 @@
     v(7pt)
     outline(title: none, target: figure.where(kind: table))
     pagebreak()
-    // ===== Danh sách các từ viết tắt =====
+      
+    // ================= DANH SÁCH THUẬT NGỮ =====================
     include "src/05_danh_sach_thuat_ngu.typ"
     pagebreak()
     {
@@ -229,44 +212,6 @@
   include "src/06_tom_tat.typ"
 
   // ===============================================
-
-  // set page(header: [
-  //   #set text(luma(130), size: 12pt)
-
-  //   #context {
-  //     // Find if there is a level 1 heading on the current page
-  //     let nextMainHeading = query(selector(heading).after(here())).find(headIt => {
-  //      headIt.location().page() == here().page() and headIt.level == 1
-  //     })
-  //     if (nextMainHeading == none) {
-  //       let page_number = context counter(page).display(
-  //         "1 ",
-  //       )
-  //       if calc.even(here().page()) {
-  //         "Trang "
-  //         page_number
-  //         box(width: 1fr, line(length: 100%, stroke: 0.4pt + luma(120)))
-  //       } else {
-  //         box(width: 1fr, line(length: 100%, stroke: 0.4pt + luma(120)))
-  //         " Trang "
-  //         page_number
-  //       }
-  //     }
-  //   }
-  // ])
-
-  // set page(footer: context [
-  //   #set text(luma(130), size: 12pt)
-  //   _Huỳnh Nguyễn Phương Trang - Giáo dục Toán học K32 _
-  //   #box(width: 1fr, line(length: 100%, stroke: (paint: luma(120), dash: "loosely-dotted")))
-  //   Trang
-  //   #counter(page).display(
-  //     "1",
-  //   )
-  // ])
-
-  // show heading: set text(13pt)
-
   set par(first-line-indent: (amount: 1.5em, all: false), leading: 0.8em, spacing: 1.5em)
   set block(spacing: 1.2em)
   set list(indent: 0.8em)
@@ -338,9 +283,9 @@
   // ============ MATH ==============
   set math.cases(gap: 1.2em)
   set math.equation(supplement: none)
+  set math.equation(numbering: "(1)")
 
   body
 }
 
 #let dfrac(x, y) = math.equation(block(inset: (top: 0.5em, bottom: 0.8em))[#text(size: 18pt)[#math.frac(x, y)]])
-
