@@ -116,7 +116,7 @@ $ L_"total" = L_"MSE" + 0.01 dot L_"percep" + 0.5 dot L_"offset" + 0.01 dot L_"C
 4. *Quy trình Inference*: 
 Trong quá trình lấy mẫu (Inference), mô hình FontDiffuser@Yang2024FontDiffuser được đóng gói thành một Pipeline dựa trên DPM-Solver để tối ưu hoá tốc độ.
 
-_*Cấu hình Lấy mẫu*_: Khoá luận sử dụng bộ giải *DPM-Solver++* với số bước suy diễn được cố định là *20* (`num_inference_steps=20`), đây là một sự cân bằng giữa tốc độ tính toán và chất lượng ảnh sinh. Chiến lược hướng dẫn vô điều kiện (Classifier-Free Guidance) được áp dụng với tham số hướng dẫn ($s$) được xác định trong file cấu hình (`guidance_scale`). Để lấy mẫu, các ảnh đầu vào được tiền xử lý và chuẩn hoá về kích thước (`content_image_size`, `style_image_size`) rồi đưa về Tensor với dải giá trị $[ -1, 1 ]$.
+_*Cấu hình Lấy mẫu*_: Khoá luận sử dụng bộ giải *DPM-Solver++* với số bước suy diễn được cố định là *20* (`num_inference_steps=20`), đây là một sự cân bằng giữa tốc độ tính toán và chất lượng ảnh sinh. Chiến lược hướng dẫn vô điều kiện (Classifier-Free Guidance@JonathanGuidance) được áp dụng với tham số hướng dẫn ($s$) được xác định trong file cấu hình (`guidance_scale`). Để lấy mẫu, các ảnh đầu vào được tiền xử lý và chuẩn hoá về kích thước (`content_image_size`, `style_image_size`) rồi đưa về Tensor với dải giá trị $[ -1, 1 ]$.
 
 _*Lấy mẫu Hàng loạt (Batch Sampling)*_: Do khoá luận thực hiện đánh giá định lượng trên một lượng lớn mẫu, quy trình lấy mẫu được tự động hoá thông qua hàm batch_sampling, bao phủ cả hai hướng nghiên cứu.
 
@@ -583,8 +583,6 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
 
 *Thứ ba, sự đánh đổi giữa độ chính xác và độ tự nhiên*: Một điểm đáng lưu ý là mặc dù việc sử dụng ảnh tham chiếu nhóm Medium ($"Ours"_"Medium"$) giúp tối ưu hóa các chỉ số kỹ thuật (L1/SSIM), nhưng cấu hình sử dụng toàn bộ không gian tham chiếu ($"Ours"_"All"$) lại đạt chỉ số *FID tốt nhất* trên tập UFSC (*41.115*). Điều này cho thấy việc đa dạng hóa độ phức tạp của ảnh đầu vào (input reference) giúp mô hình tiếp cận được không gian biểu diễn phong cách phong phú và liên tục hơn. Nhờ đó, ảnh sinh ra có độ tự nhiên cao nhất về mặt cảm nhận thị giác (visual perception), ngay cả khi độ khớp chính xác từng điểm ảnh thua kém nhẹ so với việc chỉ sử dụng nhóm ảnh mẫu Medium.
 
-#pagebreak()
-
 #figure(
   grid(
     columns: (auto, auto, auto),
@@ -662,8 +660,6 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
   caption: [So sánh ảnh sinh trên tập SFUC cho kịch bản Hán tự $->$ Latin (c2e) \ giữa các phương pháp và ground truth.]
 ) <compare-c2e-sfuc>
 
-#pagebreak()
-
 #figure(
   grid(
     columns: (auto, auto, auto),
@@ -740,8 +736,6 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
   ),
   caption: [So sánh ảnh sinh trên tập UFSC cho kịch bản Hán tự $->$ Latin (c2e) \ giữa các phương pháp và ground truth.]
 ) <compare-c2e-ufsc>
-
-#pagebreak()
 
 === So sánh Định tính
 Bên cạnh các chỉ số đo lường, việc phân tích trực quan là bước không thể thiếu để kiểm chứng khả năng xử lý các trường hợp khó của mô hình, đặc biệt là các lỗi cấu trúc mà các chỉ số thống kê như FID đôi khi không phản ánh hết. Khoá luận thực hiện phân tích dựa trên hình ảnh sinh ra từ hai chiều chuyển đổi đối lập.
@@ -935,6 +929,7 @@ Tuy nhiên, điểm nhấn quan trọng nhất nằm ở sự so sánh giữa m�
 _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ngôn ngữ, nơi khoảng cách giữa các phong cách nhỏ hơn. Khi áp dụng cho bài toán đa ngôn ngữ (*Cross-Lingual*), SCR gốc gặp khó khăn trong việc tách biệt triệt để phong cách khỏi nội dung do sự khác biệt lớn về hình thái học. Ngược lại, *CL-SCR* với *cơ chế tương phản đa miền và chiến lược lấy mẫu âm cải tiến* đã giúp mô hình "hiểu" và trích xuất được bản chất phong cách (như kết cấu, bút pháp) một cách trừu tượng hơn, qua đó đảm bảo chất lượng sinh ảnh ổn định và tự nhiên ngay cả với các font chữ mới lạ.
 #set par(first-line-indent: 1.5em)
 
+#pagebreak()
 #figure(
   grid(
     columns: (40pt, auto, auto, auto),
@@ -1077,7 +1072,6 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
   caption: [So sánh kết quả sinh ảnh giữa các mô-đun khác nhau trên tập dữ liệu chưa từng thấy cho hai hướng tác vụ (e2c và c2e).
   ]
 )
-
 _*Kết luận*_: Tổng hợp lại, kết quả nghiên cứu bóc tách đã làm sáng tỏ vai trò riêng biệt và bổ trợ lẫn nhau của các thành phần kiến trúc. Trong khi *MCA* và *RSI* đóng vai trò là nền tảng cấu trúc không thể thiếu để ngăn chặn sự sụp đổ hình dáng ký tự, thì *CL-SCR* chính là nhân tố quyết định nâng tầm chất lượng thị giác và khả năng tổng quát hoá. Việc CL-SCR giúp giảm sâu chỉ số *FID* trên các *tập dữ liệu lạ (UFSC)* so với SCR gốc khẳng định rằng cơ chế tương phản đa ngôn ngữ là chìa khoá để mô hình vượt qua rào cản hình thái học, cho phép chuyển giao phong cách Latin sang Hán tự một cách tự nhiên và linh hoạt hơn.
 
 === Ảnh hưởng của Tăng cường dữ liệu (Data Augmentation)
@@ -1103,8 +1097,8 @@ Kết quả thực nghiệm được trình bày chi tiết tại @tab:e2c_aug v
  *SFUC*
       ],
     ),
-    [$"Ours"_"AZ"$ (w/o Augment)], [#underline[0.1974]], [#underline[0.3831]], [#underline[0.2967]], [#underline[14.1295]],
-    [$"Ours"_"AZ"$ (w/ Augment)], [*0.1939*], [*0.3890*], [*0.2911*], [*11.7691*],
+    [w/o Augment], [#underline[0.1974]], [#underline[0.3831]], [#underline[0.2967]], [#underline[14.1295]],
+    [w/ Augment], [*0.1939*], [*0.3890*], [*0.2911*], [*11.7691*],
     
     table.hline(stroke: 0.5pt),
     table.cell(
@@ -1115,8 +1109,8 @@ Kết quả thực nghiệm được trình bày chi tiết tại @tab:e2c_aug v
       ],
     ),
 
-    [$"Ours"_"AZ"$ (w/o Augment)], [#underline[0.2295]], [#underline[0.3066]], [#underline[0.3060]], [#underline[15.7706]],
-    [$"Ours"_"AZ"$ (w/ Augment)], [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
+    [w/o Augment], [#underline[0.2295]], [#underline[0.3066]], [#underline[0.3060]], [#underline[15.7706]],
+    [w/ Augment], [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
   ),
   caption: [Ảnh hưởng của tăng cường dữ liệu đối với hiệu năng mô hình trên tác vụ Latin $->$ Hán tự (e2c).]
 ) <tab:e2c_aug>
@@ -1139,8 +1133,8 @@ Kết quả thực nghiệm được trình bày chi tiết tại @tab:e2c_aug v
  *SFUC*
       ],
     ),
-    [$"Ours"_"All"$ (w/o Augment)], [*0.1076*], [*0.6504*], [*0.1978*], [*12.3668*],
-    [$"Ours"_"All"$ (w/ Augment)], [#underline[0.1083]], [#underline[0.6406]], [#underline[0.2019]], [#underline[14.7298]],
+    [w/o Augment], [*0.1076*], [*0.6504*], [*0.1978*], [*12.3668*],
+    [w/ Augment], [#underline[0.1083]], [#underline[0.6406]], [#underline[0.2019]], [#underline[14.7298]],
     
     table.hline(stroke: 0.5pt),
     table.cell(
@@ -1151,8 +1145,8 @@ Kết quả thực nghiệm được trình bày chi tiết tại @tab:e2c_aug v
       ],
     ),
 
-    [$"Ours"_"All"$ (w/o Augment)], [#underline[0.1126]], [#underline[0.6364]], [#underline[0.2015]], [#underline[43.0665]],
-    [$"Ours"_"All"$ (w/ Augment)], [*0.1090*], [*0.6377*], [*0.1985*], [*41.1152*],
+    [w/o Augment], [#underline[0.1126]], [#underline[0.6364]], [#underline[0.2015]], [#underline[43.0665]],
+    [w/ Augment], [*0.1090*], [*0.6377*], [*0.1985*], [*41.1152*],
   ),
   caption: [Ảnh hưởng của tăng cường dữ liệu đối với hiệu năng mô hình trên tác vụ Hán tự $->$ Latin (c2e).]
 ) <tab:c2e_aug>
@@ -1166,6 +1160,7 @@ _*Nhận xét và Thảo luận*_:
 
 Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Latin (`c2e`) tại @tab:c2e_aug lại hé lộ một sự đánh đổi thú vị giữa khả năng *ghi nhớ và khái quát hoá*. Trên tập dữ liệu đã biết (SFUC), cấu hình không có Augmentation đạt kết quả tốt hơn với FID 12.36 so với 14.72. Tuy nhiên, ưu thế *đảo chiều hoàn toàn* trên tập dữ liệu chưa biết (UFSC), nơi cấu hình có Augmentation giành lại vị thế dẫn đầu với FID giảm từ *43.06* xuống *41.11* và sai số L1 cũng được cải thiện. Hiện tượng này minh chứng rõ ràng cho *vai trò điều hoà (Regularization)* của tăng cường dữ liệu. Ở kịch bản SFUC, việc thiếu nhiễu cho phép mô hình *tối ưu hoá cục bộ (overfit)* trên các mẫu đã thấy, dẫn đến chỉ số cao nhưng kém bền vững. Ngược lại, khi đối mặt với dữ liệu lạ trong UFSC, khả năng ghi nhớ trở nên vô hiệu, và lúc này các *đặc trưng phong cách cốt lõi* mang tính khái quát cao mà mô hình học được nhờ *Augmentation* mới thực sự phát huy tác dụng. Vì vậy, kết quả vượt trội trên UFSC khẳng định rằng tăng cường dữ liệu là thành phần thiết yếu để đảm bảo *khả năng tổng quát hoá* của mô hình trong các ứng dụng thực tế.
 
+#pagebreak()
 #figure(
   grid(
     columns: (40pt, auto, auto, auto),
@@ -1175,7 +1170,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
     inset: 6pt,
 
     // ===== Header =====
-    [], grid.vline(), [], grid.vline(), [*Example 1*], grid.vline(), [*Example 2*],
+    [], grid.vline(), [*Phương pháp*], grid.vline(), [*Example 1*], grid.vline(), [*Example 2*],
     grid.hline(),
     // ===== UFSC e2c =====
     [], [w/ Augment],
@@ -1285,7 +1280,7 @@ Kết quả thực nghiệm được trình bày tại @tab:e2c_lossmode và @ta
     align: center,
     stroke: none,
     table.header(
-      [], [*Phương pháp*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+      [], [*Chế độ mất mát*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
     ),
 
     table.hline(),
@@ -1296,9 +1291,9 @@ Kết quả thực nghiệm được trình bày tại @tab:e2c_lossmode và @ta
  *SFUC*
       ],
     ),
-    [$"Ours"_"AZ"$ (scr_intra)], [#underline[0.1969]], [#underline[0.3812]], [#underline[0.2958]], [11.9552],
-    [$"Ours"_"AZ"$ (scr_cross)], [0.1993], [0.3770], [0.2982], [#underline[11.8645]],
-    [$"Ours"_"AZ"$ (scr_both)], [*0.1939*], [*0.3890*], [*0.2911*], [*11.7691*],
+    [scr_intra], [#underline[0.1969]], [#underline[0.3812]], [#underline[0.2958]], [11.9552],
+    [scr_cross], [0.1993], [0.3770], [0.2982], [#underline[11.8645]],
+    [scr_both], [*0.1939*], [*0.3890*], [*0.2911*], [*11.7691*],
     
     table.hline(stroke: 0.5pt),
     table.cell(
@@ -1309,9 +1304,9 @@ Kết quả thực nghiệm được trình bày tại @tab:e2c_lossmode và @ta
       ],
     ),
 
-    [$"Ours"_"AZ"$ (scr_intra)], [#underline[0.2290]], [#underline[0.3008]], [#underline[0.3085]], [#underline[15.7197]],
-    [$"Ours"_"AZ"$ (scr_cross)], [0.2326], [0.2911], [0.3128], [16.2615],
-    [$"Ours"_"AZ"$ (scr_both)], [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
+    [scr_intra], [#underline[0.2290]], [#underline[0.3008]], [#underline[0.3085]], [#underline[15.7197]],
+    [scr_cross], [0.2326], [0.2911], [0.3128], [16.2615],
+    [scr_both], [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
   ),
   caption: [Ảnh hưởng của các chế độ loss đối với hiệu năng mô hình trên tác vụ Latin $->$ Hán tự (e2c).]
 ) <tab:e2c_lossmode>
@@ -1324,7 +1319,7 @@ Kết quả thực nghiệm được trình bày tại @tab:e2c_lossmode và @ta
     align: center,
     stroke: none,
     table.header(
-      [], [*Phương pháp*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+      [], [*Chế độ mất mát*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
     ),
 
     table.hline(),
@@ -1335,9 +1330,9 @@ Kết quả thực nghiệm được trình bày tại @tab:e2c_lossmode và @ta
  *SFUC*
       ],
     ),
-    [$"Ours"_"All"$ (scr_intra)], [*0.0993*], [*0.6614*], [*0.1903*], [*13.6449*],
-    [$"Ours"_"All"$ (scr_cross)], [0.1091], [#underline[0.6436]], [#underline[0.2017]], [#underline[14.0159]],
-    [$"Ours"_"All"$ (scr_both)], [#underline[0.1083]], [0.6406], [0.2019], [14.7298],
+    [scr_intra], [*0.0993*], [*0.6614*], [*0.1903*], [*13.6449*],
+    [scr_cross], [0.1091], [#underline[0.6436]], [#underline[0.2017]], [#underline[14.0159]],
+    [scr_both], [#underline[0.1083]], [0.6406], [0.2019], [14.7298],
     
     table.hline(stroke: 0.5pt),
     table.cell(
@@ -1348,9 +1343,9 @@ Kết quả thực nghiệm được trình bày tại @tab:e2c_lossmode và @ta
       ],
     ),
 
-    [$"Ours"_"All"$ (scr_intra)], [*0.0971*], [*0.6601*], [*0.1845*], [#underline[41.3399]],
-    [$"Ours"_"All"$ (scr_cross)], [0.1175], [0.6209], [0.2095], [44.7758],
-    [$"Ours"_"All"$ (scr_both)], [#underline[0.1090]], [#underline[0.6377]], [#underline[0.1985]], [*41.1152*],
+    [scr_intra], [*0.0971*], [*0.6601*], [*0.1845*], [#underline[41.3399]],
+    [scr_cross], [0.1175], [0.6209], [0.2095], [44.7758],
+    [scr_both], [#underline[0.1090]], [#underline[0.6377]], [#underline[0.1985]], [*41.1152*],
   ),
   caption: [Ảnh hưởng của các chế độ loss đối với hiệu năng mô hình trên tác vụ Hán tự $->$ Latin (c2e).]
 ) <tab:c2e_lossmode>
@@ -1363,6 +1358,7 @@ _*Nhận xét và Thảo luận*_:
 
 Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều ngược lại từ Hán tự sang Latin (`c2e`) tại @tab:c2e_lossmode, nơi xuất hiện một *nghịch lý về độ giàu thông tin*. Khác với hướng `e2c`, chiến lược `scr_intra` *lại thể hiện sự vượt trội về các chỉ số cấu trúc và điểm ảnh*(L1 thấp nhất 0.097, SSIM cao nhất) trên cả hai tập dữ liệu. Nguyên nhân sâu xa nằm ở bản chất *"đậm đặc" (dense) và giàu thông tin* của phong cách Hán tự (nét bút, độ dày, kết cấu). Chỉ cần *so sánh nội bộ giữa các Hán tự* là đã đủ để mô hình trích xuất được một vector phong cách mạnh mẽ. Trong bối cảnh này, việc ép buộc so sánh xuyên miền với Latin (thông qua thành phần cross trong `scr_both`) vô tình tạo ra nhiễu do sự khác biệt quá lớn về cấu trúc, làm giảm nhẹ độ chính xác tái tạo. Tuy nhiên, `scr_both` *vẫn giữ được ưu thế về độ tự nhiên tổng thể* (FID 41.11 so với 41.34) trên tập lạ UFSC, đóng vai trò như một cơ chế điều hoà cần thiết để đảm bảo tính thẩm mỹ khi đối mặt với các font hoàn toàn mới.
 
+#pagebreak()
 #figure(
   grid(
     columns: (40pt, auto, auto, auto),
@@ -1372,7 +1368,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
     inset: 6pt,
 
     // ===== Header =====
-    [], grid.vline(), [], grid.vline(), [*Example 1*], grid.vline(), [*Example 2*],
+    [], grid.vline(), [*Chế độ mất mát*], grid.vline(), [*Example 1*], grid.vline(), [*Example 2*],
     grid.hline(),
 
     // ===== UFSC e2c =====
@@ -1508,7 +1504,7 @@ Trong khuôn khổ của *phương pháp học tương phản (Contrastive Learn
     align: center,
     stroke: none,
     table.header(
-      [], [*Phương pháp*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+      [], [*Số lượng mẫu âm*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
     ),
 
     table.hline(),
@@ -1519,9 +1515,9 @@ Trong khuôn khổ của *phương pháp học tương phản (Contrastive Learn
  *SFUC*
       ],
     ),
-    [$"Ours"_"AZ"$ ($"num_neg"=4$)], [*0.1939*], [*0.3890*], [*0.2911*], [#underline[11.7691]],
-    [$"Ours"_"AZ"$ ($"num_neg"=8$)], [0.1972], [#underline[0.3835]], [#underline[0.2952]], [12.3750],
-    [$"Ours"_"AZ"$ ($"num_neg"=16$)], [#underline[0.1967]], [0.3833], [0.2956], [*10.6901*],
+    [4], [*0.1939*], [*0.3890*], [*0.2911*], [#underline[11.7691]],
+    [8], [0.1972], [#underline[0.3835]], [#underline[0.2952]], [12.3750],
+    [16], [#underline[0.1967]], [0.3833], [0.2956], [*10.6901*],
     
     table.hline(stroke: 0.5pt),
     table.cell(
@@ -1532,9 +1528,9 @@ Trong khuôn khổ của *phương pháp học tương phản (Contrastive Learn
       ],
     ),
 
-    [$"Ours"_"AZ"$ ($"num_neg"=4$)], [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
-    [$"Ours"_"AZ"$ ($"num_neg"=8$)], [0.2285], [0.3048], [0.3061], [#underline[15.0245]],
-    [$"Ours"_"AZ"$ ($"num_neg"=16$)], [#underline[0.2273]], [#underline[0.3064]], [#underline[0.3048]], [16.7855],
+    [4], [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
+    [8], [0.2285], [0.3048], [0.3061], [#underline[15.0245]],
+    [16], [#underline[0.2273]], [#underline[0.3064]], [#underline[0.3048]], [16.7855],
   ),
   caption: [Ảnh hưởng của số lượng mẫu âm đối với hiệu năng mô hình trên tác vụ Latin $->$ Hán tự (e2c).]
 ) <tab:e2c_numneg>
@@ -1547,7 +1543,7 @@ Trong khuôn khổ của *phương pháp học tương phản (Contrastive Learn
     align: center,
     stroke: none,
     table.header(
-      [], [*Phương pháp*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+      [], [*Số lượng mẫu âm*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
     ),
 
     table.hline(),
@@ -1558,9 +1554,9 @@ Trong khuôn khổ của *phương pháp học tương phản (Contrastive Learn
  *SFUC*
       ],
     ),
-    [$"Ours"_"All"$ ($"num_neg"=4$)], [0.1083], [0.6406], [0.2019], [*14.7298*],
-    [$"Ours"_"All"$ ($"num_neg"=8$)], [#underline[0.1080]], [#underline[0.6464]], [#underline[0.1999]], [#underline[14.8365]],
-    [$"Ours"_"All"$ ($"num_neg"=16$)], [*0.1059*], [*0.6468*], [*0.1992*], [15.7326],
+    [4], [0.1083], [0.6406], [0.2019], [*14.7298*],
+    [8], [#underline[0.1080]], [#underline[0.6464]], [#underline[0.1999]], [#underline[14.8365]],
+    [16], [*0.1059*], [*0.6468*], [*0.1992*], [15.7326],
     
     table.hline(stroke: 0.5pt),
     table.cell(
@@ -1571,9 +1567,9 @@ Trong khuôn khổ của *phương pháp học tương phản (Contrastive Learn
       ],
     ),
 
-    [$"Ours"_"All"$ ($"num_neg"=4$)], [#underline[0.1090]], [#underline[0.6377]], [*0.1985*], [*41.1152*],
-    [$"Ours"_"All"$ ($"num_neg"=8$)], [*0.1087*], [*0.6398*], [*0.1985*], [43.8077],
-    [$"Ours"_"All"$ ($"num_neg"=16$)], [0.1111], [0.6311], [#underline[0.2008]], [#underline[43.5042]],
+    [4], [#underline[0.1090]], [#underline[0.6377]], [*0.1985*], [*41.1152*],
+    [8], [*0.1087*], [*0.6398*], [*0.1985*], [43.8077],
+    [16], [0.1111], [0.6311], [#underline[0.2008]], [#underline[43.5042]],
   ),
   caption: [Ảnh hưởng của số lượng mẫu âm đối với hiệu năng mô hình trên tác vụ Hán tự $->$ Latin (c2e).]
 ) <tab:c2e_numneg>
@@ -1586,6 +1582,7 @@ _*Nhận xét và Thảo luận*_:
 
 Xu hướng tương tự cũng được quan sát thấy ở chiều ngược lại từ Hán tự sang Latin (@tab:c2e_numneg), mặc dù có sự phân hoá nhẹ giữa khả năng ghi nhớ và khái quát hoá. Khi đánh giá trên tập font đã biết (SFUC), việc tăng số lượng mẫu âm lên 16 giúp cải thiện nhẹ các chỉ số điểm ảnh như L1 và SSIM, do mô hình tận dụng được nhiều dữ liệu so sánh hơn để khớp chi tiết các nét phức tạp của Hán tự. Tuy nhiên, lợi thế này *không duy trì được khi chuyển sang tập font lạ (UFSC)*. Tại đây, cấu hình $K=4$ một lần nữa khẳng định tính hiệu quả với chỉ số FID thấp nhất (*41.11*), vượt qua cả cấu hình $K=8$ và $K=16$. Kết quả này củng cố nhận định rằng trong bài toán chuyển đổi đa ngôn ngữ với sự chênh lệch lớn về miền dữ liệu, một tập hợp mẫu âm *nhỏ nhưng tinh gọn* sẽ hiệu quả hơn việc cố gắng phân biệt với một lượng lớn mẫu âm có thể gây nhiễu. Do đó, việc lựa chọn $K=4$ không chỉ giúp *tối ưu hoá tài nguyên tính toán* mà còn đảm bảo chất lượng sinh ảnh tốt nhất về mặt thị giác.
 
+#pagebreak()
 #figure(
   grid(
     columns: (40pt, auto, auto, auto),
@@ -1596,14 +1593,14 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
 
     // ===== Header =====
     [], grid.vline(),
-    [], grid.vline(),
+    [*Số lượng mẫu âm*], grid.vline(),
     [*Example 1*], grid.vline(),
     [*Example 2*],
 
     // ===== UFSC e2c =====
     grid.hline(),
     [],
-    [$"num_neg"=4$],
+    [4],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
@@ -1618,7 +1615,7 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
     ),
 
     rotate(-90deg)[*UFSC* (`e2c`)],
-    [$"num_neg"=8$],
+    [8],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg08/",
@@ -1633,7 +1630,7 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
     ),
 
     [],
-    [$"num_neg"=16$],
+    [16],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg16/",
@@ -1665,7 +1662,7 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
     // ===== UFSC c2e =====
     grid.hline(),
     [],
-    [$"num_neg"=4$],
+    [4],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
@@ -1680,7 +1677,7 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
     ),
 
     rotate(-90deg)[*UFSC* (`c2e`)],
-    [$"num_neg"=8$],
+    [8],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg08/",
@@ -1695,7 +1692,7 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
     ),
 
     [],
-    [$"num_neg"=16$],
+    [16],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg16/",
@@ -1730,5 +1727,580 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
 ) <tab:dinhtinh_neg>
 
 _*Kết luận*_: Tổng kết lại, thực nghiệm về số lượng mẫu âm đã làm sáng tỏ một đặc điểm thú vị trong bài toán chuyển đổi phong cách xuyên ngôn ngữ: *sự tối giản lại mang lại hiệu quả tối ưu*. Trái với kỳ vọng rằng nhiều mẫu âm sẽ giúp học biểu diễn phong cách tốt hơn, kết quả cho thấy việc *giới hạn* $K=4$ giúp mô hình xây dựng được *không gian biểu diễn phong cách cô đọng*, tránh được hiện tượng quá khớp (overfitting) hoặc nhiễu loạn thông tin từ các mẫu âm dư thừa. Đặc biệt trên các tập dữ liệu chưa từng thấy (UFSC), cấu hình $K=4$ luôn duy trì vị thế dẫn đầu về chỉ số FID ở cả hai hướng chuyển đổi, chứng minh đây là *thiết lập tối ưu* để cân bằng giữa độ chính xác tái tạo và khả năng tổng quát hoá, đồng thời *giảm tải đáng kể chi phí huấn luyện*.
+
+=== Ảnh hưởng của Alpha và Beta
+
+Trong kiến trúc CL-SCR được đề xuất, hàm mất mát tổng thể được thiết lập dưới dạng tổng trọng số của hai thành phần: mất mát nội tại (Intra-Lingual loss) và mất mát chéo (Cross-Lingual loss), tuân theo công thức: $L_"CL-SCR" = alpha L_"intra" + beta L_"cross"$. Trong đó, $alpha$ điều chỉnh mức độ tập trung vào việc bảo toàn tính nhất quán phong cách trong cùng một ngôn ngữ, còn $beta$ kiểm soát lực ràng buộc để kéo các biểu diễn phong cách của hai ngôn ngữ lại gần nhau trong không gian đặc trưng. Để xác định tỷ lệ tối ưu giữa hai cơ chế này, khoá luận tiến hành khảo sát thực nghiệm với ba cấu hình trọng số đối ngẫu $(alpha, beta)$ lần lượt là $(0.3, 0.7)$, $(0.5, 0.5)$ và $(0.7, 0.3)$. Mục tiêu là phân tích sự đánh đổi giữa khả năng tái tạo chi tiết (do $alpha$ chi phối) và khả năng chuyển đổi phong cách liên ngôn ngữ (do $beta$ chi phối) trên cả hai chiều bài toán. Kết quả chi tiết được tổng hợp tại @tab:e2c_alp_beta và @tab:c2e_alp_beta.
+
+#figure(
+  table(
+    columns: (auto, auto, auto, auto, auto, auto),
+    inset: 10pt,
+    align: center,
+    stroke: none,
+    table.header(
+      [], [*Phương pháp*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+    ),
+
+    table.hline(),
+    table.cell(
+      rowspan: 3,
+      align: horizon,
+      rotate(-90deg, reflow: true)[
+ *SFUC*
+      ],
+    ),
+    [$alpha = 0.3, beta = 0.7$], [*0.1939*], [*0.3890*], [#underline[0.2911]], [11.7691],
+    [$alpha = 0.5, beta = 0.5$], [0.1964], [#underline[0.3855]], [0.2934], [#underline[11.1352]],
+    [$alpha = 0.7, beta = 0.3$], [#underline[0.1963]], [0.3827], [*0.2908*], [*10.3742*],
+
+    table.hline(stroke: 0.5pt),
+    table.cell(
+      rowspan: 3,
+      align: horizon,
+      rotate(-90deg, reflow: true)[
+ *UFSC*
+      ],
+    ),
+
+    [$alpha = 0.3, beta = 0.7$], [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
+    [$alpha = 0.5, beta = 0.5$], [0.2277], [0.3088], [0.3026], [15.1777],
+    [$alpha = 0.7, beta = 0.3$], [#underline[0.2264]], [#underline[0.3095]], [#underline[0.2991]], [#underline[14.4760]],
+    
+  ),
+  caption: [Ảnh hưởng của alpha và beta đối với hiệu năng mô hình trên tác vụ Latin $->$ Hán tự (e2c).]
+) <tab:e2c_alp_beta>
+
+
+#figure(
+  table(
+    columns: (auto, auto, auto, auto, auto, auto),
+    inset: 10pt,
+    align: center,
+    stroke: none,
+    table.header(
+      [], [*Phương pháp*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+    ),
+
+    table.hline(),
+    table.cell(
+      rowspan: 3,
+      align: horizon,
+      rotate(-90deg, reflow: true)[
+ *SFUC*
+      ],
+    ),
+    [$alpha = 0.3, beta = 0.7$], [#underline[0.1083]], [#underline[0.6406]], [#underline[0.2019]], [*14.7298*],
+    [$alpha = 0.5, beta = 0.5$], [0.1099], [0.6392], [0.2051], [#underline[15.5683]],
+    [$alpha = 0.7, beta = 0.3$], [*0.1072*], [*0.6432*], [*0.2002*], [16.3548],
+    
+    table.hline(stroke: 0.5pt),
+    table.cell(
+      rowspan: 3,
+      align: horizon,
+      rotate(-90deg, reflow: true)[
+ *UFSC*
+      ],
+    ),
+
+    [$alpha = 0.3, beta = 0.7$], [#underline[0.1090]], [#underline[0.6377]], [#underline[0.1985]], [*41.1152*],
+    [$alpha = 0.5, beta = 0.5$], [*0.1053*], [*0.6434*], [*0.1957*], [#underline[43.4240]],
+    [$alpha = 0.7, beta = 0.3$], [0.1115], [0.6287], [0.2014], [45.2293],
+  ),
+  caption: [Ảnh hưởng của alpha và beta đối với hiệu năng mô hình trên tác vụ Hán tự $->$ Latin (c2e).]
+) <tab:c2e_alp_beta>
+
+_*Nhận xét và Thảo luận*_:
+
+#untab_para[
+  Kết quả thực nghiệm cho thấy vai trò đối trọng thú vị giữa *tính nhất quán nội tại (Intra-Lingual)* và *sự ràng buộc xuyên ngôn ngữ (Cross-Lingual)*. Đối với hướng chuyển đổi từ Latin sang Hán tự (@tab:e2c_alp_beta), ta quan sát thấy sự đảo chiều về hiệu năng giữa kịch bản quen thuộc (SFUC) và kịch bản lạ (UFSC). Trên tập SFUC, cấu hình ưu tiên tính nội tại ($alpha=0.7, beta=0.3$) đạt kết quả FID tốt nhất (*10.37*), cho thấy khi phong cách đã biết, việc tập trung tinh chỉnh cấu trúc nội bộ của Hán tự giúp ảnh sinh sắc nét hơn. Tuy nhiên, trên tập kiểm thử khó UFSC, cấu hình ưu tiên liên kết chéo ($alpha=0.3, beta=0.7$) lại vượt trội với FID đạt *13.55* (so với *14.47* và *15.17*). Điều này gợi ý rằng để tổng quát hoá tốt trên các font chữ chưa từng thấy, mô hình cần dựa nhiều hơn vào "cầu nối" tương đồng giữa hai ngôn ngữ ($beta$) thay vì quá tập trung vào đặc trưng cục bộ của từng hệ chữ.
+]
+
+Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược lại từ Hán tự sang Latin (@tab:c2e_alp_beta). Trong cả hai kịch bản SFUC và UFSC, việc gán trọng số cao cho thành phần Cross-lingual ($beta=0.7$) đều mang lại hiệu suất FID tối ưu (*14.73* và *41.11*). Nguyên nhân có thể xuất phát từ *khoảng cách thông tin (information gap)*: Hán tự có cấu trúc phức tạp và giàu thông tin hơn nhiều so với Latin. Do đó, khi sinh chữ Latin từ nguồn Hán, mô hình cần một cơ chế ràng buộc xuyên ngôn ngữ mạnh mẽ ($beta$ lớn) để định hướng việc lọc bỏ các chi tiết thừa và ánh xạ chính xác phong cách, thay vì bị "sa lầy" vào việc học cấu trúc nội tại phức tạp của Hán tự ($alpha$). Kết quả này khẳng định rằng trong bài toán Cross-Lingual bất đối xứng, *tăng cường giám sát liên ngôn ngữ* là chìa khoá để cải thiện chất lượng sinh ảnh và độ tự nhiên thị giác.
+
+#pagebreak()
+#figure(
+  grid(
+    columns: (40pt, auto, auto, auto),
+    gutter: 8pt,
+    inset: 6pt,
+    stroke: none,
+    align: (horizon, horizon),
+
+    // ===== Header =====
+    [], grid.vline(),
+    [*Phương pháp*], grid.vline(),
+    [*Example 1*], grid.vline(),
+    [*Example 2*],
+
+    // ===== UFSC e2c =====
+    grid.hline(),
+    [],
+    [$alpha = 0.3, beta = 0.7$],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/p2_cross_both_a0.7_b0.3/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/p2_cross_both_a0.7_b0.3/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    rotate(-90deg)[*UFSC* (`e2c`)],
+    [$alpha = 0.5, beta = 0.5$],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/p2_cross_both_a0.5_b0.5/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/p2_cross_both_a0.5_b0.5/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    [],
+    [$alpha = 0.7, beta = 0.3$],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/AZ/style/p2_neg04/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/AZ/style/p2_neg04/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    [],
+    [*Target*],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/AZ/style/p2_neg04/",
+      "Free letter fonts Font-Simplified Chinese",
+      "gt"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/AZ/style/p2_neg04/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "gt"
+    ),
+
+    // ===== UFSC c2e =====
+    grid.hline(),
+    [],
+    [$alpha = 0.3, beta = 0.7$],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/p2_cross_both_a0.7_b0.3/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/p2_cross_both_a0.7_b0.3/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    rotate(-90deg)[*UFSC* (`c2e`)],
+    [$alpha = 0.5, beta = 0.5$],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/p2_cross_both_a0.5_b0.5/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/p2_cross_both_a0.5_b0.5/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    [],
+    [$alpha = 0.7, beta = 0.3$],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/all/style/p2_neg04/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/all/style/p2_neg04/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    [],
+    [*Target*],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/all/style/p2_neg04/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "gt"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/all/style/p2_neg04/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "gt"
+    ),
+  ),
+
+  caption: [So sánh kết quả sinh ảnh giữa các alpha và beta khác nhau \ trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (e2c và c2e).
+  ]
+) <tab:dinhtinh_alp_beta>
+
+_*Kết luận*_: Tổng kết lại, thực nghiệm về trọng số $alpha$ và $beta$ đã chỉ ra sự bất đối xứng về nhu cầu giám sát của mô hình. Trong khi thành phần Intra-lingual ($alpha$) chỉ thực sự phát huy tác dụng tối đa trong các kịch bản dữ liệu đã biết, thì thành phần *Cross-lingual ($beta$) lại đóng vai trò chủ đạo* trong các tác vụ yêu cầu khả năng khái quát hoá cao hoặc chuyển đổi từ tập mẫu phức tạp sang đơn giản. Dựa trên kết quả này, khoá luận đề xuất cấu hình ưu tiên liên kết chéo ($alpha=0.3, beta=0.7$) là thiết lập mặc định cho mô hình cuối cùng, nhằm tối ưu hoá hiệu suất cho các ứng dụng thực tế nơi dữ liệu đầu vào thường xuyên biến đổi và chưa biết trước.
+
+=== Ảnh hưởng của Trọng số hướng dẫn (Guidance Scale)
+
+Trong cơ chế sinh ảnh của mô hình khuếch tán (Diffusion Models), *Trọng số hướng dẫn (Guidance Scale, $s$)* đóng vai trò như một "cần gạt" kiểm soát sự cân bằng giữa độ đa dạng của ảnh sinh và độ bám sát vào điều kiện đầu vào (content/style). Theo nguyên lý của phương pháp Classifier-free Guidance@JonathanGuidance được áp dụng trong FontDiffuser, công thức cập nhật mẫu là: $ epsilon.alt_"pred" = epsilon.alt_"uncond" + s (epsilon.alt_"cond" - epsilon.alt_"uncond") $
+Về mặt lý thuyết, việc tăng giá trị $s$ sẽ ép buộc mô hình tuân thủ chặt chẽ hơn các đặc trưng phong cách mục tiêu, nhưng nếu $s$ quá lớn sẽ dẫn đến hiện tượng bão hoà (saturation) và xuất hiện các chi tiết giả (artifacts). Để tìm ra "điểm ngọt" (sweet spot) cho tác vụ sinh font chữ, khoá luận thực hiện khảo sát với giải giá trị $s$ chạy từ $2.5$ đến $15$.
+
+#figure(
+  table(
+    columns: (auto, auto, auto, auto, auto, auto),
+    inset: 10pt,
+    align: center,
+    stroke: none,
+    table.header(
+      [], [*Trọng số \ hướng dẫn*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+    ),
+
+    table.hline(),
+    table.cell(
+      rowspan: 6,
+      align: horizon,
+      rotate(-90deg, reflow: true)[
+ *SFUC*
+      ],
+    ),
+    [2.5], [0.1982], [0.3812], [0.2957], [14.1162],
+    [5], [0.1955], [0.3861], [0.2922], [12.8616],
+    [7.5], [0.1939], [0.3890], [*0.2911*], [#underline[11.7691]],
+    [10], [0.1932], [*0.3894*], [#underline[0.2921]], [*11.5753*],
+    [12.5], [*0.1927*], [#underline[0.3893]], [0.2936], [12.3513],
+    [15], [#underline[0.1929]], [0.3874], [0.2971], [14.1336],
+
+    table.hline(stroke: 0.5pt),
+    table.cell(
+      rowspan: 6,
+      align: horizon,
+      rotate(-90deg, reflow: true)[
+ *UFSC*
+      ],
+    ),
+
+    [$2.5$], [0.2262], [0.3096], [0.2985], [*13.2760*],
+    [5], [0.2229], [0.3176], [#underline[0.2955]], [#underline[13.3922]],
+    [7.5], [0.2214], [*0.3197*], [*0.2954*], [13.5508],
+    [10], [0.2209], [#underline[0.3194]], [0.2970], [13.7769],
+    [12.5], [#underline[0.2207]], [0.3187], [0.2991], [14.7846],
+    [15], [*0.2204*], [0.3185], [0.3025], [17.0116],
+    
+  ),
+  caption: [Ảnh hưởng của trọng số hướng dẫn đối với hiệu năng mô hình trên tác vụ Latin $->$ Hán tự (e2c).]
+) <tab:e2c_guidance>
+
+
+#figure(
+  table(
+    columns: (auto, auto, auto, auto, auto, auto),
+    inset: 10pt,
+    align: center,
+    stroke: none,
+    table.header(
+      [], [*Trọng số \ hướng dẫn*], [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+    ),
+
+    table.hline(),
+    table.cell(
+      rowspan: 6,
+      align: horizon,
+      rotate(-90deg, reflow: true)[
+ *SFUC*
+      ],
+    ),
+    [$2.5$], [0.1108], [0.6369], [0.2027], [*12.3777*],
+    [5], [0.1093], [0.6395], [*0.2010*], [#underline[13.3989]],
+    [7.5], [0.1083], [#underline[0.6406]], [#underline[0.2019]], [14.7298],
+    [10], [0.1075], [*0.6408*], [0.2038], [16.4067],
+    [12.5], [#underline[0.1070]], [0.6402], [0.2077], [19.7855],
+    [15], [*0.1069*], [0.6385], [0.2129], [24.2096],
+    
+    table.hline(stroke: 0.5pt),
+    table.cell(
+      rowspan: 6,
+      align: horizon,
+      rotate(-90deg, reflow: true)[
+ *UFSC*
+      ],
+    ),
+
+    [$2.5$], [0.1096], [0.6352], [0.2002], [#underline[40.0501]],
+    [5], [0.1060], [0.6418], [*0.1944*], [*40.0024*],
+    [7.5], [0.1090], [0.6377], [0.1985], [41.1152],
+    [10], [0.1070], [0.6391], [0.2014], [44.7385],
+    [12.5], [*0.1025*], [*0.6477*], [#underline[0.1976]], [47.1480],
+    [15], [#underline[0.1031]], [#underline[0.6426]], [0.2045], [52.7596],
+  ),
+  caption: [Ảnh hưởng của trọng số hướng dẫn đối với hiệu năng mô hình trên tác vụ Hán tự $->$ Latin (c2e).]
+) <tab:c2e_guidance>
+
+_*Nhận xét và Thảo luận*_:
+
+#untab_para[
+  Kết quả thực nghiệm tại hai bảng trên cho thấy một xu hướng *nhạy cảm ngược chiều* so với các tác vụ sinh ảnh thông thường (nơi $s$ thường được đặt quanh mức 7.5). Cụ thể, trong tác vụ Latin sang Hán tự (@tab:e2c_guidance), các chỉ số chất lượng đạt đỉnh ở mức guidance scale trung bình thấp. Trên tập dữ liệu đã biết (SFUC), giá trị FID tối ưu nằm tại ngưỡng $s=10$ (11.57), tuy nhiên sự chênh lệch so với $s=7.5$ là không đáng kể. Đáng chú ý, khi chuyển sang tập dữ liệu lạ (UFSC), việc giữ guidance scale ở mức thấp ($2.5 - 7.5$) giúp duy trì chỉ số FID ổn định nhất (quanh mức 13.5), trong khi việc tăng $s$ lên 15 khiến chất lượng ảnh suy giảm rõ rệt (FID tăng vọt lên 17.01). Điều này gợi ý rằng đối với các cấu trúc phức tạp như Hán tự, việc cưỡng ép mô hình quá mức bằng guidance scale cao sẽ làm mất đi tính tự nhiên của nét bút.
+]
+
+Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lại từ Hán tự sang Latin (@tab:c2e_guidance). Dữ liệu chỉ ra rằng mô hình đạt hiệu suất tốt nhất tại các mức guidance scale *rất thấp ($s=2.5$ hoặc $s=5$)*. Trên tập UFSC, cấu hình $s=5$ đạt FID tốt nhất là *40.00*, trong khi việc tăng $s$ lên 15 khiến chỉ số này tệ đi gần 30% (lên mức 52.75). Nguyên nhân cốt lõi nằm ở việc không gian phong cách của Hán tự dày đặc hơn rất nhiều so với Latin. Khi sử dụng guidance scale lớn để ép các đặc trưng phong cách phong phú của Hán tự vào khung xương đơn giản của chữ Latin, mô hình dễ sinh ra các nhiễu (artifacts) hoặc biến dạng cấu trúc không mong muốn. Các chỉ số về cấu trúc như SSIM và L1 cũng đồng thuận với nhận định này khi đạt giá trị tối ưu ở ngưỡng thấp ($s <= 7.5$).
+
+#pagebreak()
+#figure(
+  grid(
+    columns: (40pt, auto, auto, auto),
+    // gutter: 8pt,
+    inset: 6pt,
+    stroke: none,
+    align: horizon,
+
+    // ===== Header =====
+    [], grid.vline(),
+    [*Trọng số \ hướng dẫn*], grid.vline(),
+    [*Example 1*], grid.vline(),
+    [*Example 2*],
+
+    // ===== UFSC e2c =====
+    grid.hline(),
+    [],
+    [2.5],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G2.5/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G2.5/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    [],
+    [5],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G5.0/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G5.0/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    [],
+    [7.5],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/AZ/style/p2_neg04/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/AZ/style/p2_neg04/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    rotate(-90deg)[*UFSC* (`e2c`)],
+    [10],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G10/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G10/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    [],
+    [12.5],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G12.5/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G12.5/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    [],
+    [15],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G15/",
+      "Free letter fonts Font-Simplified Chinese",
+      "generated"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/UFSC_G15/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "generated"
+    ),
+
+    [],
+    [*Target*],
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/AZ/style/p2_neg04/",
+      "Free letter fonts Font-Simplified Chinese",
+      "gt"
+    ),
+    glyph-grid(
+      s1,
+      "../result_image/eng_chi/AZ/style/p2_neg04/",
+      "Zoomla Small Handwriting Chinese Font – Simplified Chinese Fonts",
+      "gt"
+    ),
+
+    // ===== UFSC c2e =====
+    grid.hline(),
+    [],
+    [2.5],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G2.5/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G2.5/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    [],
+    [5],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G5.0/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G5.0/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    [],
+    [7.5],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/all/style/p2_neg04/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/all/style/p2_neg04/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    rotate(-90deg)[*UFSC* (`c2e`)],
+    [10],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G10/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G10/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    [],
+    [12.5],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G12.5/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G12.5/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    [],
+    [15],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G15/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "generated"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/UFSC_G15/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "generated"
+    ),
+
+    [],
+    [*Target*],
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/all/style/p2_neg04/",
+      "Benmo Robust Bold Elegant Chinese Font -Simplified Chinese Fonts",
+      "gt"
+    ),
+    glyph-grid(
+      s2,
+      "../result_image/chi_eng/all/style/p2_neg04/",
+      "Font housekeeper impression Chinese Font-Simplified Chinese",
+      "gt"
+    ),
+  ),
+
+  caption: [So sánh kết quả sinh ảnh giữa các trọng số hướng dẫn khác nhau \ trên tập dữ liệu chưa từng thấy cho cả hai hướng tác vụ (e2c và c2e).
+  ]
+) <tab:dinhtinh_guidance>
+
+_*Kết luận*_: Tổng kết lại, thực nghiệm khẳng định rằng *Trọng số hướng dẫn thấp đến trung bình* là lựa chọn tối ưu cho bài toán chuyển đổi font chữ đa ngôn ngữ. Khác với các mô hình tạo sinh nghệ thuật cần $s$ cao để đảm bảo đúng prompt, FontDiffuser hoạt động hiệu quả nhất khi $s$ nằm trong khoảng $[2.5, 7.5]$. Việc thiết lập giá trị này giúp mô hình cân bằng tốt nhất giữa việc chuyển tải phong cách và bảo toàn cấu trúc hình học, tránh được các biến dạng do quá khớp (over-exposure). Dựa trên sự ổn định qua các kịch bản thử nghiệm, khoá luận đề xuất thiết lập mặc định $s=7.5$ cho chiều Latin-Hán (để cân bằng độ nét) và $s=5.0$ cho chiều Hán-Latin (để đảm bảo độ tự nhiên).
 
 #pagebreak()

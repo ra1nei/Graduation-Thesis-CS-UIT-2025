@@ -171,6 +171,44 @@ Mô-đun CL-SCR được thiết kế dựa trên mạng VGG-19 pre-trained đ�
 
 #pagebreak()
 
+== Các tham số quá trình suy luận <pl-inference>
+@tab:inference_params dưới đây liệt kê chi tiết các thiết lập được sử dụng trong mã nguồn thực nghiệm (`new_inference.py` và `sample.py`) để đánh giá mô hình.
+
+#figure(
+  numbering: phuluc_numbering,
+  table(
+    columns: (auto, auto, auto),
+    inset: 10pt,
+    align: (col, row) => left + horizon,
+    stroke: 0.5pt,
+    table.header(
+      [*Phân loại*], [*Tham số*], [*Giá trị thiết lập*]
+    ),
+    table.hline(),
+
+    // Nhóm 1: Cấu hình lấy mẫu
+    table.cell(rowspan: 7, align: horizon)[*Cấu hình Lấy mẫu* \ (Sampling Config)],
+    [Thuật toán \ (Algorithm Type)], [`dpmsolver++`],
+    [Loại dự đoán \ (Model Prediction)], [`noise` (dự đoán nhiễu $epsilon$)],
+    [Số bước suy luận \ (Inference Steps)], [$20$ steps],
+    [Bậc bộ giải \ (Solver Order)], [$2$],
+    [Chế độ hướng dẫn \ (Guidance Type)], [`classifier-free`],
+    [Trọng số hướng dẫn \ (Guidance Scale)], [$7.5$],
+    [Độ phân giải ảnh \ (Resolution)], [$64 times 64$],
+
+    // Nhóm 2: Kịch bản thực nghiệm
+    // table.cell(rowspan: 5, align: horizon)[*Kịch bản Thực nghiệm* \ (Experimental Setup)],
+    // [Hướng chuyển đổi \ (Direction)], [`e2c` (Latin $arrow.r$ Hán) \ `c2e` (Hán $arrow.r$ Latin)],
+    // [Chế độ kiểm thử \ (Phase)], [`test_unknown_style` \ (Unseen Fonts)],
+    // [Độ phức tạp nét \ (Complexity - c2e)], [`easy`, `medium`, `hard`, `all`],
+    // [Chọn mẫu phong cách \ (Style Selection)], [Random (`A-Z`) hoặc Fixed (`A+`)],
+    // [Thiết bị tính toán \ (Device)], [NVIDIA Tesla P100 (cuda:0)],
+  ),
+  caption: [Bảng các tham số cấu hình cho quá trình suy luận (Inference).]
+) <tab:inference_params>
+
+#pagebreak()
+
 == Chi phí Tính toán và Thời gian <phuluc_thoigian>
 
 Do đặc thù của kiến trúc khuếch tán (Diffusion Models), phương pháp đề xuất có sự khác biệt rõ rệt về tài nguyên tiêu thụ so với các phương pháp GAN hay CNN truyền thống. Phần này bóc tách chi tiết thời gian huấn luyện và suy diễn.
