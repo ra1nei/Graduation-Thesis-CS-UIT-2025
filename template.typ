@@ -146,13 +146,9 @@
       v(20pt, weak: true)
       h(4.5em)
       if (it.element.numbering != none) {
-        let number = numbering(
-          it.element.numbering,
-          ..counter(heading).at(it.element.location())
-        )
+        let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
         box(width: 3.2em, number)
       }
-
       link(it.element.location())[ #it.element.body ]
       box(width: 1fr, it.fill)
       h(3pt)
