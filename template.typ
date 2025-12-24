@@ -122,41 +122,44 @@
     // ================= Entry2 =====================
     show outline.entry.where(level: 2): it => {
       v(20pt, weak: true)
-      h(1.3em)
-      if (it.element.numbering != none) {
-        let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
-        box(width: 1.7em, number)
-      }
-      link(it.element.location())[ #it.element.body ]
-      box(width: 1fr, it.fill)
-      h(3pt)
-      link(it.element.location())[#it.page()]
+      link(it.element.location())[#it.indented(it.prefix(), it.inner())]
+      // h(1.3em)
+      // if (it.element.numbering != none) {
+      //   let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
+      //   box(width: 1.7em, number)
+      // }
+      // link(it.element.location())[ #it.element.body ]
+      // box(width: 1fr, it.fill)
+      // h(3pt)
+      // link(it.element.location())[#it.page()]
     }
     // ================= Entry3 =====================
     show outline.entry.where(level: 3): it => {
       v(20pt, weak: true)
-      h(2.6em)
-      if (it.element.numbering != none) {
-        let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
-        box(width: 2.4em, number)
-      }
-      link(it.element.location())[ #it.element.body ]
-      box(width: 1fr, it.fill)
-      h(3pt)
-      link(it.element.location())[#it.page()]
+      link(it.element.location())[#it.indented(it.prefix(), it.inner())]
+      // h(2.6em)
+      // if (it.element.numbering != none) {
+      //   let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
+      //   box(width: 2.4em, number)
+      // }
+      // link(it.element.location())[ #it.element.body ]
+      // box(width: 1fr, it.fill)
+      // h(3pt)
+      // link(it.element.location())[#it.page()]
     }
     // ================= Entry4 =====================
     show outline.entry.where(level: 4): it => {
-      v(20pt, weak: true)
-      h(3.9em)
-      if (it.element.numbering != none) {
-        let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
-        box(width: 3.1em, number)
-      }
-      link(it.element.location())[ #it.element.body ]
-      box(width: 1fr, it.fill)
-      h(3pt)
-      link(it.element.location())[#it.page()]
+      v(20pt, weak: true)      
+      link(it.element.location())[#it.indented(it.prefix(), it.inner())]
+      // h(3.9em)
+      // if (it.element.numbering != none) {
+      //   let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
+      //   box(width: 3.1em, number)
+      // }
+      // link(it.element.location())[ #it.element.body ]
+      // box(width: 1fr, it.fill)
+      // h(3pt)
+      // link(it.element.location())[#it.page()]
     }
 
     {
