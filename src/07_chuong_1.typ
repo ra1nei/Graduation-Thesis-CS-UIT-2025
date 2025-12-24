@@ -28,66 +28,54 @@ Vấn đề cốt lõi của bài toán đa ngôn ngữ nằm ở "khoảng các
 == Mô tả bài toán
 Phần này sẽ định nghĩa bài toán sinh phông chữ đa ngôn ngữ dưới dạng một bài toán chuyển đổi phong cách ảnh (Image-to-Image Translation)@Isola2017Pix2Pix@Liu2017UNIT@Zhu2017CycleGAN@Liu2019FUNIT có điều kiện.
 
-=== Định nghĩa Đầu vào (Input)
-Mô hình nhận vào hai luồng thông tin chính: #linebreak()
-#h(1.5em) _*Ảnh tham chiếu nội dung (Content Image - *_$I_c$):
-#tab_eq(indent: 3em, space: 1.2em)[
-  Là một *hình ảnh chứa ký tự mục tiêu $c$ (target glyph)* trong một phông chữ tiêu chuẩn (ví dụ: Arial hoặc Noto Sans).
-  #parbreak()
+#untab_para[
+  _*Định nghĩa Đầu vào (Input)*_: Mô hình nhận vào hai luồng thông tin chính:
+]
 
-  _*Mục đích*_: *Cung cấp thông tin về cấu trúc hình học và định danh của ký tự cần sinh* (ví dụ: chữ 'A', chữ 'g').
-  #parbreak()
+#tab_eq[
+  _*Ảnh tham chiếu nội dung (Content Image - *_$I_c$): Là một *hình ảnh chứa ký tự mục tiêu c (target glyph)* được thể hiện dưới dạng phông chữ tiêu chuẩn (ví dụ: Arial hoặc Noto Sans), đóng vai trò *cung cấp thông tin về cấu trúc hình học và định danh của ký tự cần sinh* (ví dụ: chữ 'A', chữ 'g'). Trong khuôn khổ bài toán cross-lingual, $I_c$được quy định thuộc *hệ ngôn ngữ đích* (Target Language, ví dụ: Latin).
 
-  Trong bài toán cross-lingual, $I_c$ *thuộc _hệ ngôn ngữ đích_* (Target Language, ví dụ: Latin).
-  ]
+  #figure(
+    kind: image,
+    caption: [Ví dụ minh hoạ các ảnh mẫu trong tập dữ liệu.],
+    grid(
+      columns: 3,
+      gutter: 8pt,
 
-#figure(
-  kind: image,
-  caption: [Ví dụ minh hoạ các ảnh mẫu trong tập dữ liệu.],
-  grid(
-    columns: 3,
-    gutter: 8pt,
-
-    image("../images/example_image/ダ.png", width: auto),
-    image("../images/example_image/c.png", width: auto),
-    image("../images/example_image/L+.png", width: auto),
+      image("../images/example_image/ダ.png", width: auto),
+      image("../images/example_image/c.png", width: auto),
+      image("../images/example_image/L+.png", width: auto),
+    )
   )
-)
 
-#h(1.5em) _*Ảnh tham chiếu phong cách (Style Images - *_$I_s$):
-#tab_eq(indent: 3em, space: 1.2em)[
-  Là *tập hợp một hoặc một vài hình ảnh ($k$-shot)* chứa *các ký tự bất kỳ mang phong cách $s$ mong muốn*.
-  #parbreak()
+  #h(1.5em) _*Ảnh tham chiếu phong cách (Style Images - *_$I_s$): Là *tập hợp một hoặc một vài hình ảnh ($k$-shot)* chứa *các ký tự bất kỳ mang phong cách $s$ mong muốn*, đóng vai trò *cung cấp các đặc trưng thẩm mỹ (như nét xước, độ đậm nhạt, serif...)*. Trong bài toán cross-lingual, $I_s$ thường thuộc *hệ ngôn ngữ nguồn* (Source Language, ví dụ: Tiếng Trung Quốc), khác biệt hoàn toàn so với ngôn ngữ của $I_c$.
 
-  _*Mục đích*_: *Cung cấp các đặc trưng thẩm mỹ (nét xước, độ đậm nhạt, serif...)*.
-  #parbreak()
+  #figure(
+    kind: image,
+    caption: [Ví dụ minh hoạ các ảnh tham chiếu phong cách.],
+    grid(
+      columns: 3,
+      gutter: 8pt,
 
-  Trong bài toán cross-lingual, $I_s$ thường *thuộc _hệ ngôn ngữ nguồn_* (Source Language, ví dụ: Chinese) khác với ngôn ngữ của $I_c$.
-  ]
-
-#figure(
-  kind: image,
-  caption: [Ví dụ minh hoạ các ảnh tham chiếu phong cách.],
-  grid(
-    columns: 3,
-    gutter: 8pt,
-
-    image("../images/example_image/║║╥╟▒¿╦╬╝≥_chinese+产.png", width: auto),
-    image("../images/example_image/A-OTF-ShinMGoMin-Shadow-2_english+M+.png", width: auto),
-    image("../images/example_image/Bai zhou Tian zhen shu ti Font-Traditional Chinese_english+m.png", width: auto),
-  )
-)
+      image("../images/example_image/║║╥╟▒¿╦╬╝≥_chinese+产.png", width: auto),
+      image("../images/example_image/A-OTF-ShinMGoMin-Shadow-2_english+M+.png", width: auto),
+      image("../images/example_image/Bai zhou Tian zhen shu ti Font-Traditional Chinese_english+m.png", width: auto),
+    )
+  )  
+]
   
-=== Định nghĩa Đầu ra (Output)
-_*Ảnh được sinh ra (Generated Image - $I_"gen"$)*_: Là hình ảnh kết quả thể hiện ký tự $c$ nhưng mang phong cách $s$.
-#linebreak()
-_*Yêu cầu*_: $I_"gen"$ phải giữ được cấu trúc nội dung của $I_c$ (đọc được là chữ gì) và mang đầy đủ đặc điểm thẩm mỹ của $I_s$ (nhìn giống font mẫu).
+_*Định nghĩa Đầu ra (Output)*_:
 
-=== Mục tiêu toán học
-Mục tiêu là huấn luyện một hàm ánh xạ $G$ (Generator/Diffusion Model) sao cho:
-$ I_"gen" = G(I_c, I_s) $
-Thỏa mãn điều kiện: 
-$"Content"(I_"gen") approx "Content"(I_c)$ và $"Style"(I_"gen") approx "Style"(I_s)$.
+#tab_eq[
+  _*Ảnh được sinh ra (Generated Image - $I_"gen"$)*_: Là hình ảnh kết quả thể hiện ký tự $c$ nhưng mang phong cách $s$.
+
+  _*Yêu cầu*_: $I_"gen"$ phải giữ được cấu trúc nội dung của $I_c$ (đọc được là chữ gì) và mang đầy đủ đặc điểm thẩm mỹ của $I_s$ (nhìn giống font mẫu).
+
+  _*Mục tiêu toán học*_: Mục tiêu là huấn luyện một hàm ánh xạ $G$ (Generator/Diffusion Model) sao cho:
+  $ I_"gen" = G(I_c, I_s) $
+  #h(1.5em) Thỏa mãn điều kiện: $"Content"(I_"gen") approx "Content"(I_c)$ và $"Style"(I_"gen") approx "Style"(I_s)$.
+]
+
 
 == Mục tiêu của đề tài
 Khoá luận này đề xuất mở rộng mô hình FontDiffuser để giải quyết bài toán *sinh phông chữ đa ngôn ngữ (Cross-lingual Font Generation)*, cụ thể:

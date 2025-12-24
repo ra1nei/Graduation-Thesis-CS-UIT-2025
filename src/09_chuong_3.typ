@@ -47,7 +47,7 @@ Quy trình huấn luyện được chia thành hai giai đoạn (phases) tuần 
 === Giai đoạn 1 - Tái tạo cấu trúc (Reconstruction Phase)
 Mục tiêu của giai đoạn này là huấn luyện mô hình khuếch tán học cách khôi phục lại hình ảnh ký tự mục tiêu từ nhiễu, dựa trên điều kiện $x_c$ và $x_s$. Các thành phần cốt lõi bao gồm *Bộ mã hoá nội dung ($E_c$) và phong cách ($E_s$)* - dùng để *trích xuất đặc trưng ngữ nghĩa*.
 
-==== Multi-scale Content Aggregation (MCA) 
+_*Multi-scale Content Aggregation (MCA)*_:
 Đây là cơ chế tổng hợp đặc trưng đa tỉ lệ được thiết kế để giải quyết hạn chế của các phương pháp chỉ dựa vào một mức đặc trưng duy nhất. Khi sinh các ký tự phức tạp, một tầng đặc trưng đơn lẻ thường không thể đồng thời nắm bắt được cả bố cục tổng thể lẫn những chi tiết tinh vi như nét mảnh, bộ phận nhỏ hoặc các dấu thanh. MCA khắc phục điều này bằng cách trích xuất nhiều mức đặc trưng nội dung từ các tầng khác nhau của bộ mã hoá, sau đó đưa chúng vào các khối UNet tương ứng.
 
 Cụ thể, quy trình hoạt động như sau:
@@ -58,7 +58,7 @@ Cụ thể, quy trình hoạt động như sau:
 5. Sau khi đi qua một kết nối phần dư (residual connection), một lớp tích chập $1 times $ được sử dụng để giảm số lượng kênh, thu được đầu ra $I_{co}$.
 6. Cuối cùng, một mô-đun cross-attention được áp dụng để chèn style embedding $e_s$, trong đó $e_s$ đóng vai trò là Key và Value, còn $I_{co}$ đóng vai trò là Query.
   
-Nhờ MCA, mô hình có thể tái hiện chính xác cả những thành phần nhỏ và các nét đặc trưng tinh tế—một yếu tố đặc biệt quan trọng đối với những hệ chữ có độ phức tạp cao, bao gồm các ký tự chứa nhiều bộ thủ hoặc các dấu thanh đòi hỏi độ chính xác cao.
+#h(1.5em) Nhờ MCA, mô hình có thể tái hiện chính xác cả những thành phần nhỏ và các nét đặc trưng tinh tế—một yếu tố đặc biệt quan trọng đối với những hệ chữ có độ phức tạp cao, bao gồm các ký tự chứa nhiều bộ thủ hoặc các dấu thanh đòi hỏi độ chính xác cao.
 
 #figure(
   image("../images/FontDiffuser/MCA.pdf"),
@@ -70,13 +70,13 @@ Nhờ MCA, mô hình có thể tái hiện chính xác cả những thành phầ
   caption: [Đặc trưng Content ở các khối khác nhau.]
 )
 
-==== Reference-Structure Interaction (RSI)
+#h(1.5em) _*Reference-Structure Interaction (RSI)*_:
 Giữa ảnh nguồn và ảnh đích thường tồn tại những khác biệt đáng kể về mặt cấu trúc (ví dụ: kích thước phông chữ) cũng như sự lệch lạc về vị trí không gian (spatial misalignment) giữa đặc trưng của UNet và đặc trưng tham chiếu. Để giải quyết vấn đề này, nhóm tác giả đã đề xuất khối Tương tác Cấu trúc - Tham chiếu (RSI). Khối này sử dụng mạng tích chập biến hình (Deformable Convolutional Networks - DCN) để thực hiện biến đổi cấu trúc ngay trên kết nối tắt (skip connection) của UNet.
 
 Điểm khác biệt so với các phương pháp trước đây là thay vì sử dụng CNN truyền thống để tính toán độ lệch (offset) $ delta_"offset"$ — vốn hạn chế trong việc nắm bắt thông tin toàn cục — nhóm tác giả đã tích hợp cơ chế Cross-Attention để kích hoạt các tương tác tầm xa (long-distance interactions).
 
 Quy trình cụ thể diễn ra như sau:
-#tab_eq[
+#tab_eq(indent: 0em)[
   1. Ảnh tham chiếu $x_c$ trước hết được nhúng bởi bộ mã hoá nội dung $E_c$ để thu các bản đồ cấu trúc (structure maps) $F_s = {f_s^1, f_s^2}$.
 
   2. Tại mỗi tầng, RSI tiếp nhận các đặc trưng từ UNet ($r_i$) và bản đồ cấu trúc tương ứng ($f_s^i$). Cả hai được làm phẳng (flatten) thành chuỗi vector $S_r$ và $S_s$.
@@ -95,78 +95,29 @@ Quy trình cụ thể diễn ra như sau:
   $ I_R = "DCN"(r_i, delta_"offset") $
 ]
 
+#h(1.5em) Thông qua cơ chế này, RSI có khả năng trích xuất trực tiếp thông tin cấu trúc từ ảnh tham chiếu và điều chỉnh linh hoạt đặc trưng của ảnh nguồn, đảm bảo sự tương thích về phong cách mà không làm gãy vỡ các nét chi tiết.
 
-Thông qua cơ chế này, RSI có khả năng trích xuất trực tiếp thông tin cấu trúc từ ảnh tham chiếu và điều chỉnh linh hoạt đặc trưng của ảnh nguồn, đảm bảo sự tương thích về phong cách mà không làm gãy vỡ các nét chi tiết.
+=== Giai đoạn 2 - Tinh chỉnh phong cách (Style Refinement Phase) <scr_module>
+Mặc dù Giai đoạn 1 có thể tạo ra ký tự rõ nét, nhưng sự vướng víu (disentanglement) giữa đặc trưng phong cách và nội dung thường chưa hoàn hảo, dẫn đến kết quả phong cách không nhất quán. Giai đoạn 2 cố định các trọng số của UNet và tập trung huấn luyện mô-đun *Style Contrastive Refinement (SCR)*.
 
-=== Giai đoạn 2 - Tinh chỉnh phong cách (Style Refinement Phase)
-Mặc dù Giai đoạn 1 có thể tạo ra ký tự rõ nét, nhưng phong cách thường chưa được tách biệt hoàn toàn. Giai đoạn 2 cố định các trọng số của UNet và tập trung huấn luyện mô-đun *Style Contrastive Refinement (SCR)*. Mô-đun này đóng vai trò như một người hướng dẫn, sử dụng cơ chế học tương phản (Contrastive Learning) để ép buộc mô hình sinh ra ảnh có style vector gần với ảnh tham chiếu nhất có thể.
+SCR hoạt động như một bộ giám sát đặc trưng (feature supervisor), sử dụng cơ chế học tương phản (Contrastive Learning) để cung cấp tín hiệu điều hướng, đảm bảo phong cách của ảnh sinh ra ($x_0$) phải nhất quán với ảnh đích ($x_p$) ở cả cấp độ toàn cục và cục bộ.
 
-=== Kết hợp vào Mục tiêu Huấn luyện
-Để đạt được sự cân bằng giữa việc tái tạo nội dung chính xác và bắt chước phong cách tinh tế, quy trình huấn luyện của FontDiffuser áp dụng chiến lược *hai giai đoạn*: *từ thô đến tinh (coarse-to-fine two-phase strategy)*.
-
-1. *Giai đoạn 1 - Tái tạo Cấu trúc (Phase 1 - Coarse Stage)*: 
-Trong giai đoạn đầu, mục tiêu là tối ưu hoá FontDiffuser để mô hình đạt được năng lực nền tảng trong việc tái tạo cấu trúc phông chữ (font reconstruction). Tại bước này, mô-đun SCR *chưa được kích hoạt*.
-Hàm mất mát tổng thể cho giai đoạn 1 ($L_"total"^1$) là sự kết hợp của ba thành phần:
-
-$ L_"total"^1 = L_"MSE" + lambda_"cp"^1 L_"cp" + lambda_"off"^1 L_"offset" $
-
-Chi tiết các thành phần:
-#tab_eq[
-  *_Hàm mất mát Khuếch tán Tiêu chuẩn_ ($L_"MSE"$)*: Đây là hàm mất mát cơ bản của mô hình khuếch tán, chịu trách nhiệm tính toán sai số giữa nhiễu dự đoán $epsilon_theta$ và nhiễu thực tế $epsilon$ tại bước thời gian $t$, với điều kiện đầu vào là ảnh nội dung $x_c$ và ảnh phong cách $x_s$:
-  $ L_"MSE" = ||epsilon - epsilon_theta(x_t, t, x_c, x_s)||^2 $
-  
-  #h(1.5em) *_Hàm mất mát Nhận thức Nội dung_ ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Khoá luận sử dụng các đặc trưng được mã hoá bởi mạng VGG ($"VGG"_l(dot)$) trên $L$ tầng được chọn:
-  $ L_"cp" = sum_(l=1)^L ||"VGG"_l (x_0) - "VGG"_l (x_"target")|| $
-  
-  #h(1.5em) *_Hàm mất mát Độ lệch_($L_"offset"$ - Offset Loss)*: Được thiết kế riêng cho mô-đun RSI (Reference-Structure Interaction), hàm này ràng buộc độ lớn của các vector dịch chuyển $delta_"offset"$ nhằm ngăn chặn các biến dạng cấu trúc quá mức, trong đó mean là phép tính trung bình:
-  $ L_"offset" = "mean"(||delta_"offset"||) $
-]
-
-#untab_para[
-  Các siêu tham số trọng số cho giai đoạn 1 được thiết lập là: $lambda_"cp"^1 = 0.01$ và $lambda_"off"^1 = 0.5$.
-]
-
-2. *Giai đoạn 2 - Tinh chỉnh Phong cách (Phase 2 - Fine Stage)*:
-Sau khi mô hình đã nắm bắt được cấu trúc, giai đoạn 2 sẽ kích hoạt mô-đun *SCR (Style Contrastive Refinement)*. Mục đích là tích hợp hàm mất mát tương phản phong cách ($L_"sc"$) để cung cấp tín hiệu hướng dẫn (guidance), giúp mô hình khuếch tán tinh chỉnh các chi tiết phong cách ở cả cấp độ toàn cục và cục bộ.
-
-Hàm mất mát tổng thể cho giai đoạn 2 ($L_"total"^2$) được mở rộng như sau:
-$ L_"total"^2 = L_"MSE" + lambda_"cp"^2 L_"cp" + lambda_"off"^2 L_"offset" + lambda_"sc"^2 L_"sc" $
-
-Trong giai đoạn này, các trọng số được giữ nguyên cho các thành phần trước và bổ sung trọng số cho thành phần mới:
-#tab_eq[
-  *$lambda_"cp"^2 = 0.01$* (trọng số nội dung).
-
-  *$lambda_"off"^2 = 0.5$* (trọng số độ lệch RSI).
-
-  *$lambda_"sc"^2 = 0.01$* (trọng số tương phản phong cách).
-]
-
-#untab_para[
-  Việc bổ sung $L_"sc"$ (như đã định nghĩa ở Phương trình @L_sc_equa trong phần phân tích SCR (@phantich_scr)) đóng vai trò then chốt trong việc đảm bảo ảnh đầu ra không chỉ đúng về cấu trúc (nhờ $L_"cp", L_"offset"$) mà còn đạt độ chân thực cao về phong cách nghệ thuật.
-]
-
-== Mô-đun Style Contrastive Refinement (SCR Module) <phantich_scr>
-
-Trong bài toán sinh phông chữ (font generation), mục tiêu cốt lõi của việc sinh phông chữ là đạt được hiệu ứng bắt chước phong cách (style imitation) chính xác, độc lập với sự biến thiên về phong cách giữa ảnh nguồn và ảnh tham chiếu. Trong các mô hình sinh ảnh truyền thống, sự vướng víu (disentanglement) giữa đặc trưng phong cách và nội dung thường không hoàn hảo, dẫn đến kết quả phong cách không nhất quán. Để giải quyết vấn đề này, nhóm tác giả đề xuất một chiến lược mới: xây dựng mô-đun *Style Contrastive Refinement (SCR)*.
-
-Mô-đun Style Contrastive Refinement (SCR) được đề xuất như một chiến lược mới để giải quyết vấn đề này. SCR hoạt động như một cơ chế học biểu diễn (representation learning mô-đun) và một bộ giám sát đặc trưng (feature supervisor). Nó không tham gia trực tiếp vào quá trình sinh ảnh pixel-wise của mô hình khuếch tán (diffusion model), mà có nhiệm vụ cung cấp tín hiệu điều hướng, đảm bảo phong cách của ảnh sinh ra ($x_0$) phải nhất quán với ảnh đích ($x_p$) ở cả cấp độ toàn cục và cục bộ.
-
-=== Kiến trúc Khai thác Phong cách
-Kiến trúc của SCR, như được minh họa trong thiết kế hệ thống, bao gồm hai thành phần chính:
+==== Kiến trúc Khai thác Phong cách
+Kiến trúc của SCR, như được minh họa trong @scr_framework, bao gồm hai thành phần chính:
 
 #figure(
   image("../images/FontDiffuser/Style Contrastive Refinement.png"),
-  caption: [Minh hoạ mô-đun SCR.]
-)
+  caption: [Kiến trúc của mô-đun SCR.]
+) <scr_framework>
 
-1. *Bộ trích xuất Đặc trưng (Style Extractor)*:
+1. _*Bộ trích xuất Đặc trưng (Style Extractor)*_:
 #tab_eq[
   #h(1.5em) Sử dụng một mạng *VGG* (lấy cảm hứng từ Zhang et al. 2022@Sun2018PyramidGAN) để nhúng ảnh phông chữ, khai thác các đặc tính phong cách và cấu trúc.
 
   Để bao phủ đầy đủ cả phong cách cục bộ (như nét bút, serifs) và toàn cục (như độ đậm, độ nghiêng), bộ trích xuất chọn ra $N$ tầng feature maps, ký hiệu là $F_v = {f_v^0, f_v^1, ..., f_v^N}$.
 ]
 
-2. *Bộ chiếu Đặc trưng (Style Projector)*: 
+2. _*Bộ chiếu Đặc trưng (Style Projector)*_: 
 
 #tab_eq(indent: 1.5em)[
   #h(1.5em) Các feature maps $F_v$ được đưa vào bộ chiếu. Tại đây, áp dụng đồng thời *average pooling* và *maximum pooling* để trích xuất các đặc trưng kênh toàn cục khác nhau.
@@ -176,29 +127,26 @@ Kiến trúc của SCR, như được minh họa trong thiết kế hệ thống
   Cuối cùng, $F_g$ được đưa qua các phép chiếu tuyến tính (linear projections) để thu được các *vector phong cách* $V = {v^0, v^1, ..., v^N}$. Các vector này đóng vai trò là đầu vào cho hàm mất mát tương phản.
 ]
 
-=== Cơ chế Học Tương phản và Hàm Mất mát
+==== Cơ chế Học Tương phản và Hàm Mất mát
 SCR sử dụng chiến lược học tương phản (Contrastive Learning), vận dụng hàm mất mát $L_"sc"$ để điều hướng mô hình khuếch tán.
 
-==== Chiến lược Thiết lập Mẫu
+_*Chiến lược Thiết lập Mẫu*_:
 Để đảm bảo tính liên quan về nội dung nhưng phân biệt rõ ràng về phong cách, SCR lựa chọn mẫu cẩn thận:
-#tab_eq[
-  *Mẫu sinh ra (Generated Sample - $x_0$)*: Ảnh được tạo ra bởi mô hình khuếch tán.
+#tab_eq(indent: 3em)[
+  *_Mẫu sinh ra (Generated Sample_ - $x_0$)*: Ảnh được tạo ra bởi mô hình khuếch tán.
 
-  *Mẫu dương (Positive Sample - $x_p$)*: Là ảnh đích (target image) mang phong cách mong muốn. Để tăng cường *tính bền vững (robustness)* của quá trình bắt chước phong cách, một chiến lược tăng cường dữ liệu (augmentation strategy) được áp dụng trên $x_p$, bao gồm *cắt ngẫu nhiên (random cropping)* và *thay đổi kích thước ngẫu nhiên (random resizing)*.
+  *_Mẫu dương (Positive Sample_ - $x_p$)*: Là ảnh đích (target image) mang phong cách mong muốn. Để tăng cường *tính bền vững (robustness)* của quá trình bắt chước phong cách, một chiến lược tăng cường dữ liệu (augmentation strategy) được áp dụng trên $x_p$, bao gồm *cắt ngẫu nhiên (random cropping)* và *thay đổi kích thước ngẫu nhiên (random resizing)*.
 
-  *Mẫu âm (Negative Samples - $x_n$)*: Là $K$ mẫu ảnh có *cùng nội dung* ký tự với $x_p$ và $x_0$ nhưng mang *phong cách khác biệt*.
+  *_Mẫu âm (Negative Samples_ - $x_n$)*: Là $K$ mẫu ảnh có *cùng nội dung* ký tự với $x_p$ và $x_0$ nhưng mang *phong cách khác biệt*.
 ]
 
-
-// DEBUG: Chèn hình ví dụ ở đây
-
-==== Định nghĩa hàm mất mát
+_*Định nghĩa hàm mất mát*_:
 Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE@Oord2018InfoNCE* được tính tổng trên $N$ tầng đặc trưng:
 
 $ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $ <L_sc_equa>
 
-Trong đó:
-#tab_eq[
+#h(1.5em) Trong đó:
+#tab_eq(indent: 3em)[
   *$N$*: Tổng số tầng đặc trưng được sử dụng để trích xuất và so sánh.
 
   *$l$*: Chỉ số đại diện cho tầng đặc trưng đang xét (từ $0$ đến $N-1$).
@@ -220,6 +168,50 @@ Trong đó:
   Thông qua việc tối thiểu hoá hàm mất mát này, mô hình được định hướng để kéo vector phong cách của ảnh sinh lại gần vector của ảnh đích, đồng thời đẩy xa khỏi các vector của các phong cách không mong muốn.
 ]
 
+=== Kết hợp vào Mục tiêu Huấn luyện
+Để đạt được sự cân bằng giữa việc tái tạo nội dung chính xác và bắt chước phong cách tinh tế, quy trình huấn luyện của FontDiffuser áp dụng chiến lược *hai giai đoạn*: *từ thô đến tinh (coarse-to-fine two-phase strategy)*.
+
+1. *_Giai đoạn 1 - Tái tạo Cấu trúc (Phase 1 - Coarse Stage)_*: 
+Trong giai đoạn đầu, mục tiêu là tối ưu hoá FontDiffuser để mô hình đạt được năng lực nền tảng trong việc tái tạo cấu trúc phông chữ (font reconstruction). Tại bước này, mô-đun SCR *chưa được kích hoạt*.
+Hàm mất mát tổng thể cho giai đoạn 1 ($L_"total"^1$) là sự kết hợp của ba thành phần:
+
+$ L_"total"^1 = L_"MSE" + lambda_"cp"^1 L_"cp" + lambda_"off"^1 L_"offset" $
+
+Chi tiết các thành phần:
+#tab_eq[
+  *_Hàm mất mát Khuếch tán Tiêu chuẩn_ ($L_"MSE"$)*: Đây là hàm mất mát cơ bản của mô hình khuếch tán, chịu trách nhiệm tính toán sai số giữa nhiễu dự đoán $epsilon_theta$ và nhiễu thực tế $epsilon$ tại bước thời gian $t$, với điều kiện đầu vào là ảnh nội dung $x_c$ và ảnh phong cách $x_s$:
+  $ L_"MSE" = ||epsilon - epsilon_theta(x_t, t, x_c, x_s)||^2 $
+  
+  #h(1.5em) *_Hàm mất mát Nhận thức Nội dung_ ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Khoá luận sử dụng các đặc trưng được mã hoá bởi mạng VGG ($"VGG"_l(dot)$) trên $L$ tầng được chọn:
+  $ L_"cp" = sum_(l=1)^L ||"VGG"_l (x_0) - "VGG"_l (x_"target")|| $
+  
+  #h(1.5em) *_Hàm mất mát Độ lệch_($L_"offset"$ - Offset Loss)*: Được thiết kế riêng cho mô-đun RSI (Reference-Structure Interaction), hàm này ràng buộc độ lớn của các vector dịch chuyển $delta_"offset"$ nhằm ngăn chặn các biến dạng cấu trúc quá mức, trong đó mean là phép tính trung bình:
+  $ L_"offset" = "mean"(||delta_"offset"||) $
+]
+
+#untab_para[
+  Các siêu tham số trọng số cho giai đoạn 1 được thiết lập là: $lambda_"cp"^1 = 0.01$ và $lambda_"off"^1 = 0.5$.
+]
+
+2. *_Giai đoạn 2 - Tinh chỉnh Phong cách (Phase 2 - Fine Stage)_*:
+Sau khi mô hình đã nắm bắt được cấu trúc, giai đoạn 2 sẽ kích hoạt mô-đun *SCR (Style Contrastive Refinement)*. Mục đích là tích hợp hàm mất mát tương phản phong cách ($L_"sc"$) để cung cấp tín hiệu hướng dẫn (guidance), giúp mô hình khuếch tán tinh chỉnh các chi tiết phong cách ở cả cấp độ toàn cục và cục bộ.
+
+Hàm mất mát tổng thể cho giai đoạn 2 ($L_"total"^2$) được mở rộng như sau:
+$ L_"total"^2 = L_"MSE" + lambda_"cp"^2 L_"cp" + lambda_"off"^2 L_"offset" + lambda_"sc"^2 L_"sc" $
+
+Trong giai đoạn này, các trọng số được giữ nguyên cho các thành phần trước và bổ sung trọng số cho thành phần mới:
+#tab_eq[
+  *$lambda_"cp"^2 = 0.01$* (trọng số nội dung).
+
+  *$lambda_"off"^2 = 0.5$* (trọng số độ lệch RSI).
+
+  *$lambda_"sc"^2 = 0.01$* (trọng số tương phản phong cách).
+]
+
+#untab_para[
+  Việc bổ sung $L_"sc"$ (như đã định nghĩa ở Phương trình @L_sc_equa trong phần phân tích SCR (@scr_module)) đóng vai trò then chốt trong việc đảm bảo ảnh đầu ra không chỉ đúng về cấu trúc (nhờ $L_"cp", L_"offset"$) mà còn đạt độ chân thực cao về phong cách nghệ thuật.
+]
+
 == Cải tiến đề xuất: Cross-Lingual Style Contrastive Refinement (CL-SCR)
 
 === Hạn chế của SCR trong bối cảnh đa ngôn ngữ
@@ -236,18 +228,18 @@ Thay vì chỉ sử dụng cặp mẫu dương/âm đơn thuần (Intra-lingual)
 #tab_eq[
   *_Luồng Nội miền (Intra-Lingual Flow)_*:
   #tab_eq(indent: 3em)[
-    *Anchor ($x_"gen"$)*: Ảnh sinh ra từ mô hình Diffusion.
+    *_Anchor_ ($x_"gen"$)*: Ảnh sinh ra từ mô hình Diffusion.
 
-    *Intra-Positive ($x_"pos,intra"$)*: Ảnh cùng nội dung ký tự, cùng phong cách (Ground Truth). Giúp mô hình giữ vững cấu trúc cơ bản.
+    *_Intra-Positive_ ($x_"pos,intra"$)*: Ảnh cùng nội dung ký tự, cùng phong cách (Ground Truth). Giúp mô hình giữ vững cấu trúc cơ bản.
 
-    *Intra-Negative ($x_"neg,intra"$)*: Ảnh cùng nội dung, khác phong cách.
+    *_Intra-Negative_ ($x_"neg,intra"$)*: Ảnh cùng nội dung, khác phong cách.
   ]
   
   *_Luồng Xuyên miền (Cross-Lingual Flow - Điểm cải tiến chính)_*:
   #tab_eq(indent: 3em)[
-    *Cross-Positive ($x_"pos,cross"$)*: Các ảnh thuộc ngôn ngữ đích mang cùng Style ID với ảnh tham chiếu. Mục tiêu là ép buộc bộ Projector phải ánh xạ các đặc trưng từ hai ngôn ngữ khác nhau về cùng một cụm vector nếu chúng có cùng phong cách.
+    *_Cross-Positive_ ($x_"pos,cross"$)*: Các ảnh thuộc ngôn ngữ đích mang cùng Style ID với ảnh tham chiếu. Mục tiêu là ép buộc bộ Projector phải ánh xạ các đặc trưng từ hai ngôn ngữ khác nhau về cùng một cụm vector nếu chúng có cùng phong cách.
 
-    *Cross-Negative ($x_"neg,cross"$)*: Các ảnh thuộc ngôn ngữ đích có cấu trúc nét tương đồng nhưng khác phong cách.
+    *_Cross-Negative_ ($x_"neg,cross"$)*: Các ảnh thuộc ngôn ngữ đích có cấu trúc nét tương đồng nhưng khác phong cách.
   ]
 ]
 

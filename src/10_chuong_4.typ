@@ -101,19 +101,19 @@ Các thí nghiệm được thực hiện trên môi trường tính toán đám
 
 Quá trình huấn luyện tuân theo chiến lược *hai giai đoạn (Two-stage training)* với các siêu tham số được thiết lập cụ thể như sau dựa trên tài nguyên phần cứng giới hạn:
 
-1. *Giai đoạn Tái tạo (Phase 1 - Reconstruction)*:
+1. *_Giai đoạn Tái tạo (Phase 1 - Reconstruction)_*:
 Trong giai đoạn khởi đầu này, mục tiêu chính của mô hình là học các đặc trưng cấu trúc nội dung và phong cách cơ bản. Quá trình huấn luyện được thực hiện xuyên suốt *400,000 bước lặp* với kích thước batch được cố định là *4*. Về chiến lược tối ưu hoá, khoá luận sử dụng bộ giải thuật *AdamW* với tốc độ học khởi tạo là *$1 times 10^(-4)$*, kết hợp cùng lịch trình điều chỉnh Linear bao gồm *10,000 bước khởi động* (warmup steps) để đảm bảo mô hình hội tụ ổn định. Hàm mất mát tổng hợp được cấu hình với các trọng số thành phần cụ thể là *$lambda_"percep" = 0.01$* cho Content Perceptual Loss và *$lambda_"offset" = 0.5$* cho Offset Loss nhằm hỗ trợ mô-đun RSI học biến dạng cấu trúc.
 
-2. *Tiền huấn luyện mô-đun CL-SCR*:
+2. *_Tiền huấn luyện mô-đun CL-SCR_*:
 Trước khi được tích hợp vào luồng sinh ảnh chính, mô-đun CL-SCR (Cross-Lingual Style Contrastive Refinement) trải qua một quá trình huấn luyện độc lập nhằm xây dựng không gian biểu diễn phong cách tối ưu. Quá trình này được thực hiện trong tổng số *200,000 bước lặp* với kích thước batch là *16*. Khoá luận sử dụng bộ tối ưu hoá Adam để cập nhật tham số cho cả bộ trích xuất đặc trưng (Style Feat Extractor) và bộ chiếu đặc trưng (Style Projector) với tốc độ học cố định là *$1 times 10^(-4)$*.
 
 Để tăng cường tính bền vững của biểu diễn phong cách đối với các biến thể hình học, khoá luận áp dụng chiến lược tăng cường dữ liệu (Data Augmentation) thông qua kỹ thuật *Random Resized Crop*. Cụ thể, ảnh đầu vào được *cắt ngẫu nhiên với tỷ lệ diện tích từ 80% đến 100% (scale 0.8 - 1.0)* và *tỷ lệ khung hình dao động nhẹ trong khoảng 0.8 đến 1.2*, sau đó được đưa về kích thước chuẩn thông qua nội suy song tuyến tính (bilinear interpolation).
 
-3. *Giai đoạn Tinh chỉnh Phong cách bằng mô-đun CL-SCR (Phase 2 - Style Refinement with CL-SCR)*:
+3. *_Giai đoạn Tinh chỉnh Phong cách bằng mô-đun CL-SCR (Phase 2 - Style Refinement with CL-SCR)_*:
 Bước sang giai đoạn hai, mô-đun CL-SCR được kích hoạt để tinh chỉnh sâu các đặc trưng phong cách Latin, trong khi tốc độ học của các thành phần khác được giảm xuống để tránh phá vỡ cấu trúc đã học. Quá trình này diễn ra trong *30,000 bước* với *kích thước batch 4* nhằm dành tài nguyên VRAM cho các tính toán của mô-đun tương phản. Tốc độ học được thiết lập ở mức thấp hơn là *$1 times 10^(-5)$*, áp dụng chiến lược Constant (hằng số) sau *1,000 bước khởi động*. Đối với cấu hình CL-SCR, khoá luận lựa chọn chế độ huấn luyện kết hợp cả nội miền và xuyên miền (`scr_mode="both"`) với tỷ trọng $alpha_"intra" = 0.3$ và ưu tiên *$beta_"cross" = 0.7$*, đồng thời sử dụng *4 mẫu âm* (negative samples) cho mỗi lần tính toán loss. Hàm mục tiêu tổng thể lúc này là sự kết hợp của các thành phần theo công thức:
 $ L_"total" = L_"MSE" + 0.01 dot L_"percep" + 0.5 dot L_"offset" + 0.01 dot L_"CL-SCR" $
 
-4. *Quy trình Inference*: 
+4. *_Quy trình Inference_*: 
 Trong quá trình lấy mẫu (Inference), mô hình FontDiffuser@Yang2024FontDiffuser được đóng gói thành một Pipeline dựa trên DPM-Solver để tối ưu hoá tốc độ.
 
 _*Cấu hình Lấy mẫu*_: Khoá luận sử dụng bộ giải *DPM-Solver++* với số bước suy diễn được cố định là *20* (`num_inference_steps=20`), đây là một sự cân bằng giữa tốc độ tính toán và chất lượng ảnh sinh. Chiến lược hướng dẫn vô điều kiện (Classifier-Free Guidance@JonathanGuidance) được áp dụng với tham số hướng dẫn ($s$) được xác định trong file cấu hình (`guidance_scale`). Để lấy mẫu, các ảnh đầu vào được tiền xử lý và chuẩn hoá về kích thước (`content_image_size`, `style_image_size`) rồi đưa về Tensor với dải giá trị $[ -1, 1 ]$.
@@ -275,7 +275,7 @@ Khoá luận sử dụng hai cấu hình mô hình cho hướng này: $"Ours"_"A
 
     [Medium], [Ảnh phong cách là Hán tự có số nét $11 <= M <= 20$.], [$"Ours"_"Medium"$], [Kiểm tra hiệu quả của các mô-đun bảo toàn nét (MCA) khi đối mặt với cấu trúc trung bình.],
 
-    [Hard], [Ảnh phong cách là Hán tự có số nét $M >= 21$.], [$"Ours"_"Hard"$], [Đánh giá khả năng trích xuất phong cách từ cấu trúc phức tạp và rậm rạp nhất mà không làm mất thông tin nét.],
+    [Hard], [Ảnh phong cách là Hán tự có số nét $M >= 21$.], [$"Ours"_"Hard"$], [Đánh giá khả năng trích xuất phong cách từ cấu trúc phức tạp và dày đặc nhất mà không làm mất thông tin nét.],
   ),
   caption: [Bảng phân loại các kịch bản dựa trên độ phức tạp của ký tự.]
 ) <tab:stroke_compare>
