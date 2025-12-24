@@ -103,24 +103,26 @@
 
   // ================= MỤC LỤC =====================
   {
+    // ================= Entry1 =====================
     show outline.entry.where(level: 1): it => {
       v(20pt, weak: true)
       strong(
         {
           if (it.element.numbering != none) {
             let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
-            box(width: 5em, number) + ". "
+            box(width: auto, number) + ". "
           }
-          link(it.element.location())[#it.element.body ]
+          link(it.element.location())[ #it.element.body ]
           box(width: 1fr, it.fill)
           h(3pt)
           link(it.element.location())[#it.page()]
         },
       )
     }
+    // ================= Entry2 =====================
     show outline.entry.where(level: 2): it => {
       v(20pt, weak: true)
-      h(1.5em)
+      h(1.3em)
       if (it.element.numbering != none) {
         let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
         box(width: 1.7em, number)
@@ -130,9 +132,10 @@
       h(3pt)
       link(it.element.location())[#it.page()]
     }
+    // ================= Entry3 =====================
     show outline.entry.where(level: 3): it => {
       v(20pt, weak: true)
-      h(3em)
+      h(2.6em)
       if (it.element.numbering != none) {
         let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
         box(width: 2.4em, number)
@@ -142,12 +145,13 @@
       h(3pt)
       link(it.element.location())[#it.page()]
     }
+    // ================= Entry4 =====================
     show outline.entry.where(level: 4): it => {
       v(20pt, weak: true)
-      h(4.5em)
+      h(3.9em)
       if (it.element.numbering != none) {
         let number = numbering(it.element.numbering, ..counter(heading).at(it.element.location()))
-        box(width: 3.2em, number)
+        box(width: 3.1em, number)
       }
       link(it.element.location())[ #it.element.body ]
       box(width: 1fr, it.fill)
