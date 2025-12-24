@@ -808,13 +808,13 @@ Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nh�
 
 #figure(
   table(
-    columns: (auto, auto, auto, auto, auto, auto, auto),
+    columns: (auto, auto, auto, auto, auto, auto),
     inset: 10pt,
     align: center,
     stroke: none,
 
     table.header(
-      [], [],
+      [],
       [*Mô-đun #linebreak() M $"  "$ R $"  "$ S $"  "$ CL*],
       [*L1 $arrow.b$*],
       [*SSIM $arrow.t$*],
@@ -825,12 +825,6 @@ Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nh�
     table.hline(),
 
     // ================= Ours - AZ =================
-    table.cell(
-      rowspan: 6,
-      align: horizon,
-      rotate(-90deg, reflow: true)[*$"Ours"_"AZ"$*],
-    ),
-
     table.cell(
       rowspan: 3,
       align: horizon,
@@ -871,13 +865,13 @@ Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nh�
 
 #figure(
   table(
-    columns: (auto, auto, auto, auto, auto, auto, auto),
+    columns: (auto, auto, auto, auto, auto, auto),
     inset: 10pt,
     align: center,
     stroke: none,
 
     table.header(
-      [], [],
+      [],
       [*Mô-đun #linebreak() M $"  "$ R $"  "$ S $"  "$ CL*],
       [*L1 $arrow.b$*],
       [*SSIM $arrow.t$*],
@@ -888,12 +882,6 @@ Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nh�
     table.hline(),
 
     // ================= Ours - All =================
-    table.cell(
-      rowspan: 6,
-      align: horizon,
-      rotate(-90deg, reflow: true)[*$"Ours"_"All"$*],
-    ),
-
     table.cell(
       rowspan: 3,
       align: horizon,
