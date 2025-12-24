@@ -3,43 +3,30 @@
   heading(numbering: none)[Danh mục từ viết tắt]
 }
 #align(center, text(16pt, strong("DANH MỤC TỪ VIẾT TẮT")))
+#v(1em)
 
-*CF-Font* Content Fusion Font. ……
-
-*CL-SCR* Cross-Lingual Style Contrastive Refinement. ……
-
-*DCN* Deformable Convolutional Networks. ……
-
-*DDPM* Denoising Diffusion Probabilistic Models. ……
-
-*DFS* Deep Feature Similarity. ……
-
-*DG-Font* Deformable Generative Network. ……
-
-*DPM-Solver* Diffusion Probabilistic Model Solver. ……
-
-*FID* Fréchet Inception Distance. ……
-
-*GAN* Generative Adversarial Network. ……
-
-*GT* Ground Truth. ……
-
-*L1* Mean Absolute Error. ……
-
-*LPIPS* Learned Perceptual Image Patch Similarity. ……
-
-*MCA* Multi-scale Content Aggregation. ……
-
-*MSE* Mean Squared Error. ……
-
-*RSI* Reference-Structure Interaction. ……
-
-*SCR* Style Contrastive Refinement. ……
-
-*SFUC* Seen Font, Unseen Character. ……
-
-*SOTA* State-of-the-Art. ……
-
-*SSIM* Structural Similarity Index. ……
-
-*UFSC* Unseen Font, Seen Character. ……
+#table(
+  columns: (8em, 1fr),
+  stroke: none,
+  row-gutter: 0.6em,
+  [*CF-Font*], [Content Fusion Font],
+  [*CL-SCR*], [Cross-Lingual Style Contrastive Refinement],
+  [*DCN*], [Deformable Convolutional Networks],
+  [*DDPM*], [Denoising Diffusion Probabilistic Models],
+  [*DFS*], [Deep Feature Similarity],
+  [*DG-Font*], [Deformable Generative Network],
+  [*DPM-Solver*], [Diffusion Probabilistic Model Solver],
+  [*FID*], [Fréchet Inception Distance],
+  [*GAN*], [Generative Adversarial Network],
+  [*GT*], [Ground Truth],
+  [*L1*], [Mean Absolute Error],
+  [*LPIPS*], [Learned Perceptual Image Patch Similarity],
+  [*MCA*], [Multi-scale Content Aggregation],
+  [*MSE*], [Mean Squared Error],
+  [*RSI*], [Reference-Structure Interaction],
+  [*SCR*], [Style Contrastive Refinement],
+  [*SFUC*], [Seen Font, Unseen Character],
+  [*SOTA*], [State-of-the-Art],
+  [*SSIM*], [Structural Similarity Index],
+  [*UFSC*], [Unseen Font, Seen Character]
+)
