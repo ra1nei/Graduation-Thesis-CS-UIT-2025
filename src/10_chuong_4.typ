@@ -931,6 +931,7 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
 
 #pagebreak()
 #figure(
+  kind: table,
   grid(
     columns: (40pt, auto, auto, auto),
     gutter: 8pt,
@@ -946,7 +947,11 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
 
     // ===== UFSC e2c =====
     grid.hline(),
-    [],
+    [#grid.cell(
+      rowspan: 4,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`e2c`)],
+    )],
     [$crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy$],
     glyph-grid(
       s1,
@@ -961,7 +966,6 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`e2c`)],
     [$crossmark.heavy "  " crossmark.heavy "  " checkmark.heavy "  " crossmark.heavy$],
     glyph-grid(
       s1,
@@ -976,7 +980,6 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
       "generated"
     ),
 
-    [],
     [$crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy "  " checkmark.heavy$],
     glyph-grid(
       s1,
@@ -991,7 +994,6 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
       "generated"
     ),
 
-    [],
     [*Target*],
     glyph-grid(
       s1,
@@ -1008,7 +1010,11 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
 
     // ===== UFSC c2e =====
     grid.hline(),
-    [], 
+    [#grid.cell(
+      rowspan: 4,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`c2e`)],
+    )],
     [$crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy$],
     glyph-grid(
       s2,
@@ -1023,7 +1029,6 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`c2e`)],
     [$crossmark.heavy "  " crossmark.heavy "  " checkmark.heavy "  " crossmark.heavy$],
     glyph-grid(
       s2,
@@ -1038,7 +1043,6 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
       "generated"
     ),
 
-    [],
     [$crossmark.heavy "  " crossmark.heavy "  " crossmark.heavy "  " checkmark.heavy$],
     glyph-grid(
       s2,
@@ -1053,7 +1057,6 @@ _*Lý giải*_: *SCR gốc* vốn được thiết kế cho bài toán đơn ng�
       "generated"
     ),
 
-    [],
     [*Target*],
     glyph-grid(
       s2,
@@ -1162,6 +1165,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
 
 #pagebreak()
 #figure(
+  kind: table,
   grid(
     columns: (40pt, auto, auto, auto),
     gutter: 6pt,
@@ -1173,7 +1177,11 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
     [], grid.vline(), [*Phương pháp*], grid.vline(), [*Example 1*], grid.vline(), [*Example 2*],
     grid.hline(),
     // ===== UFSC e2c =====
-    [], [w/ Augment],
+    [#grid.cell(
+      rowspan: 3,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`e2c`)],
+    )], [w/ Augment],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
@@ -1187,7 +1195,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`e2c`)], [w/o Augment],
+    [w/o Augment],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/noaug/",
@@ -1201,7 +1209,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
       "generated"
     ),
 
-    [], [*Target*],
+    [*Target*],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
@@ -1217,7 +1225,11 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
 
     grid.hline(),
     // ===== UFSC c2e =====
-    [], [w/ Augment],
+    [#grid.cell(
+      rowspan: 3,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`c2e`)],
+    )], [w/ Augment],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
@@ -1231,7 +1243,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`c2e`)], [w/o Augment],
+    [w/o Augment],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/noaug/",
@@ -1245,7 +1257,7 @@ Trong khi đó, hướng chuyển đổi ngược lại từ Hán tự sang Lati
       "generated"
     ),
 
-    [], [*Target*],
+    [*Target*],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
@@ -1360,6 +1372,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
 
 #pagebreak()
 #figure(
+  kind: table,
   grid(
     columns: (40pt, auto, auto, auto),
     gutter: 6pt,
@@ -1372,7 +1385,11 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
     grid.hline(),
 
     // ===== UFSC e2c =====
-    [], [scr_intra],
+    [#grid.cell(
+      rowspan: 4,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`e2c`)],
+    )], [scr_intra],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/intra/",
@@ -1386,7 +1403,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`e2c`)], [scr_cross],
+    [scr_cross],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/cross/",
@@ -1400,7 +1417,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
       "generated"
     ),
 
-    [], [scr_both],
+    [scr_both],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
@@ -1414,7 +1431,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
       "generated"
     ),
 
-    [], [*Target*],
+    [*Target*],
     glyph-grid(
       s1,
       "../result_image/eng_chi/AZ/style/p2_neg04/",
@@ -1431,7 +1448,11 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
     grid.hline(),
 
     // ===== UFSC c2e =====
-    [], [scr_intra],
+    [#grid.cell(
+      rowspan: 4,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`c2e`)],
+    )], [scr_intra],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/intra/",
@@ -1445,7 +1466,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`c2e`)], [scr_cross],
+    [scr_cross],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/cross/",
@@ -1459,7 +1480,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
       "generated"
     ),
 
-    [], [scr_both],
+    [scr_both],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
@@ -1473,7 +1494,7 @@ Bức tranh trở nên phức tạp và thú vị hơn khi xét đến chiều n
       "generated"
     ),
 
-    [], [*Target*],
+    [*Target*],
     glyph-grid(
       s2,
       "../result_image/chi_eng/all/style/p2_neg04/",
@@ -1584,6 +1605,7 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
 
 #pagebreak()
 #figure(
+  kind: table,
   grid(
     columns: (40pt, auto, auto, auto),
     gutter: 8pt,
@@ -1599,7 +1621,11 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
 
     // ===== UFSC e2c =====
     grid.hline(),
-    [],
+    [#grid.cell(
+      rowspan: 4,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`e2c`)],
+    )],
     [4],
     glyph-grid(
       s1,
@@ -1614,7 +1640,6 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`e2c`)],
     [8],
     glyph-grid(
       s1,
@@ -1629,7 +1654,6 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
       "generated"
     ),
 
-    [],
     [16],
     glyph-grid(
       s1,
@@ -1644,7 +1668,6 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
       "generated"
     ),
 
-    [],
     [*Target*],
     glyph-grid(
       s1,
@@ -1661,7 +1684,11 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
 
     // ===== UFSC c2e =====
     grid.hline(),
-    [],
+    [#grid.cell(
+      rowspan: 4,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`c2e`)],
+    )],
     [4],
     glyph-grid(
       s2,
@@ -1676,7 +1703,6 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`c2e`)],
     [8],
     glyph-grid(
       s2,
@@ -1691,7 +1717,6 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
       "generated"
     ),
 
-    [],
     [16],
     glyph-grid(
       s2,
@@ -1706,7 +1731,6 @@ Xu hướng tương tự cũng được quan sát thấy ở chiều ngược l�
       "generated"
     ),
 
-    [],
     [*Target*],
     glyph-grid(
       s2,
@@ -1816,10 +1840,11 @@ _*Nhận xét và Thảo luận*_:
   Kết quả thực nghiệm cho thấy vai trò đối trọng thú vị giữa *tính nhất quán nội tại (Intra-Lingual)* và *sự ràng buộc xuyên ngôn ngữ (Cross-Lingual)*. Đối với hướng chuyển đổi từ Latin sang Hán tự (@tab:e2c_alp_beta), ta quan sát thấy sự đảo chiều về hiệu năng giữa kịch bản quen thuộc (SFUC) và kịch bản lạ (UFSC). Trên tập SFUC, cấu hình ưu tiên tính nội tại ($alpha=0.7, beta=0.3$) đạt kết quả FID tốt nhất (*10.37*), cho thấy khi phong cách đã biết, việc tập trung tinh chỉnh cấu trúc nội bộ của Hán tự giúp ảnh sinh sắc nét hơn. Tuy nhiên, trên tập kiểm thử khó UFSC, cấu hình ưu tiên liên kết chéo ($alpha=0.3, beta=0.7$) lại vượt trội với FID đạt *13.55* (so với *14.47* và *15.17*). Điều này gợi ý rằng để tổng quát hoá tốt trên các font chữ chưa từng thấy, mô hình cần dựa nhiều hơn vào "cầu nối" tương đồng giữa hai ngôn ngữ ($beta$) thay vì quá tập trung vào đặc trưng cục bộ của từng hệ chữ.
 ]
 
-Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược lại từ Hán tự sang Latin (@tab:c2e_alp_beta). Trong cả hai kịch bản SFUC và UFSC, việc gán trọng số cao cho thành phần Cross-lingual ($beta=0.7$) đều mang lại hiệu suất FID tối ưu (*14.73* và *41.11*). Nguyên nhân có thể xuất phát từ *khoảng cách thông tin (information gap)*: Hán tự có cấu trúc phức tạp và giàu thông tin hơn nhiều so với Latin. Do đó, khi sinh chữ Latin từ nguồn Hán, mô hình cần một cơ chế ràng buộc xuyên ngôn ngữ mạnh mẽ ($beta$ lớn) để định hướng việc lọc bỏ các chi tiết thừa và ánh xạ chính xác phong cách, thay vì bị "sa lầy" vào việc học cấu trúc nội tại phức tạp của Hán tự ($alpha$). Kết quả này khẳng định rằng trong bài toán Cross-Lingual bất đối xứng, *tăng cường giám sát liên ngôn ngữ* là chìa khoá để cải thiện chất lượng sinh ảnh và độ tự nhiên thị giác.
+Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược lại từ Hán tự sang Latin (@tab:c2e_alp_beta). Trong cả hai kịch bản SFUC và UFSC, việc gán trọng số cao cho thành phần Cross-Lingual ($beta=0.7$) đều mang lại hiệu suất FID tối ưu (*14.73* và *41.11*). Nguyên nhân có thể xuất phát từ *khoảng cách thông tin (information gap)*: Hán tự có cấu trúc phức tạp và giàu thông tin hơn nhiều so với Latin. Do đó, khi sinh chữ Latin từ nguồn Hán, mô hình cần một cơ chế ràng buộc xuyên ngôn ngữ mạnh mẽ ($beta$ lớn) để định hướng việc lọc bỏ các chi tiết thừa và ánh xạ chính xác phong cách, thay vì bị "sa lầy" vào việc học cấu trúc nội tại phức tạp của Hán tự ($alpha$). Kết quả này khẳng định rằng trong bài toán Cross-Lingual bất đối xứng, *tăng cường giám sát liên ngôn ngữ* là chìa khoá để cải thiện chất lượng sinh ảnh và độ tự nhiên thị giác.
 
 #pagebreak()
 #figure(
+  kind: table,
   grid(
     columns: (40pt, auto, auto, auto),
     gutter: 8pt,
@@ -1835,7 +1860,11 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
 
     // ===== UFSC e2c =====
     grid.hline(),
-    [],
+    [#grid.cell(
+      rowspan: 4,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`e2c`)],
+    )],
     [$alpha = 0.3, beta = 0.7$],
     glyph-grid(
       s1,
@@ -1850,7 +1879,6 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`e2c`)],
     [$alpha = 0.5, beta = 0.5$],
     glyph-grid(
       s1,
@@ -1865,7 +1893,6 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
       "generated"
     ),
 
-    [],
     [$alpha = 0.7, beta = 0.3$],
     glyph-grid(
       s1,
@@ -1880,7 +1907,6 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
       "generated"
     ),
 
-    [],
     [*Target*],
     glyph-grid(
       s1,
@@ -1897,7 +1923,11 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
 
     // ===== UFSC c2e =====
     grid.hline(),
-    [],
+    [#grid.cell(
+      rowspan: 4,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`c2e`)],
+    )],
     [$alpha = 0.3, beta = 0.7$],
     glyph-grid(
       s2,
@@ -1912,7 +1942,6 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`c2e`)],
     [$alpha = 0.5, beta = 0.5$],
     glyph-grid(
       s2,
@@ -1927,7 +1956,6 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
       "generated"
     ),
 
-    [],
     [$alpha = 0.7, beta = 0.3$],
     glyph-grid(
       s2,
@@ -1942,7 +1970,6 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
       "generated"
     ),
 
-    [],
     [*Target*],
     glyph-grid(
       s2,
@@ -1962,7 +1989,7 @@ Xu hướng này trở nên nhất quán và rõ rệt hơn ở chiều ngược
   ]
 ) <tab:dinhtinh_alp_beta>
 
-_*Kết luận*_: Tổng kết lại, thực nghiệm về trọng số $alpha$ và $beta$ đã chỉ ra sự bất đối xứng về nhu cầu giám sát của mô hình. Trong khi thành phần Intra-lingual ($alpha$) chỉ thực sự phát huy tác dụng tối đa trong các kịch bản dữ liệu đã biết, thì thành phần *Cross-lingual ($beta$) lại đóng vai trò chủ đạo* trong các tác vụ yêu cầu khả năng khái quát hoá cao hoặc chuyển đổi từ tập mẫu phức tạp sang đơn giản. Dựa trên kết quả này, khoá luận đề xuất cấu hình ưu tiên liên kết chéo ($alpha=0.3, beta=0.7$) là thiết lập mặc định cho mô hình cuối cùng, nhằm tối ưu hoá hiệu suất cho các ứng dụng thực tế nơi dữ liệu đầu vào thường xuyên biến đổi và chưa biết trước.
+_*Kết luận*_: Tổng kết lại, thực nghiệm về trọng số $alpha$ và $beta$ đã chỉ ra sự bất đối xứng về nhu cầu giám sát của mô hình. Trong khi thành phần Intra-Lingual ($alpha$) chỉ thực sự phát huy tác dụng tối đa trong các kịch bản dữ liệu đã biết, thì thành phần *Cross-Lingual ($beta$) lại đóng vai trò chủ đạo* trong các tác vụ yêu cầu khả năng khái quát hoá cao hoặc chuyển đổi từ tập mẫu phức tạp sang đơn giản. Dựa trên kết quả này, khoá luận đề xuất cấu hình ưu tiên liên kết chéo ($alpha=0.3, beta=0.7$) là thiết lập mặc định cho mô hình cuối cùng, nhằm tối ưu hoá hiệu suất cho các ứng dụng thực tế nơi dữ liệu đầu vào thường xuyên biến đổi và chưa biết trước.
 
 === Ảnh hưởng của Trọng số hướng dẫn (Guidance Scale)
 
@@ -2069,6 +2096,7 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
 
 #pagebreak()
 #figure(
+  kind: table,
   grid(
     columns: (40pt, auto, auto, auto),
     // gutter: 8pt,
@@ -2084,7 +2112,11 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
 
     // ===== UFSC e2c =====
     grid.hline(),
-    [],
+    [#grid.cell(
+      rowspan: 7,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`e2c`)],
+    )],
     [2.5],
     glyph-grid(
       s1,
@@ -2099,7 +2131,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [5],
     glyph-grid(
       s1,
@@ -2114,7 +2145,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [7.5],
     glyph-grid(
       s1,
@@ -2129,7 +2159,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`e2c`)],
     [10],
     glyph-grid(
       s1,
@@ -2144,7 +2173,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [12.5],
     glyph-grid(
       s1,
@@ -2159,7 +2187,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [15],
     glyph-grid(
       s1,
@@ -2174,7 +2201,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [*Target*],
     glyph-grid(
       s1,
@@ -2190,8 +2216,12 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
     ),
 
     // ===== UFSC c2e =====
-    grid.hline(),
-    [],
+    grid.hline(),grid.hline(),
+    [#grid.cell(
+      rowspan: 7,
+      align: horizon,
+      rotate(-90deg, reflow: true)[*UFSC* (`c2e`)],
+    )],
     [2.5],
     glyph-grid(
       s2,
@@ -2206,7 +2236,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [5],
     glyph-grid(
       s2,
@@ -2221,7 +2250,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [7.5],
     glyph-grid(
       s2,
@@ -2236,7 +2264,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    rotate(-90deg)[*UFSC* (`c2e`)],
     [10],
     glyph-grid(
       s2,
@@ -2251,7 +2278,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [12.5],
     glyph-grid(
       s2,
@@ -2266,7 +2292,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [15],
     glyph-grid(
       s2,
@@ -2281,7 +2306,6 @@ Hiện tượng này càng trở nên cực đoan hơn ở chiều ngược lạ
       "generated"
     ),
 
-    [],
     [*Target*],
     glyph-grid(
       s2,

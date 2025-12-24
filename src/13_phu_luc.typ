@@ -46,7 +46,7 @@ Mạng UNet đóng vai trò là bộ xương sống (backbone) trong mô hình k
     [Up block], [3], [$128 times H times W$], [$64 times H times W$],
     [Conv block], [1], [$64 times H times W$], [$3 times H times W$],
   ),
-  caption: [Chi tiết kiến trúc mạng UNet trong FontDiffuser. \ Trong đó: MCA là khối Tổng hợp nội dung đa quy mô, \ SI là khối Chèn phong cách (Style Insertion) sử dụng cơ chế Cross-Attention.]
+  caption: [Chi tiết kiến trúc mạng UNet trong FontDiffuser. Trong đó: MCA là khối Tổng hợp nội dung đa quy mô, SI là khối Chèn phong cách (Style Insertion) sử dụng cơ chế Cross-Attention.]
 ) <tab:unet_arch>
 
 #pagebreak()
@@ -92,7 +92,7 @@ Mô-đun CL-SCR được thiết kế dựa trên mạng VGG-19 pre-trained đ�
     [Dynamic Sampling (Intra/Cross)], [$K=4$ mẫu âm / step],
     [Loss Computation], [Scalar ($cal(L)_"CL-SCR"$)],
   ),
-  caption: [Chi tiết kiến trúc và luồng dữ liệu của mô-đun CL-SCR. \ Các ký hiệu $"ReLU"^x_1$ biểu thị lớp kích hoạt đầu tiên trong mỗi khối VGG.]
+  caption: [Chi tiết kiến trúc và luồng dữ liệu của mô-đun CL-SCR. Các ký hiệu $"ReLU"^x_1$ biểu thị lớp kích hoạt đầu tiên trong mỗi khối VGG.]
 ) <tab:cl_scr_arch>
 
 #pagebreak()
@@ -273,7 +273,7 @@ So với các phương pháp hiện có, FontDiffuser yêu cầu thời gian hu�
     
     [*Ours (FontDiffuser)*], [*Diffusion \ (Denoising)*], [*Lâu* \ ($approx$ 5 ngày)],
   ),
-  caption: [So sánh tổng thời gian huấn luyện \ giữa phương pháp đề xuất và các Baseline.]
+  caption: [So sánh tổng thời gian huấn luyện giữa phương pháp đề xuất và các Baseline.]
 ) <tab:training_comparison>
 
 #pagebreak()

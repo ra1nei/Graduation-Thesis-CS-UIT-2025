@@ -115,7 +115,7 @@ Chi tiết các thành phần:
   *_Hàm mất mát Khuếch tán Tiêu chuẩn_ ($L_"MSE"$)*: Đây là hàm mất mát cơ bản của mô hình khuếch tán, chịu trách nhiệm tính toán sai số giữa nhiễu dự đoán $epsilon_theta$ và nhiễu thực tế $epsilon$ tại bước thời gian $t$, với điều kiện đầu vào là ảnh nội dung $x_c$ và ảnh phong cách $x_s$:
   $ L_"MSE" = ||epsilon - epsilon_theta(x_t, t, x_c, x_s)||^2 $
   
-  #h(1.5em) *_Hàm mất mát Nhận thức Nội dung_ ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Khoá luận sử dụng các đặc trưng được mã hoá bởi mạng VGG@SimonyanZ14aVGG ($"VGG"_l(dot)$) trên $L$ tầng được chọn:
+  #h(1.5em) *_Hàm mất mát Nhận thức Nội dung_ ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Khoá luận sử dụng các đặc trưng được mã hoá bởi mạng VGG ($"VGG"_l(dot)$) trên $L$ tầng được chọn:
   $ L_"cp" = sum_(l=1)^L ||"VGG"_l (x_0) - "VGG"_l (x_"target")|| $
   
   #h(1.5em) *_Hàm mất mát Độ lệch_($L_"offset"$ - Offset Loss)*: Được thiết kế riêng cho mô-đun RSI (Reference-Structure Interaction), hàm này ràng buộc độ lớn của các vector dịch chuyển $delta_"offset"$ nhằm ngăn chặn các biến dạng cấu trúc quá mức, trong đó mean là phép tính trung bình:
@@ -225,7 +225,7 @@ Trong đó:
 === Hạn chế của SCR trong bối cảnh đa ngôn ngữ
 Mô-đun SCR tiêu chuẩn (Standard SCR) hoạt động dựa trên giả định rằng ảnh nguồn và ảnh tham chiếu chia sẻ cùng một không gian hình thái (cùng một ngôn ngữ). Tuy nhiên, khi mở rộng sang bài toán *Cross-Lingual Font Generation* (Huấn luyện trên dữ liệu tiếng Latin đơn giản $D_"source"$, ứng dụng sang chữ cái Hán $D_"target"$ phức tạp và ngược lại), SCR bộc lộ điểm yếu về *thiên kiến cấu trúc (structural bias)*.
 
-Cụ thể, bộ trích xuất đặc trưng StyleExtractor (sử dụng các tầng VGG@SimonyanZ14aVGG pre-trained) có xu hướng "học vẹt" các đặc điểm cấu trúc dày đặc của Hán tự thay vì trích xuất phong cách trừu tượng. Khi gặp các ký tự Latin với cấu trúc thưa, sự chênh lệch miền (domain gap) khiến vector phong cách $v_"gen"$ và $v_"target"$ không còn tương đồng trong không gian tiềm ẩn.
+Cụ thể, bộ trích xuất đặc trưng StyleExtractor (sử dụng các tầng VGG pre-trained) có xu hướng "học vẹt" các đặc điểm cấu trúc dày đặc của Hán tự thay vì trích xuất phong cách trừu tượng. Khi gặp các ký tự Latin với cấu trúc thưa, sự chênh lệch miền (domain gap) khiến vector phong cách $v_"gen"$ và $v_"target"$ không còn tương đồng trong không gian tiềm ẩn.
 
 === Thiết kế mô-đun CL-SCR
 Để giải quyết vấn đề này, khoá luận đề xuất mô-đun *Cross-Lingual SCR (CL-SCR)*. Dựa trên mã nguồn đã xây dựng, CL-SCR không thay đổi kiến trúc cốt lõi của StyleExtractor hay Projector, mà thay đổi *chiến lược lấy mẫu* và *cơ chế tính hàm mất mát đa luồng*.
@@ -238,16 +238,16 @@ Thay vì chỉ sử dụng cặp mẫu dương/âm đơn thuần (Intra-lingual)
   #tab_eq(indent: 3em)[
     *Anchor ($x_"gen"$)*: Ảnh sinh ra từ mô hình Diffusion.
 
-    *Intra-Positive ($x_"pos"^"intra"$)*: Ảnh cùng nội dung ký tự, cùng phong cách (Ground Truth). Giúp mô hình giữ vững cấu trúc cơ bản.
+    *Intra-Positive ($x_"pos,intra"$)*: Ảnh cùng nội dung ký tự, cùng phong cách (Ground Truth). Giúp mô hình giữ vững cấu trúc cơ bản.
 
-    *Intra-Negative ($x_"neg"^"intra"$)*: Ảnh cùng nội dung, khác phong cách.
+    *Intra-Negative ($x_"neg,intra"$)*: Ảnh cùng nội dung, khác phong cách.
   ]
   
   *_Luồng Xuyên miền (Cross-Lingual Flow - Điểm cải tiến chính)_*:
   #tab_eq(indent: 3em)[
-    *Cross-Positive ($x_"pos"^"cross"$)*: Các ảnh thuộc ngôn ngữ đích mang cùng Style ID với ảnh tham chiếu. Mục tiêu là ép buộc bộ Projector phải ánh xạ các đặc trưng từ hai ngôn ngữ khác nhau về cùng một cụm vector nếu chúng có cùng phong cách.
+    *Cross-Positive ($x_"pos,cross"$)*: Các ảnh thuộc ngôn ngữ đích mang cùng Style ID với ảnh tham chiếu. Mục tiêu là ép buộc bộ Projector phải ánh xạ các đặc trưng từ hai ngôn ngữ khác nhau về cùng một cụm vector nếu chúng có cùng phong cách.
 
-    *Cross-Negative ($x_"neg"^"cross"$)*: Các ảnh thuộc ngôn ngữ đích có cấu trúc nét tương đồng nhưng khác phong cách.
+    *Cross-Negative ($x_"neg,cross"$)*: Các ảnh thuộc ngôn ngữ đích có cấu trúc nét tương đồng nhưng khác phong cách.
   ]
 ]
 
@@ -258,13 +258,36 @@ $ L_"CL-SCR" = alpha_"intra" dot L_"intra" + beta_"cross" dot L_"cross" $
 
 Trong đó, dựa trên thực nghiệm, các siêu tham số trọng số được thiết lập là $alpha_"intra" = 0.3$ và $beta_"cross" = 0.7$ nhằm ưu tiên khả năng chuyển giao phong cách sang ngôn ngữ đích trong khi vẫn giữ được sự ổn định từ dữ liệu cùng ngôn ngữ.
 
-Cả $L_"intra"$ và $L_"cross"$ đều được tính toán dựa trên hàm mất mát InfoNCE, được *trung bình hoá* qua $L$ tầng đặc trưng (từ các khối $"ReLU"^1_1$ đến $"ReLU"^5_1$ của mạng VGG-19). Công thức chi tiết cho thành phần Intra-Lingual Loss ($L_"intra"$) và Cross-Lingual Loss ($L_"cross"$) được tính theo trình tự như sau:
+Cả $L_"intra"$ và $L_"cross"$ đều được tính toán dựa trên hàm mất mát InfoNCE@Oord2018InfoNCE, được *trung bình hoá* qua $L$ tầng đặc trưng (từ các khối $"ReLU"^1_1$ đến $"ReLU"^5_1$ của mạng VGG-19). Công thức chi tiết cho thành phần Intra-Lingual Loss ($L_"intra"$) và Cross-Lingual Loss ($L_"cross"$) được tính theo trình tự như sau:
 
 $ L_"intra" = -1/L sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,intra"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"intra")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "intra")^l "/" tau)) "          " $
 
 $ L_"cross" = -1/L sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,cross"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"cross")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "cross")^l "/" tau)) "          " $
 
-Với $v = "Projector(Extractor(x))"$ là vector phong cách sau khi đi qua mạng chiếu.
+Trong đó:
+#tab_eq[
+  *$L$*: Tổng số tầng đặc trưng (layers) được sử dụng từ mạng trích xuất (Style Extractor) để tính toán loss.
+
+  *$l$*: Chỉ số chạy đại diện cho tầng đặc trưng thứ $l$ (từ 1 đến $L$).
+
+  *$v_"gen"^l$*: Vector đặc trưng phong cách tại lớp $l$ của ảnh được sinh ra (Generated Image). Đây đóng vai trò là mẫu neo (anchor) trong phép so sánh.
+
+  *$v_"pos,intra"^l$*: Vector đặc trưng của mẫu dương nội tại (Intra-positive). Đây là ảnh có cùng phong cách và cùng hệ chữ với ảnh sinh (ví dụ: ảnh sinh là chữ 'A' font thư pháp, thì mẫu dương là chữ 'B' font thư pháp).
+
+  *$v_"pos,cross"^l$*: Vector đặc trưng của mẫu dương chéo (Cross-positive). Đây là ảnh có cùng phong cách nhưng thuộc hệ chữ khác (ví dụ: ảnh sinh là chữ 'A' Latin, mẫu dương là chữ Hán có cùng nét bút thư pháp đó).
+
+  *$v_("neg"_k, "intra")^l$ / $v_("neg"_k, "cross")^l$*: Các vector đặc trưng của mẫu âm (Negative samples) thứ $k$. Đây là các ảnh có phong cách khác biệt hoàn toàn, cần được đẩy xa khỏi ảnh sinh trong không gian đặc trưng.
+
+  *$K$*: Tổng số lượng mẫu âm được sử dụng trong mỗi lần tính toán.
+  
+  *$tau$*: Tham số nhiệt độ (Temperature), thường đặt là $0.07$. Giúp điều chỉnh độ nhạy của hàm loss với các mẫu khó phân biệt.
+  
+  *$dot$*: Phép nhân vô hướng (Dot product), đại diện cho độ tương đồng Cô-sin (Cosine Similarity) giữa hai vector. Giá trị càng lớn nghĩa là hai phong cách càng giống nhau.
+]
+
+#untab_para[
+  Với $v = "Projector(Extractor(x))"$ là vector phong cách sau khi đi qua mạng chiếu.
+]
 
 ==== Quy trình huấn luyện Pha 2 cải tiến
 Trong giai đoạn tinh chỉnh (Phase 2), hàm mất mát tổng thể được cập nhật để tích hợp CL-SCR. Việc sử dụng song song cả intra và cross loss giúp mô hình vừa duy trì tính ổn định (nhờ intra) vừa học được tính bất biến của phong cách qua các ngôn ngữ (nhờ cross).
@@ -290,7 +313,7 @@ Trong đó:
 
 #pagebreak()
 == Đề xuất thuật toán tính CL-SCR
-Dựa trên cơ chế lấy mẫu đa luồng và hàm mất mát InfoNCE, thuật toán tính toán giá trị loss cho mô-đun CL-SCR được trình bày chi tiết dưới đây.
+Dựa trên cơ chế lấy mẫu đa luồng và hàm mất mát InfoNCE@Oord2018InfoNCE, thuật toán tính toán giá trị loss cho mô-đun CL-SCR được trình bày chi tiết dưới đây.
 
 #outline_algo(
   [
