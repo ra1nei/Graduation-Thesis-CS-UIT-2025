@@ -4,6 +4,8 @@
 #import "src/02_thong_tin_hoi_dong.typ": thong_tin_hoi_dong
 #import "@preview/codly:1.3.0": *
 
+#set heading(numbering: "(1.1)")
+
 #let heading_numbering(..nums) = {
   return str(counter(heading).get().first()) + "." + nums
   .pos()
@@ -24,15 +26,22 @@
   ]
 }
 
-#let numbered_equation(content, label) = {
-  return [
-    #set math.equation(
-      numbering: (..nums) => "(" + str(counter(heading).get().first()) + "." + nums.pos().map(str).join(".") + ")",
-    )
-    #content
-    #label
-  ]
+#show heading.where(level: 1): it => {
+  counter(math.equation).reset()
+  it
 }
+
+#let numbered_equation(content, label: none) = [
+  #set math.equation(
+    numbering: (..nums) => {
+      let eqNum = nums.pos().at(0)
+      let chapNum = counter(heading).get().at(0)
+      "(" + str(chapNum) + "." + str(eqNum) + ")"
+    }
+  )
+  #content
+  #label
+]
 
 #let output_box(content) = {
   showybox(
@@ -286,8 +295,7 @@
   // ============ MATH ==============
   set math.cases(gap: 1.2em)
   set math.equation(supplement: none)
-  set math.equation(numbering: "(1)")
-
+  
   body
 }
 

@@ -81,7 +81,10 @@ Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một 
 )
 
 Về mặt toán học, có thể được biểu diễn như sau:
-$ q(x_t|x_(t-1))= scr(N)(x_t;sqrt(1-beta_t)x_(t-1),beta_t I) $
+
+#numbered_equation[
+  $ q(x_t|x_(t-1))= scr(N)(x_t;sqrt(1-beta_t)x_(t-1),beta_t I) $
+]
 
 Trong đó:
 #tab_eq[
@@ -94,12 +97,21 @@ Trong đó:
   *$I$*: ma trận đơn vị, đảm bảo nhiễu độc lập và đẳng hướng.
 ]
 
-Do tính chất của Gaussian, ta có thể suy ra trực tiếp từ $x_0$ đến $x_t$:
-$ x_t = sqrt(dash(alpha)_t) x_0 + sqrt(1 - dash(alpha)_t)epsilon.alt, "   " epsilon.alt ~ N(0,I) $
+#untab_para[Do tính chất của Gaussian, ta có thể suy ra trực tiếp từ $x_0$ đến $x_t$:]
+
+#numbered_equation[
+  $ x_t = sqrt(dash(alpha)_t) x_0 + sqrt(1 - dash(alpha)_t)epsilon.alt, "   " epsilon.alt ~ N(0,I) $
+]
 
 trong đó:
-$ alpha_t = 1 - beta_t $
-$ dash(alpha)_t = product_(s=1)^t alpha_s $
+
+#numbered_equation[
+  $ alpha_t = 1 - beta_t $
+]
+
+#numbered_equation[
+  $ dash(alpha)_t = product_(s=1)^t alpha_s $
+]
 
 Điều này rất quan trọng vì giúp ta không cần sinh tuần tự từng bước mà vẫn có thể lấy mẫu trực tiếp ở bước t bất kì (quan trọng khi huấn luyện batch lớn).
 
@@ -113,11 +125,16 @@ Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng c
 )
 
 Về mặt toán học, có thể được biểu diễn như sau:
-$ p_theta (x_(t-1)|x_t) = N(x_(t-1);mu_theta (x_t, t), sum_theta (x_t, t)) $
+
+#numbered_equation[
+  $ p_theta (x_(t-1)|x_t) = N(x_(t-1);mu_theta (x_t, t), sum_theta (x_t, t)) $
+]
 
 với $mu_theta$ được tính như sau:
 
-$ mu_theta (x_t, t) = 1/sqrt(alpha_t)(x_t - (beta_t)/(sqrt(1 - dash(alpha)_t)) epsilon.alt_theta (x_t, t)) $
+#numbered_equation[
+  $ mu_theta (x_t, t) = 1/sqrt(alpha_t)(x_t - (beta_t)/(sqrt(1 - dash(alpha)_t)) epsilon.alt_theta (x_t, t)) $
+]
 
 Ở đây, $epsilon.alt_theta (x_t, t)$ là nhiễu do mạng nơ-ron dự đoán, đóng vai trò trung tâm trong việc phục hồi ảnh gốc.  
 
@@ -126,7 +143,9 @@ Trong huấn luyện, mô hình được tối ưu để giảm sai số giữa 
 ==== Hàm mất mát (Loss function)
 Hàm mất mát được sử dụng phổ biến nhất là *Mean Squared Error (MSE)*:
 
-$ L_"simple" = EE_(t, x_0, epsilon.alt) [bar.v.double epsilon.alt - epsilon.alt_theta (x_t, t) bar.v.double ^2] $
+#numbered_equation[
+  $ L_"simple" = EE_(t, x_0, epsilon.alt) [bar.v.double epsilon.alt - epsilon.alt_theta (x_t, t) bar.v.double ^2] $ 
+]
 
 Điều này tương đương với việc tối đa hoá khả năng tái tạo phân phối dữ liệu gốc (variational lower bound). Các nghiên cứu gần đây (v-prediction, hybrid loss) cho thấy việc dự đoán trực tiếp $v_t$ hoặc $x_0$ có thể cải thiện chất lượng ảnh sinh, nhưng MSE vẫn là chuẩn mực trong nhiều ứng dụng như FontDiffuser.
 
@@ -157,10 +176,13 @@ Tuy nhiên, phương pháp này chủ yếu nắm bắt các đặc trưng về 
 Để khắc phục hạn chế trên, các nghiên cứu hiện đại (trong đó có FontDiffuser@Yang2024FontDiffuser) chuyển sang hướng *Học biểu diễn tương phản (Contrastive Representation Learning)*. Tư tưởng cốt lõi là học một không gian embedding phong cách (style latent space) sao cho *các mẫu có _cùng phong cách_ (Positive samples)* được *_kéo lại gần_ nhau* và *các mẫu _khác phong cách_ (Negative samples)* bị *_đẩy ra xa_ nhau*.
 
 Hàm mất mát InfoNCE@Oord2018InfoNCE thường được sử dụng để tối ưu hoá không gian này:
-$ L_"NCE" = - log (exp("sim"(z, z^+)\/tau) / (exp("sim"(z, z^+)\/tau) + sum_(k) exp("sim"(z, z_k^-)\/tau))) $
 
-Trong đó:
-#tab_eq[
+#numbered_equation[
+  $ L_"NCE" = - log (exp("sim"(z, z^+)\/tau) / (exp("sim"(z, z^+)\/tau) + sum_(k) exp("sim"(z, z_k^-)\/tau))) $
+]
+
+#h(1.5em) Trong đó:
+#tab_eq(indent: 3em)[
   *$z$*: Vector đặc trưng (feature representation) hoặc biểu diễn tiềm ẩn của mẫu dữ liệu đang xét (thường được gọi là mẫu neo - anchor).
 
   *$z^+$*: Biểu diễn đặc trưng của mẫu dương (positive sample) – đây là mẫu tương đồng hoặc thuộc cùng một lớp với $z$ mà mô hình cần học để tối đa hóa độ tương đồng.
@@ -174,9 +196,7 @@ Trong đó:
   *$sum_k$*: Phép tổng thực hiện trên tất cả các mẫu âm (negative samples) có trong batch hoặc hàng đợi (queue) hiện tại.
 ]
 
-#untab_para[
-  Trong FontDiffuser, mô-đun SCR áp dụng tư tưởng này để giám sát bộ mã hoá phong cách. Tuy nhiên, mô-đun này ban đầu được thiết kế cho cùng một ngôn ngữ (Hán $->$ Hán). Khi mở rộng sang bài toán Cross-Lingual *(chuyển đổi qua lại giữa Latin và Hán)*, sự khác biệt quá lớn về cấu trúc giữa hai hệ chữ tạo ra một khoảng cách miền (domain gap) sâu sắc, khiến các chiến lược chọn mẫu âm (negative selection) thông thường trở nên kém hiệu quả.
-]
+Trong FontDiffuser, mô-đun SCR áp dụng tư tưởng này để giám sát bộ mã hoá phong cách. Tuy nhiên, mô-đun này ban đầu được thiết kế cho cùng một ngôn ngữ (Hán $->$ Hán). Khi mở rộng sang bài toán Cross-Lingual *(chuyển đổi qua lại giữa Latin và Hán)*, sự khác biệt quá lớn về cấu trúc giữa hai hệ chữ tạo ra một khoảng cách miền (domain gap) sâu sắc, khiến các chiến lược chọn mẫu âm (negative selection) thông thường trở nên kém hiệu quả.
 
 == Thách thức trong bài toán Cross-Lingual: Chuyển đổi Hai chiều giữa Latin và Hán tự
 

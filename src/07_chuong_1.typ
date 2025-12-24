@@ -37,14 +37,14 @@ Phần này sẽ định nghĩa bài toán sinh phông chữ đa ngôn ngữ dư
 
   #figure(
     kind: image,
-    caption: [Ví dụ minh hoạ các ảnh mẫu trong tập dữ liệu.],
+    caption: [Ví dụ minh hoạ các ảnh tham chiếu nội dung.],
     grid(
       columns: 3,
       gutter: 8pt,
 
-      image("../images/example_image/ダ.png", width: auto),
-      image("../images/example_image/c.png", width: auto),
-      image("../images/example_image/L+.png", width: auto),
+      image("../images/example_image/content_u.png", width: auto),
+      image("../images/example_image/content_i.png", width: auto),
+      image("../images/example_image/content_t.png", width: auto),
     )
   )
 
@@ -57,9 +57,9 @@ Phần này sẽ định nghĩa bài toán sinh phông chữ đa ngôn ngữ dư
       columns: 3,
       gutter: 8pt,
 
-      image("../images/example_image/║║╥╟▒¿╦╬╝≥_chinese+产.png", width: auto),
-      image("../images/example_image/A-OTF-ShinMGoMin-Shadow-2_english+M+.png", width: auto),
-      image("../images/example_image/Bai zhou Tian zhen shu ti Font-Traditional Chinese_english+m.png", width: auto),
+      image("../images/example_image/style_X+.png", width: auto),
+      image("../images/example_image/style_Y+.png", width: auto),
+      image("../images/example_image/style_Z+.png", width: auto),
     )
   )  
 ]
@@ -72,10 +72,18 @@ _*Định nghĩa Đầu ra (Output)*_:
   _*Yêu cầu*_: $I_"gen"$ phải giữ được cấu trúc nội dung của $I_c$ (đọc được là chữ gì) và mang đầy đủ đặc điểm thẩm mỹ của $I_s$ (nhìn giống font mẫu).
 
   _*Mục tiêu toán học*_: Mục tiêu là huấn luyện một hàm ánh xạ $G$ (Generator/Diffusion Model) sao cho:
-  $ I_"gen" = G(I_c, I_s) $
+
+  #numbered_equation[
+    $ I_"gen" = G(I_c, I_s) $
+  ]
+  
   #h(1.5em) Thỏa mãn điều kiện: $"Content"(I_"gen") approx "Content"(I_c)$ và $"Style"(I_"gen") approx "Style"(I_s)$.
 ]
 
+#figure(
+  image("../images/visualization_fontstyle_transfer.png", width: 100%),
+  caption: [Minh hoạ quy trình sinh ảnh trong bài toán chuyển đổi phong cách ký tự: mô hình nhận ảnh tham chiếu nội dung và ảnh tham chiếu phong cách làm đầu vào, sau đó sinh ra ảnh ký tự mới giữ nguyên nội dung nhưng mang phong cách của ảnh tham chiếu; kết quả được so sánh với ảnh chuẩn để đánh giá chất lượng.]
+)
 
 == Mục tiêu của đề tài
 Khoá luận này đề xuất mở rộng mô hình FontDiffuser để giải quyết bài toán *sinh phông chữ đa ngôn ngữ (Cross-lingual Font Generation)*, cụ thể:

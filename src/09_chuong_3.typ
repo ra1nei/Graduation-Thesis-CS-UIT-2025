@@ -92,7 +92,10 @@ Quy trình cụ thể diễn ra như sau:
   4. Đặc trưng chú ý $F_"attn"$ được tính toán thông qua hàm Softmax, sau đó được đưa qua mạng truyền thẳng (Feed-Forward Network - FFN) để sinh ra độ lệch cấu trúc $delta_"offset"$.
 
   5. Cuối cùng, DCN sử dụng độ lệch này để "uốn nắn" đặc trưng UNet, tạo ra đầu ra $I_R$ đã được că chỉnh.
-  $ I_R = "DCN"(r_i, delta_"offset") $
+  
+  #numbered_equation[
+    $ I_R = "DCN"(r_i, delta_"offset") $
+  ]
 ]
 
 #h(1.5em) Thông qua cơ chế này, RSI có khả năng trích xuất trực tiếp thông tin cấu trúc từ ảnh tham chiếu và điều chỉnh linh hoạt đặc trưng của ảnh nguồn, đảm bảo sự tương thích về phong cách mà không làm gãy vỡ các nét chi tiết.
@@ -143,7 +146,9 @@ _*Chiến lược Thiết lập Mẫu*_:
 _*Định nghĩa hàm mất mát*_:
 Hàm mất mát $L_"sc"$ (còn được gọi là $L_"SCR"$ trong công thức tổng thể) là một dạng của hàm *InfoNCE@Oord2018InfoNCE* được tính tổng trên $N$ tầng đặc trưng:
 
-$ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $ <L_sc_equa>
+#numbered_equation[
+  $ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_p^l "/" tau) + sum_(i=1)^K exp(v_0^l dot v_(n_i)^l "/" tau) $ <L_sc_equa>
+]
 
 #h(1.5em) Trong đó:
 #tab_eq(indent: 3em)[
@@ -175,29 +180,46 @@ $ L_"sc" = -sum_(l=0)^(N-1) log exp(v_0^l dot v_p^l "/" tau) / (exp(v_0^l dot v_
 Trong giai đoạn đầu, mục tiêu là tối ưu hoá FontDiffuser để mô hình đạt được năng lực nền tảng trong việc tái tạo cấu trúc phông chữ (font reconstruction). Tại bước này, mô-đun SCR *chưa được kích hoạt*.
 Hàm mất mát tổng thể cho giai đoạn 1 ($L_"total"^1$) là sự kết hợp của ba thành phần:
 
-$ L_"total"^1 = L_"MSE" + lambda_"cp"^1 L_"cp" + lambda_"off"^1 L_"offset" $
+#numbered_equation[
+  $ L_"total"^1 = L_"MSE" + lambda_"cp"^1 L_"cp" + lambda_"off"^1 L_"offset" $
+]
 
 Chi tiết các thành phần:
 #tab_eq[
   *_Hàm mất mát Khuếch tán Tiêu chuẩn_ ($L_"MSE"$)*: Đây là hàm mất mát cơ bản của mô hình khuếch tán, chịu trách nhiệm tính toán sai số giữa nhiễu dự đoán $epsilon_theta$ và nhiễu thực tế $epsilon$ tại bước thời gian $t$, với điều kiện đầu vào là ảnh nội dung $x_c$ và ảnh phong cách $x_s$:
-  $ L_"MSE" = ||epsilon - epsilon_theta(x_t, t, x_c, x_s)||^2 $
+
+  #numbered_equation[
+    $ L_"MSE" = ||epsilon - epsilon_theta(x_t, t, x_c, x_s)||^2 $
+  ]
   
   #h(1.5em) *_Hàm mất mát Nhận thức Nội dung_ ($L_"cp"$ - Content Perceptual Loss)*: Thành phần này được sử dụng để trừng phạt sự lệch lạc về nội dung (content misalignment) giữa ảnh sinh ra $x_0$ và ảnh đích $x_"target"$. Khoá luận sử dụng các đặc trưng được mã hoá bởi mạng VGG ($"VGG"_l(dot)$) trên $L$ tầng được chọn:
-  $ L_"cp" = sum_(l=1)^L ||"VGG"_l (x_0) - "VGG"_l (x_"target")|| $
+
+  #numbered_equation[
+    $ L_"cp" = sum_(l=1)^L ||"VGG"_l (x_0) - "VGG"_l (x_"target")|| $
+  ]
   
   #h(1.5em) *_Hàm mất mát Độ lệch_($L_"offset"$ - Offset Loss)*: Được thiết kế riêng cho mô-đun RSI (Reference-Structure Interaction), hàm này ràng buộc độ lớn của các vector dịch chuyển $delta_"offset"$ nhằm ngăn chặn các biến dạng cấu trúc quá mức, trong đó mean là phép tính trung bình:
-  $ L_"offset" = "mean"(||delta_"offset"||) $
+  
+  #numbered_equation[
+    $ L_"offset" = "mean"(||delta_"offset"||) $
+  ]
 ]
 
 #untab_para[
-  Các siêu tham số trọng số cho giai đoạn 1 được thiết lập là: $lambda_"cp"^1 = 0.01$ và $lambda_"off"^1 = 0.5$.
+  Các siêu tham số trọng số cho giai đoạn 1 được thiết lập là: 
+  #numbered_equation[
+    $lambda_"cp"^1 = 0.01$ và $lambda_"off"^1 = 0.5$.
+  ]
 ]
 
 2. *_Giai đoạn 2 - Tinh chỉnh Phong cách (Phase 2 - Fine Stage)_*:
 Sau khi mô hình đã nắm bắt được cấu trúc, giai đoạn 2 sẽ kích hoạt mô-đun *SCR (Style Contrastive Refinement)*. Mục đích là tích hợp hàm mất mát tương phản phong cách ($L_"sc"$) để cung cấp tín hiệu hướng dẫn (guidance), giúp mô hình khuếch tán tinh chỉnh các chi tiết phong cách ở cả cấp độ toàn cục và cục bộ.
 
 Hàm mất mát tổng thể cho giai đoạn 2 ($L_"total"^2$) được mở rộng như sau:
-$ L_"total"^2 = L_"MSE" + lambda_"cp"^2 L_"cp" + lambda_"off"^2 L_"offset" + lambda_"sc"^2 L_"sc" $
+
+#numbered_equation[
+  $ L_"total"^2 = L_"MSE" + lambda_"cp"^2 L_"cp" + lambda_"off"^2 L_"offset" + lambda_"sc"^2 L_"sc" $
+]
 
 Trong giai đoạn này, các trọng số được giữ nguyên cho các thành phần trước và bổ sung trọng số cho thành phần mới:
 #tab_eq[
@@ -246,18 +268,24 @@ Thay vì chỉ sử dụng cặp mẫu dương/âm đơn thuần (Intra-lingual)
 ==== Cơ chế tính toán Loss hỗn hợp
 Hàm mất mát CL-SCR được định nghĩa là tổ hợp tuyến tính giữa mất mát nội miền và mất mát xuyên miền:
 
-$ L_"CL-SCR" = alpha_"intra" dot L_"intra" + beta_"cross" dot L_"cross" $
+#numbered_equation[
+  $ L_"CL-SCR" = alpha_"intra" dot L_"intra" + beta_"cross" dot L_"cross" $
+]
 
 Trong đó, dựa trên thực nghiệm, các siêu tham số trọng số được thiết lập là $alpha_"intra" = 0.3$ và $beta_"cross" = 0.7$ nhằm ưu tiên khả năng chuyển giao phong cách sang ngôn ngữ đích trong khi vẫn giữ được sự ổn định từ dữ liệu cùng ngôn ngữ.
 
 Cả $L_"intra"$ và $L_"cross"$ đều được tính toán dựa trên hàm mất mát InfoNCE@Oord2018InfoNCE, được *trung bình hoá* qua $L$ tầng đặc trưng (từ các khối $"ReLU"^1_1$ đến $"ReLU"^5_1$ của mạng VGG-19). Công thức chi tiết cho thành phần Intra-Lingual Loss ($L_"intra"$) và Cross-Lingual Loss ($L_"cross"$) được tính theo trình tự như sau:
 
-$ L_"intra" = -1/L sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,intra"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"intra")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "intra")^l "/" tau)) "          " $
+#numbered_equation[
+  $ L_"intra" = -1/L sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,intra"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"intra")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "intra")^l "/" tau)) "            " $
+]
 
-$ L_"cross" = -1/L sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,cross"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"cross")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "cross")^l "/" tau)) "          " $
+#numbered_equation[
+  $ L_"cross" = -1/L sum_(l=1)^L log exp(v_"gen"^l dot v_"pos,cross"^l "/" tau)/(exp(v_"gen"^l dot v_("pos"_l,"cross")^l "/" tau) + sum_(k=1)^K exp(v_"gen"^l dot v_("neg"_k, "cross")^l "/" tau)) "            " $
+]
 
-Trong đó:
-#tab_eq[
+#h(1.5em) Trong đó:
+#tab_eq(indent: 3em)[
   *$L$*: Tổng số tầng đặc trưng (layers) được sử dụng từ mạng trích xuất (Style Extractor) để tính toán loss.
 
   *$l$*: Chỉ số chạy đại diện cho tầng đặc trưng thứ $l$ (từ 1 đến $L$).
@@ -277,19 +305,19 @@ Trong đó:
   *$dot$*: Phép nhân vô hướng (Dot product), đại diện cho độ tương đồng Cô-sin (Cosine Similarity) giữa hai vector. Giá trị càng lớn nghĩa là hai phong cách càng giống nhau.
 ]
 
-#untab_para[
-  Với $v = "Projector(Extractor(x))"$ là vector phong cách sau khi đi qua mạng chiếu.
-]
+Với $v = "Projector(Extractor(x))"$ là vector phong cách sau khi đi qua mạng chiếu.
 
 ==== Quy trình huấn luyện Pha 2 cải tiến
 Trong giai đoạn tinh chỉnh (Phase 2), hàm mất mát tổng thể được cập nhật để tích hợp CL-SCR. Việc sử dụng song song cả intra và cross loss giúp mô hình vừa duy trì tính ổn định (nhờ intra) vừa học được tính bất biến của phong cách qua các ngôn ngữ (nhờ cross).
 
 Hàm mục tiêu cuối cùng là:
 
-$ L_"Total"^(2) = L_"MSE" + lambda_"content" L_"content" + lambda_"offset" L_"offset" + lambda_"style" L_"CL-SCR" $
+#numbered_equation[
+  $ L_"Total"^(2) = L_"MSE" + lambda_"content" L_"content" + lambda_"offset" L_"offset" + lambda_"style" L_"CL-SCR" $
+]
 
-Trong đó:
-#tab_eq[
+#h(1.5em)Trong đó:
+#tab_eq(indent: 3em)[
   *$L_"MSE"$*: đảm bảo ảnh sinh ra không bị biến dạng quá nhiều so với ảnh gốc.
 
   *$L_"content"$ (Content Perceptual Loss)*: giữ gìn cấu trúc nét chữ.
@@ -299,9 +327,7 @@ Trong đó:
   *$L_"CL-SCR"$*: đóng vai trò trọng tâm trong việc chuyển giao phong cách đa ngôn ngữ.
 ]
 
-#untab_para[
-  Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các đặc trưng phong cách trừu tượng (như độ xước cọ, độ thanh mảnh) tốt hơn và áp dụng chính xác lên các ký tự Hán phức tạp và ngược lại.
-]
+Việc tích hợp CL-SCR kỳ vọng sẽ giúp mô hình "bắt" được các đặc trưng phong cách trừu tượng (như độ xước cọ, độ thanh mảnh) tốt hơn và áp dụng chính xác lên các ký tự Hán phức tạp và ngược lại.
 
 #pagebreak()
 == Đề xuất thuật toán tính CL-SCR

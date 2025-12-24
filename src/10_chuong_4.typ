@@ -111,7 +111,10 @@ Trước khi được tích hợp vào luồng sinh ảnh chính, mô-đun CL-SC
 
 3. *_Giai đoạn Tinh chỉnh Phong cách bằng mô-đun CL-SCR (Phase 2 - Style Refinement with CL-SCR)_*:
 Bước sang giai đoạn hai, mô-đun CL-SCR được kích hoạt để tinh chỉnh sâu các đặc trưng phong cách Latin, trong khi tốc độ học của các thành phần khác được giảm xuống để tránh phá vỡ cấu trúc đã học. Quá trình này diễn ra trong *30,000 bước* với *kích thước batch 4* nhằm dành tài nguyên VRAM cho các tính toán của mô-đun tương phản. Tốc độ học được thiết lập ở mức thấp hơn là *$1 times 10^(-5)$*, áp dụng chiến lược Constant (hằng số) sau *1,000 bước khởi động*. Đối với cấu hình CL-SCR, khoá luận lựa chọn chế độ huấn luyện kết hợp cả nội miền và xuyên miền (`scr_mode="both"`) với tỷ trọng $alpha_"intra" = 0.3$ và ưu tiên *$beta_"cross" = 0.7$*, đồng thời sử dụng *4 mẫu âm* (negative samples) cho mỗi lần tính toán loss. Hàm mục tiêu tổng thể lúc này là sự kết hợp của các thành phần theo công thức:
-$ L_"total" = L_"MSE" + 0.01 dot L_"percep" + 0.5 dot L_"offset" + 0.01 dot L_"CL-SCR" $
+
+#numbered_equation[
+  $ L_"total" = L_"MSE" + 0.01 dot L_"percep" + 0.5 dot L_"offset" + 0.01 dot L_"CL-SCR" $
+]
 
 4. *_Quy trình Inference_*: 
 Trong quá trình lấy mẫu (Inference), mô hình FontDiffuser@Yang2024FontDiffuser được đóng gói thành một Pipeline dựa trên DPM-Solver để tối ưu hoá tốc độ.
@@ -137,7 +140,10 @@ Khoá luận sử dụng bộ 4 chỉ số tiêu chuẩn trong bài toán sinh �
 
 ==== L1 (Mean Absolute Error)
 Độ đo *L1* tính trung bình giá trị tuyệt đối của sai khác giữa các điểm ảnh (pixel-wise), phản ánh độ chính xác về cường độ điểm ảnh:
-$ "L1" = 1/N sum_(i=1)^N |x_i - y_i| $
+
+#numbered_equation[
+  $ "L1" = 1/N sum_(i=1)^N |x_i - y_i| $
+]
 
 Trong đó:
 #tab_eq[
@@ -156,7 +162,10 @@ Trong đó:
 
 ==== SSIM (Structural Similarity Index)
 Độ đo *SSIM@Wang2004SSIM* đánh giá mức độ tương đồng về *cấu trúc, độ sáng và độ tương phản*. Khác với L1, SSIM mô phỏng cách mắt người cảm nhận sự thay đổi cấu trúc cục bộ:
-$ "SSIM"(x, y) = ((2 mu_x mu_y + C_1)(2 sigma_(x y) + C_2))/((mu_x^2 + mu_y^2 + C_1)(sigma_x^2 + sigma_y^2 + C_2)) $
+
+#numbered_equation[
+  $ "SSIM"(x, y) = ((2 mu_x mu_y + C_1)(2 sigma_(x y) + C_2))/((mu_x^2 + mu_y^2 + C_1)(sigma_x^2 + sigma_y^2 + C_2)) $
+]
 
 Trong đó:
 #tab_eq[
@@ -175,7 +184,10 @@ Trong đó:
 
 ==== LPIPS (Learned Perceptual Image Patch Similarity)
 Độ đo *LPIPS@Zhang2018LPIPS* đánh giá *khoảng cách cảm nhận* dựa trên các đặc trưng trích xuất từ mạng nơ-ron sâu (thường là VGG@SimonyanZ14aVGG hoặc AlexNet@KrizhevskySH12AlexNet). Chỉ số này khắc phục nhược điểm của L1/SSIM khi xử lý các ảnh bị mờ nhẹ nhưng vẫn giống về ngữ nghĩa:
-$ "LPIPS"(x,y) = sum_l 1 / (H_l W_l) sum_(h, w) ||w_l dot (f_l^x (h, w) - f_l^y (h, w))||_2^2 $
+
+#numbered_equation[
+  $ "LPIPS"(x,y) = sum_l 1 / (H_l W_l) sum_(h, w) ||w_l dot (f_l^x (h, w) - f_l^y (h, w))||_2^2 $
+]
 
 Trong đó:
 #tab_eq[
@@ -196,7 +208,10 @@ Trong đó:
 
 ==== FID (Fréchet Inception Distance)
 Độ đo *FID@Heusel2017FID* đánh giá chất lượng tổng thể và độ đa dạng của tập ảnh sinh dựa trên khoảng cách thống kê giữa hai phân bố đặc trưng (thường được trích xuất từ lớp *Pool3* của mạng InceptionV3):
-$ "FID"(r, g) = ||mu_r - mu_g||_2^2 + "Tr"(sum_r + sum_g - 2(sum_r sum_g)^(1/2) ) $
+
+#numbered_equation[
+  $ "FID"(r, g) = ||mu_r - mu_g||_2^2 + "Tr"(sum_r + sum_g - 2(sum_r sum_g)^(1/2) ) $
+]
 
 Trong đó:
 #tab_eq[
