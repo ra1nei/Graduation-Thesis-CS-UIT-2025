@@ -73,17 +73,17 @@ Gần đây, Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models) đ
 
 ==== Quá trình Khuếch tán xuôi (Forward Diffusion Process)
 
-Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một loạt các bước. Điều này tương tự như chuỗi Markov, trong đó mỗi bước làm giảm nhẹ dữ liệu bằng cách thêm nhiễu Gauss:
+Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một loạt các bước. Điều này tương tự như chuỗi Markov, trong đó mỗi bước *phá hủy dần cấu trúc dữ liệu* bằng cách thêm nhiễu Gauss:
 
 #figure(
   image("../images/diffusion_forward_process.png"),
   caption: [Quá trình Khuếch tán xuôi.]
 )
 
-Về mặt toán học, có thể được biểu diễn như sau:
+Về mặt toán học, xác suất chuyển trạng thái được biểu diễn như sau:
 
 #numbered_equation[
-  $ q(x_t|x_(t-1))= scr(N)(x_t;sqrt(1-beta_t)x_(t-1),beta_t I) $
+  $ q(x_t|x_(t-1)) = N(x_t; sqrt(1-beta_t)x_(t-1), beta_t text(bold("I"))) $
 ]
 
 Trong đó:
@@ -94,16 +94,16 @@ Trong đó:
 
   *$beta_t$*: hệ số nhiễu nhỏ (thường $beta_t in [10^(-4), 0.02]$).  
 
-  *$I$*: ma trận đơn vị, đảm bảo nhiễu độc lập và đẳng hướng.
+  *I*: ma trận đơn vị, đảm bảo nhiễu độc lập và đẳng hướng.
 ]
 
-#untab_para[Do tính chất của Gaussian, ta có thể suy ra trực tiếp từ $x_0$ đến $x_t$:]
+#untab_para[Do tính chất cộng tính của phân phối Gaussian, ta có thể lấy mẫu trực tiếp $x_t$ từ $x_0$:]
 
 #numbered_equation[
-  $ x_t = sqrt(dash(alpha)_t) x_0 + sqrt(1 - dash(alpha)_t)epsilon.alt, "   " epsilon.alt ~ N(0,I) $
+  $ x_t = sqrt(dash(alpha)_t) x_0 + sqrt(1 - dash(alpha)_t) epsilon.alt, "   " epsilon.alt ~ N(0,text(bold("I"))) $
 ]
 
-trong đó:
+Trong đó:
 
 #numbered_equation[
   $ alpha_t = 1 - beta_t $
@@ -113,41 +113,45 @@ trong đó:
   $ dash(alpha)_t = product_(s=1)^t alpha_s $
 ]
 
-Điều này rất quan trọng vì giúp ta không cần sinh tuần tự từng bước mà vẫn có thể lấy mẫu trực tiếp ở bước t bất kì (quan trọng khi huấn luyện batch lớn).
+Tính chất này rất quan trọng vì nó cho phép huấn luyện song song tại bất kỳ bước thời gian $t$ nào mà không cần sinh tuần tự từng bước.
 
 ==== Quá trình Khuếch tán ngược (Reverse Diffusion Process)
 
-Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng cách khử nhiễu bằng một loạt các bước đảo ngược quá trình khuếch tán xuôi.
+Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng cách khử nhiễu thông qua một loạt các bước đảo ngược.
 
 #figure(
   image("../images/diffusion_backward_process.png"),
   caption: [Quá trình Khuếch tán ngược.]
 )
 
-Về mặt toán học, có thể được biểu diễn như sau:
+Về mặt toán học, xác suất chuyển trạng thái ngược được xấp xỉ bởi một phân phối Gauss với tham số được học:
 
 #numbered_equation[
-  $ p_theta (x_(t-1)|x_t) = N(x_(t-1);mu_theta (x_t, t), sum_theta (x_t, t)) $
+  $ p_theta (x_(t-1)|x_t) = N(x_(t-1); mu_theta (x_t, t), sigma_t^2 text(bold("I"))) $
 ]
 
-với $mu_theta$ được tính như sau:
+Trong DDPM, phương sai $sigma_t^2$ thường được cố định là hằng số ($beta_t$ hoặc $tilde(beta)_t$). Giá trị trung bình $mu_theta$ được tham số hoá bởi mạng nơ-ron như sau:
 
 #numbered_equation[
   $ mu_theta (x_t, t) = 1/sqrt(alpha_t)(x_t - (beta_t)/(sqrt(1 - dash(alpha)_t)) epsilon.alt_theta (x_t, t)) $
 ]
 
-Ở đây, $epsilon.alt_theta (x_t, t)$ là nhiễu do mạng nơ-ron dự đoán, đóng vai trò trung tâm trong việc phục hồi ảnh gốc.  
-
-Trong huấn luyện, mô hình được tối ưu để giảm sai số giữa $epsilon.alt_theta (x_t, t)$ và nhiễu thực $epsilon.alt$ mà ta đã thêm ở forward process.
-
-==== Hàm mất mát (Loss function)
-Hàm mất mát được sử dụng phổ biến nhất là *Mean Squared Error (MSE)*:
+Quá trình lấy mẫu thực tế (Sampling) để thu được $x_(t-1)$ sẽ bao gồm thêm một lượng nhiễu ngẫu nhiên $z$ (ngoại trừ bước cuối cùng $t=1$):
 
 #numbered_equation[
-  $ L_"simple" = EE_(t, x_0, epsilon.alt) [bar.v.double epsilon.alt - epsilon.alt_theta (x_t, t) bar.v.double ^2] $ 
+  $ x_(t-1) = mu_theta (x_t, t) + sigma_t z, "   " z ~ N(0,text(bold("I"))) $
 ]
 
-Điều này tương đương với việc tối đa hoá khả năng tái tạo phân phối dữ liệu gốc (variational lower bound). Các nghiên cứu gần đây (v-prediction, hybrid loss) cho thấy việc dự đoán trực tiếp $v_t$ hoặc $x_0$ có thể cải thiện chất lượng ảnh sinh, nhưng MSE vẫn là chuẩn mực trong nhiều ứng dụng như FontDiffuser.
+Trong huấn luyện, mô hình được tối ưu để giảm sai số giữa nhiễu dự đoán $epsilon.alt_theta (x_t, t)$ và nhiễu thực tế $epsilon.alt$ đã thêm vào ở quá trình xuôi.
+
+==== Hàm mất mát (Loss function)
+Hàm mất mát được sử dụng phổ biến nhất là *Mean Squared Error (MSE)* trên không gian nhiễu:
+
+#numbered_equation[
+  $ L_"simple" = EE_(t, x_0, epsilon.alt) [|| epsilon.alt - epsilon.alt_theta (x_t, t) ||^2] $ 
+]
+
+Điều này tương đương với việc tối đa hoá cận dưới biến phân (variational lower bound) của khả năng sinh dữ liệu. Mặc dù các nghiên cứu gần đây đề xuất dự đoán $v_t$ hoặc $x_0$, nhưng việc dự đoán nhiễu ($epsilon$-prediction) kết hợp với hàm loss MSE đơn giản vẫn là chuẩn mực hiệu quả được sử dụng trong FontDiffuser.
 
 ==== FontDiffuser (AAAI 2024)
 FontDiffuser@Yang2024FontDiffuser là công trình tiên phong áp dụng thành công Diffusion Model vào bài toán One-shot Font Generation. Pipeline của mô hình giải quyết ba vấn đề cốt lõi:
@@ -189,7 +193,7 @@ Hàm mất mát InfoNCE@Oord2018InfoNCE thường được sử dụng để t�
 
   *$z^-_k$*: Biểu diễn đặc trưng của mẫu âm (negative sample) thứ $k$ trong tập dữ liệu – đây là các mẫu khác lớp hoặc không tương đồng với $z$ mà mô hình cần phân biệt và đẩy xa trong không gian đặc trưng.
 
-  *$"sim"(dot, dot)$*: Hàm đo độ tương đồng giữa hai vector (similarity function), trong ngữ cảnh này thường là độ tương đồng Cosine (Cosine Similarity), tính toán góc giữa hai vector trong không gian đặc trưng.
+  *$"sim"(dot, dot)$*: Hàm đo độ tương đồng giữa hai vector (similarity function), trong ngữ cảnh này thường là độ tương đồng Cô-sin (Cosine Similarity), tính toán góc giữa hai vector trong không gian đặc trưng.
   
   *$tau$*: Tham số nhiệt độ (temperature parameter), là một siêu tham số (hyperparameter) dương giúp điều chỉnh độ nhạy của hàm mất mát. Giá trị $tau$ nhỏ giúp mô hình tập trung hơn vào các mẫu âm khó phân biệt (hard negatives), trong khi $tau$ lớn giúp quá trình huấn luyện mượt mà hơn.
   
