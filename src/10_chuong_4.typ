@@ -253,7 +253,7 @@ Dựa trên hai dữ liệu này, người tham gia được yêu cầu quan sá
 
 #figure(
   image("../images/userscore_answer.png", width: 100%),
-  caption: [Ví dụ về các kết quả mà người tham khảo sát có thể chọn.]
+  caption: [Ví dụ về các kết quả mà người tham gia khảo sát có thể chọn.]
 )
 
 _*Tiêu chí đánh giá*_: Thay vì chấm điểm phức tạp, người tham gia được yêu cầu thực hiện đánh giá dựa trên *lựa chọn ưu tiên*. Cụ thể, với mỗi bộ mẫu, tình nguyện viên cần chọn ra một bức ảnh duy nhất mà họ cho là tốt nhất dựa trên sự cân bằng giữa hai tiêu chí cốt lõi. Thứ nhất là *Tính nhất quán phong cách*, tức ảnh sinh ra phải kế thừa chính xác các đặc trưng thị giác của ảnh phong cách (như độ đậm nhạt, kết cấu nét cọ, hoặc kiểu chân chữ serif/sans-serif). Thứ hai là *Tính toàn vẹn nội dung*, tức ký tự sinh ra phải duy trì đúng cấu trúc hình học của ảnh nội dung, đảm bảo tính dễ đọc và không bị biến dạng kỳ quái (ví dụ: chữ `丘` trong kịch bản `e2c` phải giữ nguyên các nét ngang dọc đặc trưng, không bị lai tạp thành ký tự Latin). Kết quả cuối cùng được định lượng thông qua *Tỷ lệ Ưu tiên*, tính bằng phần trăm số phiếu bầu chọn mà mỗi mô hình nhận được trên tổng số lượt đánh giá.
@@ -859,7 +859,7 @@ Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nh�
     [*0.2214*], [*0.3197*], [*0.2954*], [*13.5508*],
   ),
 
-  caption: [Ảnh hưởng của các thành phần M, R, S và CL đến hiệu năng mô hình trên tác vụ Latin → Hán tự.]
+  caption: [Ảnh hưởng của các thành phần M, R, S và CL đến hiệu năng mô hình trên tác vụ Latin → Hán tự (e2c).]
 ) <tab:e2c_module>
 
 
@@ -916,7 +916,7 @@ Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nh�
     [*0.1090*], [*0.6377*], [*0.1985*], [*41.1152*],
   ),
 
-  caption: [Ảnh hưởng của các thành phần M, R, S và CL đến hiệu năng mô hình trên tác vụ Hán tự → Latin.]
+  caption: [Ảnh hưởng của các thành phần M, R, S và CL đến hiệu năng mô hình trên tác vụ Hán tự → Latin (c2e).]
 ) <tab:c2e_module>
 
 
