@@ -223,6 +223,9 @@
   // ================= TÓM TẮT =====================
   include "src/06_tom_tat.typ"
 
+  // ================= TÓM TẮT ENG =====================
+  include "src/06.1_tom_tat_eng.typ"
+
   // ===============================================
   set par(first-line-indent: (amount: 1.5em, all: false), leading: 0.8em, spacing: 1.5em)
   set block(spacing: 1.2em)

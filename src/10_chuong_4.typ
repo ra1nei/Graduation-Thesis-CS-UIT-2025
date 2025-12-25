@@ -786,7 +786,7 @@ Trong phần này, khoá luận thực hiện các phân tích chuyên sâu nh�
 ]
 
 #untab_para[
-  Các thí nghiệm dưới đây sẽ lần lượt đánh giá tác động của bốn yếu tố then chốt: các mô-đun kiến trúc, kỹ thuật tăng cường dữ liệu, chế độ hàm mất mát và số lượng mẫu âm.
+  Các thí nghiệm dưới đây sẽ lần lượt đánh giá tác động của sáu yếu tố then chốt: các mô-đun kiến trúc, kỹ thuật tăng cường dữ liệu, chế độ hàm mất mát, số lượng mẫu âm, alpha và beta, và trọng số hướng dẫn.
 ]
 
 === Ảnh hưởng của các mô-đun trong FontDiffuser
@@ -1996,7 +1996,8 @@ _*Kết luận*_: Tổng kết lại, thực nghiệm về trọng số $alpha$ 
 
 === Ảnh hưởng của Trọng số hướng dẫn (Guidance Scale)
 
-Trong cơ chế sinh ảnh của mô hình khuếch tán (Diffusion Models), *Trọng số hướng dẫn (Guidance Scale, $s$)* đóng vai trò như một "cần gạt" kiểm soát sự cân bằng giữa độ đa dạng của ảnh sinh và độ bám sát vào điều kiện đầu vào (content/style). Theo nguyên lý của phương pháp Classifier-free Guidance@JonathanGuidance được áp dụng trong FontDiffuser, công thức cập nhật mẫu là: $ epsilon.alt_"pred" = epsilon.alt_"uncond" + s (epsilon.alt_"cond" - epsilon.alt_"uncond") $
+Trong cơ chế sinh ảnh của mô hình khuếch tán (Diffusion Models), *Trọng số hướng dẫn (Guidance Scale, $s$)* đóng vai trò như một "cần gạt" kiểm soát sự cân bằng giữa độ đa dạng của ảnh sinh và độ bám sát vào điều kiện đầu vào (content/style). Theo nguyên lý của phương pháp Classifier-free Guidance@JonathanGuidance được áp dụng trong FontDiffuser, công thức cập nhật mẫu là: 
+#numbered_equation[$ epsilon.alt_"pred" = epsilon.alt_"uncond" + s (epsilon.alt_"cond" - epsilon.alt_"uncond") $]
 Về mặt lý thuyết, việc tăng giá trị $s$ sẽ ép buộc mô hình tuân thủ chặt chẽ hơn các đặc trưng phong cách mục tiêu, nhưng nếu $s$ quá lớn sẽ dẫn đến hiện tượng bão hoà (saturation) và xuất hiện các chi tiết giả (artifacts). Để tìm ra "điểm ngọt" (sweet spot) cho tác vụ sinh font chữ, khoá luận thực hiện khảo sát với giải giá trị $s$ chạy từ $2.5$ đến $15$.
 
 #figure(

@@ -25,8 +25,8 @@
 }
 
 #thong_tin_hoi_dong(
-  0000, 
-  0000, 
+  "xx", 
+  "xx", 
   "xxxxxxxx", 
   "xxxxxxxx", 
   "xxxxxxxx", 
