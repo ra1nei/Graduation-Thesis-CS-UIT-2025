@@ -55,8 +55,8 @@ Cụ thể, quy trình hoạt động như sau:
 2. Mỗi đặc trưng nội dung $f_c^i$ được đưa vào UNet thông qua ba khối MCA tương ứng. Tại đây, $f_c^i$ được ghép nối (concatenated) với đặc trưng của khối UNet trước đó là $r_i$, tạo ra đặc trưng giàu thông tin $I_c$.
 3. Để tăng cường khả năng chọn lọc kênh thích ứng, áp dụng cơ chế chú ý kênh (channel attention) lên $I_c$. Cơ chế này sử dụng một lớp gộp trung bình (average pooling), hai lớp tích chập $1 times 1$ và một hàm kích hoạt để tạo ra vector nhận biết kênh toàn cục $W_c$.
 4. Vector $W_c$ sau đó được dùng để trọng số hoá $I_c$ thông qua phép nhân theo kênh (channel-wise multiplication).
-5. Sau khi đi qua một kết nối phần dư (residual connection), một lớp tích chập $1 times $ được sử dụng để giảm số lượng kênh, thu được đầu ra $I_{co}$.
-6. Cuối cùng, một mô-đun cross-attention được áp dụng để chèn style embedding $e_s$, trong đó $e_s$ đóng vai trò là Key và Value, còn $I_{co}$ đóng vai trò là Query.
+5. Sau khi đi qua một kết nối phần dư (residual connection), một lớp tích chập $1 times $ được sử dụng để giảm số lượng kênh, thu được đầu ra $I_"co"$.
+6. Cuối cùng, một mô-đun cross-attention được áp dụng để chèn style embedding $e_s$, trong đó $e_s$ đóng vai trò là Key và Value, còn $I_"co"$ đóng vai trò là Query.
   
 #h(1.5em) Nhờ MCA, mô hình có thể tái hiện chính xác cả những thành phần nhỏ và các nét đặc trưng tinh tế—một yếu tố đặc biệt quan trọng đối với những hệ chữ có độ phức tạp cao, bao gồm các ký tự chứa nhiều bộ thủ hoặc các dấu thanh đòi hỏi độ chính xác cao.
 
