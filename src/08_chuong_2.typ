@@ -37,7 +37,7 @@ CF-Font@Wang2023CFFont tiếp cận bài toán sinh phông chữ few-shot theo h
 
 ==== DFS (Few-Shot Text Style Transfer via Deep Feature Similarity, TIP 2020)
 DFS@Zhu2020FewShotTextStyle đề xuất một cách tiếp cận mới cho bài toán chuyển đổi phong cách few-shot bằng cách khai thác mối tương quan cấu trúc giữa các ký tự. Khác với các phương pháp trước đó thường nén toàn bộ thông tin phong cách vào một vector duy nhất, DFS trích xuất đặc trưng từ từng ảnh tham chiếu riêng biệt thông qua mạng CNN. Đóng góp quan trọng nhất của mô hình là cơ chế *Deep Feature Similarity*, trong đó một *Ma trận Tương đồng (Similarity Matrix - SM)* được tính toán dựa trên *độ tương quan (cross-correlation)* giữa đặc trưng nội dung của ký tự tham chiếu và ký tự mục tiêu
-Các đặc trưng style đã được điều chỉnh sau đó được gộp lại và nối với đặc trưng content, rồi đưa qua decoder đối xứng dạng U-Net để tái tạo ký tự đích trong phong cách mong muốn. Mô hình được huấn luyện end-to-end với LSGAN@Mao2017LSGAN loss kết hợp loss tái tạo, cho phép sinh ảnh có độ chân thực cao hơn so với các phương pháp chỉ dùng CNN thuần túy.
+Các đặc trưng style đã được điều chỉnh sau đó được gộp lại và nối với đặc trưng content, rồi đưa qua decoder đối xứng dạng U-Net để tái tạo ký tự đích trong phong cách mong muốn. Mô hình được huấn luyện end-to-end với LSGAN@Mao2017LSGAN loss kết hợp loss tái tạo, cho phép sinh ảnh có độ chân thực cao hơn so với các phương pháp chỉ dùng CNN thuần tuý.
 
 Cơ chế này hoạt động như một bộ lọc chú ý thông minh: nó cho phép mô hình tự động *gán trọng số lớn hơn cho các ký tự tham chiếu có cấu trúc hình học tương đồng* với ký tự cần sinh (ví dụ: sử dụng nét cong của chữ 'O' để hỗ trợ sinh chữ 'Q' hoặc 'C'). Sau đó, các đặc trưng phong cách được trọng số hoá này sẽ được trộn (mix) với đặc trưng nội dung để giải mã thành ảnh kết quả. Mặc dù đạt được độ chính xác cao về chi tiết phong cách nhờ việc "chọn lọc" thông tin, DFS vẫn tồn tại nhược điểm là yêu cầu quá trình *tinh chỉnh (fine-tuning)* cho từng phong cách mới (leave-one-out strategy) để đạt kết quả tối ưu, làm hạn chế khả năng ứng dụng thời gian thực so với các mô hình suy diễn trực tiếp (feed-forward).
 
@@ -73,7 +73,7 @@ Gần đây, Mô hình khuếch tán@SohlDickstein2015ICML (Diffusion Models) đ
 
 ==== Quá trình Khuếch tán xuôi (Forward Diffusion Process)
 
-Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một loạt các bước. Điều này tương tự như chuỗi Markov, trong đó mỗi bước *phá hủy dần cấu trúc dữ liệu* bằng cách thêm nhiễu Gauss:
+Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một loạt các bước. Điều này tương tự như chuỗi Markov, trong đó mỗi bước *phá huỷ dần cấu trúc dữ liệu* bằng cách thêm nhiễu Gauss:
 
 #figure(
   image("../images/diffusion_forward_process.png"),
@@ -189,7 +189,7 @@ Hàm mất mát InfoNCE@Oord2018InfoNCE thường được sử dụng để t�
 #tab_eq(indent: 3em)[
   *$z$*: Vector đặc trưng (feature representation) hoặc biểu diễn tiềm ẩn của mẫu dữ liệu đang xét (thường được gọi là mẫu neo - anchor).
 
-  *$z^+$*: Biểu diễn đặc trưng của mẫu dương (positive sample) – đây là mẫu tương đồng hoặc thuộc cùng một lớp với $z$ mà mô hình cần học để tối đa hóa độ tương đồng.
+  *$z^+$*: Biểu diễn đặc trưng của mẫu dương (positive sample) – đây là mẫu tương đồng hoặc thuộc cùng một lớp với $z$ mà mô hình cần học để tối đa hoá độ tương đồng.
 
   *$z^-_k$*: Biểu diễn đặc trưng của mẫu âm (negative sample) thứ $k$ trong tập dữ liệu – đây là các mẫu khác lớp hoặc không tương đồng với $z$ mà mô hình cần phân biệt và đẩy xa trong không gian đặc trưng.
 

@@ -77,7 +77,7 @@ _*Định nghĩa Đầu ra (Output)*_:
     $ I_"gen" = G(I_c, I_s) $
   ]
   
-  #h(1.5em) Thỏa mãn điều kiện: $"Content"(I_"gen") approx "Content"(I_c)$ và $"Style"(I_"gen") approx "Style"(I_s)$.
+  #h(1.5em) Thoả mãn điều kiện: $"Content"(I_"gen") approx "Content"(I_c)$ và $"Style"(I_"gen") approx "Style"(I_s)$.
 ]
 
 #figure(

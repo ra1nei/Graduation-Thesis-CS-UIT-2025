@@ -106,7 +106,7 @@ Mặc dù Giai đoạn 1 có thể tạo ra ký tự rõ nét, nhưng sự vư�
 SCR hoạt động như một bộ giám sát đặc trưng (feature supervisor), sử dụng cơ chế học tương phản (Contrastive Learning) để cung cấp tín hiệu điều hướng, đảm bảo phong cách của ảnh sinh ra ($x_0$) phải nhất quán với ảnh đích ($x_p$) ở cả cấp độ toàn cục và cục bộ.
 
 ==== Kiến trúc Khai thác Phong cách
-Kiến trúc của SCR, như được minh họa trong @scr_framework, bao gồm hai thành phần chính:
+Kiến trúc của SCR, như được minh hoạ trong @scr_framework, bao gồm hai thành phần chính:
 
 #figure(
   image("../images/FontDiffuser/Style Contrastive Refinement.png"),
