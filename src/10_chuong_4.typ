@@ -393,7 +393,7 @@ Dựa trên số liệu từ @tab:e2c_sfuc và @tab:e2c_ufsc, có thể rút ra 
 
     // ===== SFUC e2c =====
     grid.cell(
-      rowspan: 8,
+      rowspan: 9,
       align: horizon,
       rotate(-90deg, reflow: true)[*SFUC*],
     ),
@@ -441,6 +441,13 @@ Dựa trên số liệu từ @tab:e2c_sfuc và @tab:e2c_ufsc, có thể rút ra 
       "FTransGAN"
     ),
 
+    [FontDiffuser (Baseline)],
+    glyph-grid2(
+      ("泡", "玉", "瓜", "瓦", "申"),
+      "../images/eval/eng2chi/",
+      "Baseline"
+    ),
+
     grid.hline(),
 
     [$"Ours"_"AZ"$],
@@ -472,7 +479,7 @@ Dựa trên số liệu từ @tab:e2c_sfuc và @tab:e2c_ufsc, có thể rút ra 
 
     // ===== UFSC e2c =====
     grid.cell(
-      rowspan: 8,
+      rowspan: 9,
       align: horizon,
       rotate(-90deg, reflow: true)[*UFSC*],
     ),
@@ -518,6 +525,13 @@ Dựa trên số liệu từ @tab:e2c_sfuc và @tab:e2c_ufsc, có thể rút ra 
       ("毛", "毫", "民", "气", "水"),
       "../images/eval/eng2chi_style/",
       "FTransGAN"
+    ),
+
+    [FontDiffuser (Baseline)],
+    glyph-grid2(
+      ("毛", "毫", "民", "气", "水"),
+      "../images/eval/eng2chi_style/",
+      "Baseline"
     ),
 
     grid.hline(),
@@ -608,7 +622,7 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
 
     // ===== SFUC c2e =====
     grid.cell(
-      rowspan: 8,
+      rowspan: 9,
       align: horizon,
       rotate(-90deg, reflow: true)[*SFUC*],
     ),
@@ -656,6 +670,13 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
       "FTransGAN"
     ),
 
+    [FontDiffuser (Baseline)],
+    glyph-grid2(
+      ("k", "l", "m", "n", "o"),
+      "../images/eval/chi2eng/",
+      "Baseline"
+    ),
+
     grid.hline(),
 
     [$"Ours"_"All"$],
@@ -685,7 +706,7 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
 
     // ===== UFSC e2c =====
     grid.cell(
-      rowspan: 8,
+      rowspan: 9,
       align: horizon,
       rotate(-90deg, reflow: true)[*UFSC*],
     ),
@@ -733,6 +754,13 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
       "FTransGAN"
     ),
 
+    [FontDiffuser (Baseline)],
+    glyph-grid2(
+      ("c", "d", "e", "f", "g"),
+      "../images/eval/chi2eng_style/",
+      "Baseline"
+    ),
+
     grid.hline(),
 
     [$"Ours"_"All"$],
@@ -756,7 +784,11 @@ Dựa trên số liệu từ @tab:c2e_sfuc và @tab:c2e_ufsc, kết quả thực
 Bên cạnh các chỉ số đo lường, việc phân tích trực quan là bước không thể thiếu để kiểm chứng khả năng xử lý các trường hợp khó của mô hình, đặc biệt là các lỗi cấu trúc mà các chỉ số thống kê như FID đôi khi không phản ánh hết. Khoá luận thực hiện phân tích dựa trên hình ảnh sinh ra từ hai chiều chuyển đổi đối lập.
 
 ==== Phân tích Trực quan
-Để kiểm chứng các chỉ số định lượng, phân tích trực quan tại các @compare-e2c-sfuc đến @compare-c2e-ufsc cho thấy sự vượt trội của phương pháp đề xuất (Ours) về *độ sắc nét* và *khả năng bảo toàn nội dung* xuyên ngôn ngữ; cụ thể, đối với tác vụ Latin sang Hán tự, trong khi *DFS* sinh ra các nét mảnh thiếu sức sống tại @compare-e2c-sfuc và *FTransGAN* gặp hiện tượng *"bóng ma" mờ nhoè* do tối ưu hoá L1 tại @compare-e2c-ufsc, mô hình $"Ours"_"AZ"$ lại tái tạo chính xác *độ đậm* và *cấu trúc* của nét bút. Đối với chiều ngược lại từ Hán tự sang Latin, phương pháp đề xuất khắc phục hoàn toàn lỗi *rò rỉ nội dung* của *DG-Font* tại @compare-c2e-sfuc (nơi các chữ cái Latin bị biến dạng thành giả Hán tự) và đặc biệt thể hiện khả năng *học kết cấu tinh vi* tại Hình @compare-c2e-ufsc, nơi $"Ours"_"All"$ là mô hình duy nhất tái hiện thành công hiệu ứng *"in kim" (dot-matrix)* thay vì sinh ra các nét viền rỗng như FTransGAN hay hình ảnh vỡ nát như DFS, qua đó khẳng định *giá trị thực tiễn* và *khả năng tổng quát hoá* ưu việt của mô-đun CL-SCR.
+Để kiểm chứng các chỉ số định lượng, phân tích trực quan tại các hình từ @compare-e2c-sfuc đến @compare-c2e-ufsc minh chứng sự ưu việt của phương pháp đề xuất (Ours) so với các phương pháp tiên tiến và *mô hình cơ sở (FontDiffuser baseline)* về _độ sắc nét_ và _khả năng bảo toàn nội dung_ xuyên ngôn ngữ.
+
+Cụ thể, đối với tác vụ *Latin sang Hán tự*, trong khi _DFS_ sinh ra các nét mảnh thiếu sức sống tại @compare-e2c-sfuc và _FTransGAN_ gặp hiện tượng "bóng ma" mờ nhoè do hạn chế của hàm mất mát L1 tại @compare-e2c-ufsc, thì *FontDiffuser (baseline)* tuy đã cải thiện được độ rõ nét nhưng vẫn gặp khó khăn trong việc điều chỉnh _trọng lượng nét bút (stroke weight)_, dẫn đến các ký tự đôi khi bị quá đậm hoặc quá nhạt so với ảnh mẫu. Ngược lại, mô hình $"Ours"_"AZ"$ lại tái tạo chính xác _độ đậm_ và _cấu trúc_ tinh tế của nét cọ, đảm bảo sự đồng nhất cao với phong cách mục tiêu.
+
+Đối với chiều ngược lại từ *Hán tự sang Latin*, phương pháp đề xuất khắc phục hoàn toàn lỗi _rò rỉ nội dung (content leak)_ nghiêm trọng của _DG-Font_ tại @compare-c2e-sfuc (nơi các chữ cái Latin bị biến dạng thành giả Hán tự). Đặc biệt, khả năng _học kết cấu tinh vi_ được thể hiện rõ rệt tại @compare-c2e-ufsc: trong khi *FontDiffuser (baseline)* có xu hướng _làm trơn hoá (oversmoothing)_ các chi tiết gai góc hoặc sinh ra các nét liền mạch sai lệch, thì $"Ours"_"All"$ là mô hình duy nhất tái hiện thành công hiệu ứng _"in kim" (dot-matrix)_ tách biệt, thay vì sinh ra các nét viền rỗng như FTransGAN hay hình ảnh vỡ nát như DFS. Điều này khẳng định *giá trị thực tiễn và khả năng tổng quát hoá* vượt trội của mô-đun CL-SCR so với kiến trúc nền tảng ban đầu.
 
 ==== Đánh giá Cảm nhận Người dùng
 Dựa trên quy trình khảo sát mù (blind test) đã được thiết lập chi tiết tại @user-study-design, khoá luận tổng hợp kết quả bình chọn từ 20 tình nguyện viên trên tập dữ liệu kiểm thử ngẫu nhiên.
