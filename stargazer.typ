@@ -372,7 +372,7 @@
   title: self => utils.display-current-heading(depth: self.slide-level),
   header-right: self => self.info.logo,
   progress-bar: true,
-  footer-columns: (25%, 1fr, 20%, 5%),
+  footer-columns: (25%, 1fr, 10%, 5%),
   footer-a: self => self.info.author,
   footer-b: self => utils.display-info-date(self),
   footer-c: self => if self.info.short-title == auto {
