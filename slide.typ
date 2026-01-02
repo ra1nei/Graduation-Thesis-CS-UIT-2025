@@ -679,7 +679,7 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
         [#underline[0.2283]], [#underline[0.2946]], [#underline[0.3184]], [#underline[29.0999]],
 
         // Dòng 3: M + R + CL
-        mark_row($checkmark.heavy$, $checkmark.heavy$, $crossmark.heavy$, $checkmark.heavy$),
+        o[#mark_row($checkmark.heavy$, $checkmark.heavy$, $crossmark.heavy$, $checkmark.heavy$)],
         [#r[0.1939]], [#r[0.3890]], [#r[0.2911]], [#r[11.7691]],
         [#r[0.2214]], [#r[0.3197]], [#r[0.2954]], [#r[13.5508]],
         
@@ -699,7 +699,7 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
         [#underline[0.1370]], [#underline[0.5731]], [#underline[0.2476]], [#underline[59.5788]],
 
         // Dòng 6: M + R + CL
-        mark_row($checkmark.heavy$, $checkmark.heavy$, $crossmark.heavy$, $checkmark.heavy$),
+        o[#mark_row($checkmark.heavy$, $checkmark.heavy$, $crossmark.heavy$, $checkmark.heavy$)],
         [#r[0.1083]], [#r[0.6406]], [#r[0.2019]], [#r[14.7298]],
         [#r[0.1090]], [#r[0.6377]], [#r[0.1985]], [#r[41.1152]],
         
@@ -709,72 +709,72 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
   ]
 ])
 
-== Tối ưu hoá mô-đun CL-SCR <touying:hidden>
-Đánh giá hiệu năng trên kịch bản khó nhất (*UFSC*) theo hai chiều chuyển đổi.
+// == Tối ưu hoá mô-đun CL-SCR <touying:hidden>
+// Đánh giá hiệu năng trên kịch bản khó nhất (*UFSC*) theo hai chiều chuyển đổi.
 
-#text(size: 18pt)[ 
-  #grid(
-    columns: (1fr, 10pt, 1fr),
-    gutter: 20pt,
-    align: top + left,
-    [
-      *a. Chế độ Hàm Loss (Loss Modes):*
-      So sánh chiều xuôi (L$arrow$C) và ngược (C$arrow$L).
+// #text(size: 18pt)[ 
+//   #grid(
+//     columns: (1fr, 10pt, 1fr),
+//     gutter: 20pt,
+//     align: top + left,
+//     [
+//       *a. Chế độ Hàm Loss (Loss Modes):*
+//       So sánh chiều xuôi (L$arrow$C) và ngược (C$arrow$L).
 
-      #figure(
-        table(
-          columns: (1fr, auto, auto),
-          inset: 6pt,
-          align: (left, center, center),
-          stroke: none,
-          table.header(
-            table.cell(rowspan: 2, align: horizon)[*Chế độ*],
-            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
-            [*L $arrow$ C*], [*C $arrow$ L*],
-            table.hline(stroke: 0.5pt),
-          ),
-          [Intra-only], [#underline[15.7197]], [#underline[41.3399]],
-          [Cross-only], [16.2615], [44.7758],
-          [*Both*], [#r[13.5508]], [#r[41.1152]],
-          table.hline(stroke: 0.5pt),
-        )
-      )
-      #v(5pt)
-      #text(size: 0.8em)[
-        $arrow$ *Both* tối ưu nhất. *Cross-only* cho kết quả kém nhất, chứng tỏ cần duy trì học nội bộ (Intra) để giữ ổn định cấu trúc.
-      ]
-    ],
-    [],
-    [
-      *b. Trọng số Alpha ($alpha$) & Beta ($beta$):*
-      Tác động lên từng chiều ngôn ngữ.
+//       #figure(
+//         table(
+//           columns: (1fr, auto, auto),
+//           inset: 6pt,
+//           align: (left, center, center),
+//           stroke: none,
+//           table.header(
+//             table.cell(rowspan: 2, align: horizon)[*Chế độ*],
+//             table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+//             [*L $arrow$ C*], [*C $arrow$ L*],
+//             table.hline(stroke: 0.5pt),
+//           ),
+//           [Intra-only], [#underline[15.7197]], [#underline[41.3399]],
+//           [Cross-only], [16.2615], [44.7758],
+//           [*Both*], [#r[13.5508]], [#r[41.1152]],
+//           table.hline(stroke: 0.5pt),
+//         )
+//       )
+//       #v(5pt)
+//       #text(size: 0.8em)[
+//         $arrow$ *Both* tối ưu nhất. *Cross-only* cho kết quả kém nhất, chứng tỏ cần duy trì học nội bộ (Intra) để giữ ổn định cấu trúc.
+//       ]
+//     ],
+//     [],
+//     [
+//       *b. Trọng số Alpha ($alpha$) & Beta ($beta$):*
+//       Tác động lên từng chiều ngôn ngữ.
 
-      #figure(
-        table(
-          columns: (1fr, 1fr, auto, auto),
-          inset: 6pt,
-          align: center,
-          stroke: none,
-          table.header(
-            table.cell(rowspan: 2, align: horizon)[*$alpha$*],
-            table.cell(rowspan: 2, align: horizon)[*$beta$*],
-            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
-            [*L $arrow$ C*], [*C $arrow$ L*],
-            table.hline(stroke: 0.5pt),
-          ),
-          [0.7], [0.3], [#underline[14.4760]], [16.3548],
-          [0.5], [0.5], [15.1777], [#underline[15.5683]],
-          [*0.3*], [*0.7*], [#r[13.5508]], [#r[14.7298]],
-          table.hline(stroke: 0.5pt),
-        )
-      )
-      #v(5pt)
-      #text(size: 0.8em)[
-        $arrow$ Hiệu năng đạt đỉnh khi ưu tiên *$beta=0.7$*, khẳng định tầm quan trọng của việc nhấn mạnh vào các đặc trưng xuyên ngôn ngữ.
-      ]
-    ]
-  )
-]
+//       #figure(
+//         table(
+//           columns: (1fr, 1fr, auto, auto),
+//           inset: 6pt,
+//           align: center,
+//           stroke: none,
+//           table.header(
+//             table.cell(rowspan: 2, align: horizon)[*$alpha$*],
+//             table.cell(rowspan: 2, align: horizon)[*$beta$*],
+//             table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+//             [*L $arrow$ C*], [*C $arrow$ L*],
+//             table.hline(stroke: 0.5pt),
+//           ),
+//           [0.7], [0.3], [#underline[14.4760]], [16.3548],
+//           [0.5], [0.5], [15.1777], [#underline[15.5683]],
+//           [*0.3*], [*0.7*], [#r[13.5508]], [#r[14.7298]],
+//           table.hline(stroke: 0.5pt),
+//         )
+//       )
+//       #v(5pt)
+//       #text(size: 0.8em)[
+//         $arrow$ Hiệu năng đạt đỉnh khi ưu tiên *$beta=0.7$*, khẳng định tầm quan trọng của việc nhấn mạnh vào các đặc trưng xuyên ngôn ngữ.
+//       ]
+//     ]
+//   )
+// ]
 
 // ================================================
 = Kết luận
@@ -791,7 +791,7 @@ Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
 ]
 #v(10pt)
 #list(marker: text(fill: green, size: 1.2em)[$checkmark$])[
-  *Hiệu quả thực nghiệm:* Vượt trội SOTA hiện tại (FID giảm ~50% ở chiều Latin $arrow$ Hán), khắc phục được lỗi "bóng ma" và "biến dạng cấu trúc" của các dòng GAN.
+  *Hiệu quả thực nghiệm:* Vượt trội SOTA hiện tại (FID giảm $~$50% ở chiều Latin $arrow$ Hán), khắc phục được lỗi "bóng ma" và "biến dạng cấu trúc" của các dòng GAN.
 ]
 
 == Hạn chế & Hướng phát triển <touying:hidden>
@@ -852,3 +852,128 @@ Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
     [Khoa:], [Khoa học máy tính]
   )
 ])
+
+= Phụ lục <touying:hidden>
+So sánh chỉ số quan trọng nhất (*FID*) trên kịch bản khó (*UFSC*):
+
+== Tối ưu hóa CL-SCR (Ablation Detail) <touying:hidden>
+Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
+
+#text(size: 17pt)[
+  #grid(
+    columns: (auto, 10pt, auto),
+    gutter: 20pt,
+    align: top + left,
+    [
+      *a. Chế độ Hàm Loss (Loss Modes):*
+      Tại sao phải kết hợp cả Intra và Cross?
+
+      #figure(
+        table(
+          columns: (1fr, auto, auto),
+          inset: 6pt, stroke: none, align: center,
+          table.header(
+            table.cell(rowspan: 2, align: horizon)[*Chế độ*],
+            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+            [*L $arrow$ C*], [*C $arrow$ L*],
+            table.hline(stroke: 0.5pt)
+          ),
+          [Intra-only], [#underline[15.72]], [#underline[41.34]],
+          [Cross-only], [16.26], [44.78],
+          [#o[Both]], [#o[13.55]], [#o[41.12]],
+          table.hline(stroke: 0.5pt)
+        )
+      )
+      #v(5pt)
+      $arrow$ *Both* tận dụng sự ổn định của Intra và khả năng chuyển đổi của Cross.
+    ],
+    [], // Space
+    [
+      *b. Trọng số Alpha ($alpha$) & Beta ($beta$):*
+      Tại sao ưu tiên $beta=0.7$?
+
+      #figure(
+        table(
+          columns: (1fr, 1fr, auto, auto),
+          inset: 6pt, stroke: none, align: center,
+          table.header(
+            table.cell(rowspan: 2, align: horizon)[*$alpha$*],
+            table.cell(rowspan: 2, align: horizon)[*$beta$*],
+            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+            [*L $arrow$ C*], [*C $arrow$ L*],
+            table.hline(stroke: 0.5pt)
+          ),
+          [0.7], [0.3], [#underline[14.48]], [16.35],
+          [0.5], [0.5], [15.18], [#underline[15.57]],
+          [#o[0.3]], [#o[0.7]], [#o[13.55]], [#o[14.73]],
+          table.hline(stroke: 0.5pt)
+        )
+      )
+      #v(5pt)
+      $arrow$ Bài toán Cross-Lingual cần ưu tiên học các đặc trưng xuyên ngôn ngữ ($beta$ lớn).
+    ]
+  )
+]
+
+== Phân tích độ nhạy (Sensitivity Analysis) <touying:hidden>
+Ảnh hưởng của Số mẫu âm & Guidance Scale
+
+#text(size: 17pt)[
+  #grid(
+    columns: (auto, 10pt, auto),
+    gutter: 20pt,
+    align: top + left,
+    [
+      *c. Số lượng mẫu âm ($K$):*
+      Trong hàm loss InfoNCE.
+
+      #figure(
+        table(
+          columns: (1fr, auto, auto),
+          inset: 6pt, stroke: none, align: center,
+          table.header(
+            table.cell(rowspan: 2, align: horizon)[*K*],
+            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+            [*L $arrow$ C*], [*C $arrow$ L*],
+            table.hline(stroke: 0.5pt)
+          ),
+          [#o[4]], [#o[13.55]], [#o[41.11]],
+          [8], [15.42], [43.50],
+          [16], [19.80], [48.20],
+          table.hline(stroke: 0.5pt)
+        )
+      )
+      #v(5pt)
+      $arrow$ *K=4* là điểm cân bằng tối ưu cho cả hai chiều.
+    ],
+    [], // Space
+    [
+      *d. Trọng số hướng dẫn (Scale - $s$):*
+      Cân bằng giữa đa dạng và chính xác.
+
+      #figure(
+        table(
+          columns: (1fr, auto, auto),
+          inset: 6pt, stroke: none, align: center,
+          table.header(
+            table.cell(rowspan: 2, align: horizon)[*Scale ($s$)*],
+            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+            [*L $arrow$ C*], [*C $arrow$ L*],
+            table.hline(stroke: 0.5pt)
+          ),
+          [2.5], [18.20], [52.10],
+          [5.0], [15.10], [45.30],
+          [#o[7.5]], [#o[13.55]], [#o[41.11]],
+          [10.0], [14.20], [42.80],
+          [12.5], [14.90], [44.10],
+          [15.0], [16.50], [47.50],
+          table.hline(stroke: 0.5pt)
+        )
+      )
+      #v(5pt)
+      $arrow$ *$s=7.5$* (Chuẩn CFG) cho kết quả tốt nhất.
+    ]
+  )
+]
+
+== Chi tiết triển khai (Implementation) <touying:hidden>
