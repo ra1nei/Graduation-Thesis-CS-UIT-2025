@@ -9,6 +9,8 @@
 #set par(justify: true)
 #show figure.caption: set text(17pt)
 
+#let r(it) = text(fill: rgb("#D00000"), weight: "bold", it)
+#let o(it) = text(fill: rgb("#eaa646"), weight: "bold", it)
 #let glyph-grid2(chars, base, font) = grid(
   columns: (auto,) * chars.len(),
   inset: 1pt,
@@ -82,7 +84,6 @@
 == Thiết kế phông chữ <touying:hidden>
 #grid(
   columns: (1.5fr, 1fr),
-  // gutter: 10pt,
   align: center + horizon,
   grid.cell(rowspan: 2)[
     #v(25pt)
@@ -106,7 +107,7 @@ Mặc dù nhu cầu sử dụng phông chữ rất lớn, quy trình thiết k�
 #grid(
   columns: (1fr, 1fr),
   gutter: 20pt,
-  row-gutter: 20pt, // Thêm khoảng cách giữa các hàng
+  row-gutter: 20pt,
   align: top + left,
   [
     *1. Tốn kém chi phí & thời gian:*
@@ -119,7 +120,7 @@ Mặc dù nhu cầu sử dụng phông chữ rất lớn, quy trình thiết k�
     - *CJK (Hán/Nôm):* Hàng chục nghìn ký tự.
       $arrow$ *Rất tốn kém nếu làm thủ công hoàn toàn.*
   ],
-  // Phần bổ sung mới, cho nằm trải dài (colspan: 2) ở hàng dưới
+
   grid.cell(colspan: 2)[
     *3. Hạn chế về hỗ trợ đa ngôn ngữ (Localization Barrier):*
     - Các font nghệ thuật đẹp thường chỉ hỗ trợ ngôn ngữ phổ biến (Anh, Trung).
@@ -225,7 +226,7 @@ Với khoảng cách hình thái lớn như vậy, các phương pháp hiện t�
     *2. Tại sao chọn Diffusion Model?*
     - *Cơ chế:* Khử nhiễu dần dần (Denoising) từ trạng thái vô định hình.
     - *Ưu điểm:* Cho phép kiểm soát cấu trúc (Structure) và phong cách (Style) tách biệt tốt hơn.
-    $arrow$ *Đây là chìa khóa để bắc cầu qua "Morphological Gap".*
+    $arrow$ *Đây là chìa khoá để bắc cầu qua "Morphological Gap".*
   ]
 )
 
@@ -367,11 +368,9 @@ Tuân theo chuẩn của FTransGAN và FontDiffuser.
 $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con người.*
 
 == Kết quả định lượng <touying:hidden>
+#v(30pt)
 #align(center, [
   #text(size: 17pt)[ 
-    // --- Định nghĩa hàm tô Đậm + Đỏ ở đây ---
-    #let r(it) = text(fill: rgb("#D00000"), weight: "bold", it)
-    
     #figure(
       table(
         columns: (auto, 200pt, auto, auto, auto, auto, auto, auto, auto, auto),
@@ -383,28 +382,29 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
         // --- Header ---
         table.hline(stroke: 0.5pt),
         table.header(
-          [], [],
-          table.cell(colspan: 4, stroke: (bottom: 0.5pt))[
-            *SFUC* // Cái này sẽ tự động là Đậm + Màu mặc định (không bị đỏ)
-          ],
-          table.cell(colspan: 4, stroke: (bottom: 0.5pt))[
-            *UFSC*
-          ],
+          // --- HEADER ---
+          [],
+          table.vline(stroke: 0.5pt),
+          
+          table.cell(rowspan: 2, align: center + horizon)[*Model*], 
+          table.vline(stroke: 0.5pt),
+          
+          table.cell(colspan: 4, stroke: (bottom: 0.5pt))[*SFUC*],
+          table.cell(colspan: 4, stroke: (bottom: 0.5pt))[*UFSC*],
+          
+          // --- HEADER (Metrics) ---
+          [],
+          
+          // Metrics SFUC
+          [*L1 $arrow.b$*], [#text(size: 14pt)[*SSIM $arrow.t$*]], [#text(size: 12pt)[*LPIPS $arrow.b$*]], [*FID $arrow.b$*],
+          table.vline(stroke: 0.5pt),
+          
+          // Metrics UFSC
+          [*L1 $arrow.b$*], [#text(size: 14pt)[*SSIM $arrow.t$*]], [#text(size: 12pt)[*LPIPS $arrow.b$*]], [*FID $arrow.b$*],
         ),
-        
-        // --- Sub-header ---
-        [], 
-        table.vline(stroke: 0.5pt),
-        [*Model*], // Vẫn đen/xanh đậm
-        table.vline(stroke: 0.5pt),
-        
-        [*L1 $arrow.b$*], [#text(size: 14pt)[*SSIM $arrow.t$*]], [#text(size: 12pt)[*LPIPS $arrow.b$*]], [*FID $arrow.b$*],
-        table.vline(stroke: 0.5pt),
-        
-        [*L1 $arrow.b$*], [#text(size: 14pt)[*SSIM $arrow.t$*]], [#text(size: 12pt)[*LPIPS $arrow.b$*]], [*FID $arrow.b$*],
         table.hline(stroke: 0.5pt),
 
-        // --- Data Rows (L -> C) ---
+        // --- (L -> C) ---
         table.cell(rowspan: 6, rotate(-90deg, reflow: true)[*L $->$ C*]),
         
         [DG-Font], 
@@ -417,7 +417,7 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
 
         [DFS], 
         [0.2131], [0.3558], [0.3812], [45.42], 
-        [#r[0.2008]], [0.3048], [0.3876], [62.72], // Dùng hàm #r thay vì *...*
+        [#r[0.2008]], [0.3048], [0.3876], [62.72],
 
         [FTransGAN], 
         [#r[0.1844]], [#r[0.3900]], [0.3548], [40.45], 
@@ -427,13 +427,13 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
         [0.1976], [0.3775], [#underline[0.2968]], [#underline[14.68]], 
         [0.2283], [0.2946], [#underline[0.3184]], [#underline[29.09]],
 
-        [Ours], 
+        [#o[Ours]], 
         [#underline[0.1939]], [#underline[0.3890]], [#r[0.2911]], [#r[11.76]], 
         [0.2214], [#r[0.3197]], [#r[0.2954]], [#r[13.55]],
         
         table.hline(stroke: 0.5pt),
 
-        // --- Data Rows (C -> L) ---
+        // --- (C -> L) ---
         table.cell(rowspan: 6, rotate(-90deg, reflow: true)[*C $->$ L*]),
         
         [DG-Font], 
@@ -456,7 +456,7 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
         [#underline[0.1223]], [0.6107], [#underline[0.2270]], [#underline[21.2234]], 
         [0.1370], [0.5731], [#underline[0.2476]], [#underline[59.5788]],
 
-        [Ours], 
+        [#o[Ours]], 
         [#r[0.1083]], [#r[0.6406]], [#r[0.2019]], [#r[14.7298]], 
         [#r[0.1090]], [#r[0.6377]], [#r[0.1985]], [#r[41.1152]],
         
@@ -467,35 +467,39 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
 ])
 
 == Kết quả định tính <touying:hidden>
-So sánh trực quan (Visual Comparison)
+// #grid(
+//   align: top + left, 
+//   columns: (1fr, 1fr),
+//   gutter: 10pt,
+//   [
+//     *Chiều Latin $arrow$ Hán:*
+//     - *Ours:* Tái tạo đúng nét cọ xước, đậm nhạt.
+//     - *Baseline:* Nét đôi khi bị cứng hoặc sai độ đậm.
+//   ],
+//   [
+//     *Chiều Hán $arrow$ Latin:*
+//     - *Ours:* Giữ cấu trúc chữ rõ ràng.
+//     - *DG-Font:* Bị lỗi "Content Leakage" (chữ Latin biến thành Hán).
+//   ]
+// )
 
-#grid(
-  align: top + left, 
-  columns: (1fr, 1fr),
-  gutter: 10pt,
-  [
-    *Chiều Latin $arrow$ Hán:*
-    - *Ours:* Tái tạo đúng nét cọ xước, đậm nhạt.
-    - *Baseline:* Nét đôi khi bị cứng hoặc sai độ đậm.
-  ],
-  [
-    *Chiều Hán $arrow$ Latin:*
-    - *Ours:* Giữ cấu trúc chữ rõ ràng.
-    - *DG-Font:* Bị lỗi "Content Leakage" (chữ Latin biến thành Hán).
-  ]
-)
+// #pagebreak()
 
-#pagebreak()
 #v(25pt)
 #figure(
   grid(
-    columns: (100pt, 30pt, auto, auto),
+    columns: (200pt, 0pt, auto, auto),
     gutter: 1pt,
     inset: 0.01pt,
     stroke: none,
     align: (horizon, horizon, horizon),
-    
-    // ===== c2e =====
+    fill: (x, y) => {
+      if y == 0 or y == 1 { rgb("#e6f7ff") }
+      else if y == 7 { rgb("#ffe6e6") }
+      else if y == 8 { rgb("#fda979") }
+      else { none }
+    },
+
     [Source], [],
     glyph-grid2(
       ("c", "d", "e", "f", "g"),
@@ -580,7 +584,7 @@ So sánh trực quan (Visual Comparison)
       "Baseline"
     ),
 
-    [$"Ours"$], [],
+    [#o[Ours]], [],
     glyph-grid2(
       ("c", "d", "e", "f", "g"),
       "images/eval/chi2eng_style/",
@@ -604,28 +608,227 @@ So sánh trực quan (Visual Comparison)
       "GroundTruth"
     ),
   ),
-  // caption: [Comparison results between our method and previous state-of-the-art methods.]
 ) <image_metric>
+
+== Đánh giá người dùng <touying:hidden>
+#v(30pt)
+#figure(
+  image("images/userscore_chart.png", height: 90%)
+)
+
+== Hiệu quả của các mô-đun kiến trúc <touying:hidden>
+#v(30pt)
+#align(center, [
+  #text(size: 17pt)[
+    #let mark_row(m, r, s, cl) = {
+      grid(
+        columns: (1fr, 1fr, 1fr, 1fr),
+        align: center,
+        m, r, s, cl
+      )
+    }
+
+    #figure(
+      table(
+        columns: (auto, 140pt, auto, auto, auto, auto, auto, auto, auto, auto),
+        inset: 4pt,
+        align: center + horizon,
+        stroke: none,
+        gutter: 3pt,
+        
+        // --- Header ---
+        table.hline(stroke: 0.5pt),
+        table.header(
+          [], [],
+          table.cell(colspan: 4, stroke: (bottom: 0.5pt))[
+            *SFUC* ],
+          table.cell(colspan: 4, stroke: (bottom: 0.5pt))[
+            *UFSC*
+          ],
+        ),
+        
+        // --- Sub-header ---
+        [], 
+        table.vline(stroke: 0.5pt),
+        table.cell(align: center + horizon)[
+          *Mô-đun*
+          #grid(
+             columns: (1fr, 1fr, 1fr, 1fr),
+             [*M*], [*R*], [*S*], [*CL*]
+          )
+        ], 
+        table.vline(stroke: 0.5pt),
+        
+        [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+        table.vline(stroke: 0.5pt),
+        
+        [*L1 $arrow.b$*], [*SSIM $arrow.t$*], [*LPIPS $arrow.b$*], [*FID $arrow.b$*],
+        table.hline(stroke: 0.5pt),
+
+        // --- (L -> C) ---
+        table.cell(rowspan: 3, rotate(-90deg, reflow: true)[*L $->$ C*]),
+        
+        // Dòng 1: ✘ + ✘ + ✘
+        mark_row($crossmark.heavy$, $crossmark.heavy$, $crossmark.heavy$, $crossmark.heavy$),
+        [0.2441], [0.2983], [0.4434], [70.3650],
+        [0.2815], [0.1965], [0.4854], [75.7399],
+
+        // Dòng 2: M + R + S
+        mark_row($checkmark.heavy$, $checkmark.heavy$, $checkmark.heavy$, $crossmark.heavy$),
+        [#underline[0.1976]], [#underline[0.3775]], [#underline[0.2968]], [#underline[14.6871]],
+        [#underline[0.2283]], [#underline[0.2946]], [#underline[0.3184]], [#underline[29.0999]],
+
+        // Dòng 3: M + R + CL
+        mark_row($checkmark.heavy$, $checkmark.heavy$, $crossmark.heavy$, $checkmark.heavy$),
+        [#r[0.1939]], [#r[0.3890]], [#r[0.2911]], [#r[11.7691]],
+        [#r[0.2214]], [#r[0.3197]], [#r[0.2954]], [#r[13.5508]],
+        
+        table.hline(stroke: 0.5pt),
+
+        // --- (C -> L) ---
+        table.cell(rowspan: 3, rotate(-90deg, reflow: true)[*C $->$ L*]),
+        
+        // Dòng 4: ✘ + ✘ + ✘
+        mark_row($crossmark.heavy$, $crossmark.heavy$, $crossmark.heavy$, $crossmark.heavy$),
+        [0.2763], [0.2491], [0.4792], [84.7434],
+        [0.3017], [0.1793], [0.5102], [119.9425],
+
+        // Dòng 5: M + R + S
+        mark_row($checkmark.heavy$, $checkmark.heavy$, $checkmark.heavy$, $crossmark.heavy$),
+        [#underline[0.1223]], [#underline[0.6107]], [#underline[0.2270]], [#underline[21.2234]],
+        [#underline[0.1370]], [#underline[0.5731]], [#underline[0.2476]], [#underline[59.5788]],
+
+        // Dòng 6: M + R + CL
+        mark_row($checkmark.heavy$, $checkmark.heavy$, $crossmark.heavy$, $checkmark.heavy$),
+        [#r[0.1083]], [#r[0.6406]], [#r[0.2019]], [#r[14.7298]],
+        [#r[0.1090]], [#r[0.6377]], [#r[0.1985]], [#r[41.1152]],
+        
+        table.hline(stroke: 0.5pt),
+      )
+    ) <ablation-module>
+  ]
+])
+
+== Tối ưu hoá mô-đun CL-SCR <touying:hidden>
+Đánh giá hiệu năng trên kịch bản khó nhất (*UFSC*) theo hai chiều chuyển đổi.
+
+#text(size: 18pt)[ 
+  #grid(
+    columns: (1fr, 10pt, 1fr),
+    gutter: 20pt,
+    align: top + left,
+    [
+      *a. Chế độ Hàm Loss (Loss Modes):*
+      So sánh chiều xuôi (L$arrow$C) và ngược (C$arrow$L).
+
+      #figure(
+        table(
+          columns: (1fr, auto, auto),
+          inset: 6pt,
+          align: (left, center, center),
+          stroke: none,
+          table.header(
+            table.cell(rowspan: 2, align: horizon)[*Chế độ*],
+            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+            [*L $arrow$ C*], [*C $arrow$ L*],
+            table.hline(stroke: 0.5pt),
+          ),
+          [Intra-only], [#underline[15.7197]], [#underline[41.3399]],
+          [Cross-only], [16.2615], [44.7758],
+          [*Both*], [#r[13.5508]], [#r[41.1152]],
+          table.hline(stroke: 0.5pt),
+        )
+      )
+      #v(5pt)
+      #text(size: 0.8em)[
+        $arrow$ *Both* tối ưu nhất. *Cross-only* cho kết quả kém nhất, chứng tỏ cần duy trì học nội bộ (Intra) để giữ ổn định cấu trúc.
+      ]
+    ],
+    [],
+    [
+      *b. Trọng số Alpha ($alpha$) & Beta ($beta$):*
+      Tác động lên từng chiều ngôn ngữ.
+
+      #figure(
+        table(
+          columns: (1fr, 1fr, auto, auto),
+          inset: 6pt,
+          align: center,
+          stroke: none,
+          table.header(
+            table.cell(rowspan: 2, align: horizon)[*$alpha$*],
+            table.cell(rowspan: 2, align: horizon)[*$beta$*],
+            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+            [*L $arrow$ C*], [*C $arrow$ L*],
+            table.hline(stroke: 0.5pt),
+          ),
+          [0.7], [0.3], [#underline[14.4760]], [16.3548],
+          [0.5], [0.5], [15.1777], [#underline[15.5683]],
+          [*0.3*], [*0.7*], [#r[13.5508]], [#r[14.7298]],
+          table.hline(stroke: 0.5pt),
+        )
+      )
+      #v(5pt)
+      #text(size: 0.8em)[
+        $arrow$ Hiệu năng đạt đỉnh khi ưu tiên *$beta=0.7$*, khẳng định tầm quan trọng của việc nhấn mạnh vào các đặc trưng xuyên ngôn ngữ.
+      ]
+    ]
+  )
+]
 
 // ================================================
 = Kết luận
+== Tổng kết đóng góp <touying:hidden>
+Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
 
-== Tổng kết & Hướng phát triển <touying:hidden>
-#list(marker: text(fill: red)[$star$])[
-  *Vấn đề:* Đã giải quyết bài toán chuyển đổi phong cách đa ngôn ngữ (Cross-Lingual) khó nhằn.
+#v(20pt)
+#list(marker: text(fill: red, size: 1.2em)[$star$])[
+  *Giải quyết bài toán khó:* Xây dựng thành công pipeline chuyển đổi phong cách đa ngôn ngữ (Cross-Lingual) giữa Latin và Hán tự.
 ]
-#list(marker: text(fill: blue)[$checkmark$])[
-  *Giải pháp:* Đề xuất mô-đun *CL-SCR* với cơ chế Loss hỗn hợp.
+#v(10pt)
+#list(marker: text(fill: blue, size: 1.2em)[$checkmark$])[
+  *Đóng góp kỹ thuật:* Đề xuất mô-đun *CL-SCR* với cơ chế Loss hỗn hợp (Intra + Cross), giúp tách biệt hiệu quả nội dung và phong cách.
 ]
-#list(marker: text(fill: green)[$checkmark$])[
-  *Kết quả:* Vượt trội SOTA hiện tại (FID giảm 50% ở chiều E2C).
+#v(10pt)
+#list(marker: text(fill: green, size: 1.2em)[$checkmark$])[
+  *Hiệu quả thực nghiệm:* Vượt trội SOTA hiện tại (FID giảm ~50% ở chiều Latin $arrow$ Hán), khắc phục được lỗi "bóng ma" và "biến dạng cấu trúc" của các dòng GAN.
 ]
 
-#line(length: 100%)
-
-*Hướng phát triển:*
-- Tối ưu tốc độ sinh ảnh (Fast Sampling/Distillation).
-- Mở rộng sang tiếng Việt (Thư pháp/Quốc ngữ) và tiếng Nhật.
+== Hạn chế & Hướng phát triển <touying:hidden>
+#text(size: 18pt)[
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 20pt,
+    align: top + left,
+    [
+      #block(fill: rgb("#fff0f0"), inset: 10pt, radius: 5pt, width: 100%)[
+        *Hạn chế (Limitations):*
+        
+        - *Tốc độ suy diễn chậm:*
+          Do bản chất của Diffusion (20 bước khử nhiễu) $arrow$ Chậm hơn GAN ~60 lần.
+        
+        - *Tài nguyên tính toán:*
+          Yêu cầu VRAM lớn hơn để lưu trữ các trạng thái trung gian.
+          
+        $arrow$ *Chưa phù hợp cho ứng dụng Real-time.*
+      ]
+    ],
+    [
+      #block(fill: rgb("#f0f8ff"), inset: 10pt, radius: 5pt, width: 100%)[
+        *Hướng phát triển (Future Work):*
+        
+        - *Tối ưu tốc độ (Speed Up):*
+          Áp dụng *Consistency Distillation* hoặc *Latent Diffusion* để giảm số bước lấy mẫu (4-8 bước).
+        
+        - *Mở rộng ngôn ngữ:*
+          Thử nghiệm trên tiếng Việt (Thư pháp/Quốc ngữ), tiếng Thái.
+          
+        - *Đa dạng đầu ra:*
+            Sinh font dạng Vector (SVG) để designer dễ dàng chỉnh sửa.
+      ]
+    ]
+  )
+]
 
 == Công bố liên quan <touying:hidden>
 // TODO
