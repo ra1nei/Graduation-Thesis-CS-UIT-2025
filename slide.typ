@@ -709,73 +709,6 @@ $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con ngư
   ]
 ])
 
-// == Tối ưu hoá mô-đun CL-SCR <touying:hidden>
-// Đánh giá hiệu năng trên kịch bản khó nhất (*UFSC*) theo hai chiều chuyển đổi.
-
-// #text(size: 18pt)[ 
-//   #grid(
-//     columns: (1fr, 10pt, 1fr),
-//     gutter: 20pt,
-//     align: top + left,
-//     [
-//       *a. Chế độ Hàm Loss (Loss Modes):*
-//       So sánh chiều xuôi (L$arrow$C) và ngược (C$arrow$L).
-
-//       #figure(
-//         table(
-//           columns: (1fr, auto, auto),
-//           inset: 6pt,
-//           align: (left, center, center),
-//           stroke: none,
-//           table.header(
-//             table.cell(rowspan: 2, align: horizon)[*Chế độ*],
-//             table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
-//             [*L $arrow$ C*], [*C $arrow$ L*],
-//             table.hline(stroke: 0.5pt),
-//           ),
-//           [Intra-only], [#underline[15.7197]], [#underline[41.3399]],
-//           [Cross-only], [16.2615], [44.7758],
-//           [*Both*], [#r[13.5508]], [#r[41.1152]],
-//           table.hline(stroke: 0.5pt),
-//         )
-//       )
-//       #v(5pt)
-//       #text(size: 0.8em)[
-//         $arrow$ *Both* tối ưu nhất. *Cross-only* cho kết quả kém nhất, chứng tỏ cần duy trì học nội bộ (Intra) để giữ ổn định cấu trúc.
-//       ]
-//     ],
-//     [],
-//     [
-//       *b. Trọng số Alpha ($alpha$) & Beta ($beta$):*
-//       Tác động lên từng chiều ngôn ngữ.
-
-//       #figure(
-//         table(
-//           columns: (1fr, 1fr, auto, auto),
-//           inset: 6pt,
-//           align: center,
-//           stroke: none,
-//           table.header(
-//             table.cell(rowspan: 2, align: horizon)[*$alpha$*],
-//             table.cell(rowspan: 2, align: horizon)[*$beta$*],
-//             table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
-//             [*L $arrow$ C*], [*C $arrow$ L*],
-//             table.hline(stroke: 0.5pt),
-//           ),
-//           [0.7], [0.3], [#underline[14.4760]], [16.3548],
-//           [0.5], [0.5], [15.1777], [#underline[15.5683]],
-//           [*0.3*], [*0.7*], [#r[13.5508]], [#r[14.7298]],
-//           table.hline(stroke: 0.5pt),
-//         )
-//       )
-//       #v(5pt)
-//       #text(size: 0.8em)[
-//         $arrow$ Hiệu năng đạt đỉnh khi ưu tiên *$beta=0.7$*, khẳng định tầm quan trọng của việc nhấn mạnh vào các đặc trưng xuyên ngôn ngữ.
-//       ]
-//     ]
-//   )
-// ]
-
 // ================================================
 = Kết luận
 == Tổng kết đóng góp <touying:hidden>
@@ -802,7 +735,7 @@ Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
     align: top + left,
     [
       #block(fill: rgb("#fff0f0"), inset: 10pt, radius: 5pt, width: 100%)[
-        *Hạn chế (Limitations):*
+        *Hạn chế:*
         
         - *Tốc độ suy diễn chậm:*
           Do bản chất của Diffusion (20 bước khử nhiễu) $arrow$ Chậm hơn GAN ~60 lần.
@@ -815,9 +748,9 @@ Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
     ],
     [
       #block(fill: rgb("#f0f8ff"), inset: 10pt, radius: 5pt, width: 100%)[
-        *Hướng phát triển (Future Work):*
+        *Hướng phát triển:*
         
-        - *Tối ưu tốc độ (Speed Up):*
+        - *Tối ưu tốc độ:*
           Áp dụng *Consistency Distillation* hoặc *Latent Diffusion* để giảm số bước lấy mẫu (4-8 bước).
         
         - *Mở rộng ngôn ngữ:*
@@ -880,7 +813,7 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
           ),
           [Intra-only], [#underline[15.72]], [#underline[41.34]],
           [Cross-only], [16.26], [44.78],
-          [#o[Both]], [#o[13.55]], [#o[41.12]],
+          [#o[Both]], [#r[13.55]], [#r[41.12]],
           table.hline(stroke: 0.5pt)
         )
       )
@@ -903,9 +836,9 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
             [*L $arrow$ C*], [*C $arrow$ L*],
             table.hline(stroke: 0.5pt)
           ),
-          [0.7], [0.3], [#underline[14.48]], [16.35],
-          [0.5], [0.5], [15.18], [#underline[15.57]],
-          [#o[0.3]], [#o[0.7]], [#o[13.55]], [#o[14.73]],
+          [0.7], [0.3], [#underline[14.48]], [45.23],
+          [0.5], [0.5], [15.18], [#underline[43.42]],
+          [#o[0.3]], [#o[0.7]], [#r[13.55]], [#r[41.12]],
           table.hline(stroke: 0.5pt)
         )
       )
@@ -937,9 +870,9 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
             [*L $arrow$ C*], [*C $arrow$ L*],
             table.hline(stroke: 0.5pt)
           ),
-          [#o[4]], [#o[13.55]], [#o[41.11]],
-          [8], [15.42], [43.50],
-          [16], [19.80], [48.20],
+          [#o[4]], [#r[13.55]], [#r[41.12]],
+          [8], [#underline[15.02]], [43.81],
+          [16], [16.79], [#underline[43.50]],
           table.hline(stroke: 0.5pt)
         )
       )
@@ -961,12 +894,12 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
             [*L $arrow$ C*], [*C $arrow$ L*],
             table.hline(stroke: 0.5pt)
           ),
-          [2.5], [18.20], [52.10],
-          [5.0], [15.10], [45.30],
-          [#o[7.5]], [#o[13.55]], [#o[41.11]],
-          [10.0], [14.20], [42.80],
-          [12.5], [14.90], [44.10],
-          [15.0], [16.50], [47.50],
+          [2.5], [#r[13.28]], [#underline[40.05]],
+          [5.0], [#underline[13.39]], [#r[40.00]],
+          [#o[7.5]], [13.55], [41.12],
+          [10.0], [13.78], [44.74],
+          [12.5], [14.78], [47.15],
+          [15.0], [17.01], [52.76],
           table.hline(stroke: 0.5pt)
         )
       )
@@ -976,4 +909,48 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
   )
 ]
 
-== Chi tiết triển khai (Implementation) <touying:hidden>
+== Phân tích độ nhạy (Sensitivity Analysis) <touying:hidden>
+#v(30pt)
+Đánh giá hiệu quả của chiến lược Tăng cường dữ liệu (Data Augmentation).
+
+#text(size: 17pt)[
+  #grid(
+    columns: (1.4fr, 1fr),
+    gutter: 30pt,
+    align: top + left,
+    [
+      *c. So sánh Định lượng (Impact on FID):*
+      So sánh mô hình khi tắt/bật kỹ thuật *Random Resized Crop*.
+      #figure(
+        table(
+          columns: (1.5fr, auto, auto),
+          inset: 8pt, stroke: none, align: center + horizon,
+          table.header(
+            table.cell(rowspan: 2, align: horizon)[*Cấu hình*],
+            table.cell(colspan: 2, stroke: (bottom: 0.5pt))[*FID (UFSC) $arrow.b$*],
+            [*L $arrow$ C*], [*C $arrow$ L*],
+            table.hline(stroke: 0.5pt)
+          ),
+          [w/o Augmentation], [#underline[15.77]], [#underline[43.07]], 
+          [#o[w/ Augmentation]], [#r[13.55]], [#r[41.12]],
+          table.hline(stroke: 0.5pt)
+        )
+      )
+      #v(5pt)
+      $arrow$ Việc áp dụng Augmentation giúp giảm đáng kể FID, chứng tỏ mô hình học được các đặc trưng phong cách *bền vững* hơn, tránh bị Overfitting.
+    ],
+    [
+      #block(fill: rgb("#f0f8ff"), inset: 10pt, radius: 5pt, width: 100%)[
+        *Chiến lược: Random Resized Crop*
+        
+        #v(5pt)
+        - *Scale ($0.8 - 1.0$):* Cắt ngẫu nhiên nhưng giữ lại phần lớn cấu trúc chữ.
+        
+        - *Ratio ($0.8 - 1.2$):* Thay đổi tỷ lệ khung hình nhẹ để mô phỏng các biến thể viết tay.
+      ]
+      
+      #v(10pt)
+      $arrow$ Giúp mô-đun *CL-SCR* không bị "học vẹt" (memorize) các vị trí pixel cố định.
+    ]
+  )
+]
