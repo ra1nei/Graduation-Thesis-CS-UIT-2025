@@ -115,14 +115,14 @@ Mặc dù nhu cầu sử dụng phông chữ rất lớn, quy trình thiết k�
     - Quy trình lặp lại nhàm chán.
   ],
   [
-    *2. Thách thức về quy mô (Scale):*
+    *2. Thách thức về quy mô:*
     - Latin: Chỉ ~52 ký tự.
     - *CJK (Hán/Nôm):* Hàng chục nghìn ký tự.
       $arrow$ *Rất tốn kém nếu làm thủ công hoàn toàn.*
   ],
 
   grid.cell(colspan: 2)[
-    *3. Hạn chế về hỗ trợ đa ngôn ngữ (Localization Barrier):*
+    *3. Hạn chế về hỗ trợ đa ngôn ngữ:*
     - Các font nghệ thuật đẹp thường chỉ hỗ trợ ngôn ngữ phổ biến (Anh, Trung).
     - Thiếu các *glyph Latin mở rộng* (như tiếng Việt: ă, â, đ...) hoặc hệ chữ ít phổ biến (Thái, Lào).
   ]
@@ -153,14 +153,14 @@ Thay vì vẽ thủ công hàng chục nghìn ký tự, AI sẽ "học" phong c�
 
 #pagebreak()
 *Giải quyết triệt để 3 thách thức trên:*
-#list(marker: text(fill: red)[$checkmark$])[
+#list(marker: text(fill: green)[$checkmark$])[
   *Tốc độ & Chi phí:* Rút ngắn quy trình từ hàng tháng xuống vài giây.
 ]
 #list(marker: text(fill: green)[$checkmark$])[
   *Mở rộng quy mô:* Sinh tự động hàng vạn ký tự Hán/Nôm mà không tốn sức người.
 ]
-#list(marker: text(fill: blue)[$checkmark$])[
-  *Hỗ trợ đa ngôn ngữ (Localization):* Tự động sinh các *glyph thiếu* (như dấu tiếng Việt, ký tự Thái) từ các font nước ngoài, giúp tái sử dụng tài nguyên font hiệu quả.
+#list(marker: text(fill: green)[$checkmark$])[
+  *Hỗ trợ đa ngôn ngữ:* Tự động sinh các *glyph thiếu* (như dấu tiếng Việt, ký tự Thái) từ các font nước ngoài, giúp tái sử dụng tài nguyên font hiệu quả.
 ]
 
 == Mục tiêu & Đóng góp của Khoá luận <touying:hidden>
@@ -232,45 +232,111 @@ Với khoảng cách hình thái lớn như vậy, các phương pháp hiện t�
 
 // ================================================
 = Phương pháp đề xuất
-== Tổng quan mô hình cải tiến <touying:hidden>
-Kiến trúc FontDiffuser + CL-SCR
-Kế thừa FontDiffuser (AAAI'24) và đề xuất mô-đun mới cho đa ngôn ngữ.
+
+== Tổng quan kiến trúc <touying:hidden>
+#v(30pt)
+Kiến trúc dựa trên FontDiffuser với quy trình huấn luyện 2 giai đoạn:
 
 #grid(
-  columns: (1.8fr, 1fr),
-  gutter: 10pt,
+  columns: (1.5fr, 1fr),
+  gutter: 1pt,
+  align: horizon,
   [
-    // Hình 3.1: Kiến trúc tổng quát
     #image("images/framework.pdf")
   ],
   [
-    *3 Thành phần chính:*
-    1. *MCA:* Tổng hợp nội dung đa tỷ lệ (Giữ nét).
-    2. *RSI:* Tương tác cấu trúc (Chống biến dạng).
-    3. *CL-SCR (New):* Tinh chỉnh phong cách xuyên ngôn ngữ.
+    #text(size: 18pt)[ 
+      *Các thành phần chính:*
+      
+      1. *MCA (Phase 1):* Tổng hợp nội dung đa tỷ lệ, đảm bảo giữ nét chi tiết.
+      
+      2. *RSI (Phase 1):* Sử dụng Deformable Conv để xử lý biến dạng cấu trúc.
+      
+      #v(10pt)
+      #block(fill: rgb("#ffe6e6"), inset: 10pt, radius: 5pt)[
+        *3. CL-SCR (Phase 2 - New):*
+        Thay thế mô-đun SCR cũ. Chịu trách nhiệm học phong cách *xuyên ngôn ngữ* (Cross-Lingual).
+      ]
+    ]
   ]
 )
 
-== Trọng tâm: Module CL-SCR <touying:hidden>
-Cross-Lingual Style Contrastive Refinement
+== Mô-đun CL-SCR <touying:hidden>
+#v(20pt)
 Giải pháp cho vấn đề "Domain Gap" giữa hai ngôn ngữ.
+
+*Cải tiến chiến lược lấy mẫu (Sampling Strategy):*
+  
+Thay vì chỉ lấy mẫu trong cùng ngôn ngữ, module CL-SCR mở rộng phạm vi tương phản để bắt cầu nối giữa hai miền dữ liệu:
+
+- *Intra-domain (Nội miền):* Sử dụng cặp ảnh thuộc *cùng ngôn ngữ*. \
+  $arrow.r$ Mục tiêu: Giữ sự ổn định và nhất quán của phong cách nội tại.
+
+- *Cross-domain (Liên miền):* Sử dụng cặp ảnh thuộc *hai ngôn ngữ khác nhau* (Latin $arrow.l.r$ Chinese). \
+  $arrow.r$ Mục tiêu: Học cách chuyển giao đặc trưng phong cách sang ngôn ngữ đích.
+
+$arrow$ *Kỹ thuật:* Tăng số lượng mẫu âm ($K=4$) buộc mô hình phải học các đặc trưng phong cách tinh tế hơn (fine-grained features) thay vì chỉ học vẹt.
+
+#pagebreak()
+
+#align(center + horizon)[
+  // Vì hình đứng một mình 1 slide nên có thể để width lớn hơn (ví dụ 80-90%)
+  #image("images/clscr_framework.pdf", width: 90%)
+  
+  #v(0.5em)
+  *Hình 3.7:* Kiến trúc mạng CL-SCR với hai luồng giám sát Intra và Cross.
+]
+
+== Công thức tính Loss <touying:hidden>
+#v(30pt)
+Hàm mất mát được xây dựng dựa trên nguyên lý *InfoNCE*, tối ưu hoá đồng thời hai luồng:
 
 #grid(
   columns: (1fr, 1fr),
+  align: top + left,
   gutter: 20pt,
-  align: horizon,
   [
-    *Cải tiến cốt lõi:*
-    - *Mở rộng mẫu âm (Negative Samples):* Lấy mẫu từ cả hai miền ngôn ngữ.
-    - *Chiến lược Loss hỗn hợp:*
-      $ L = alpha dot L_"intra" + beta dot L_"cross" $
-    - Tăng trọng số $beta = 0.7$ để ép mô hình học sự tương đồng phong cách bất kể ngôn ngữ nào.
+    *1. Intra-Lingual Loss ($L_"intra"$):*
+    Mẫu dương (+) và mẫu âm (-) được lấy từ *cùng tập ngôn ngữ* với ảnh đang sinh.
+    $ L_"intra" = - log frac(exp((q dot k^+) / tau), exp((q dot k^+) / tau) + sum_(i=0)^K exp((q dot k^-_i) / tau)) $
+    #text(size: 0.8em, style: "italic")[Mục tiêu: Đảm bảo tính nhất quán phong cách trong nội bộ ngôn ngữ nguồn.]
   ],
   [
-    // Hình 3.7: Sơ đồ CL-SCR
-    // TODO (Vẽ hình CL-SCR)
-    #image("images/Style Contrastive Refinement.png", width: 100%)
-    #align(center)[*Cơ chế tương phản đa miền*]
+    *2. Cross-Lingual Loss ($L_"cross"$):*
+    Mẫu dương (+) và mẫu âm (-) được lấy từ *tập ngôn ngữ còn lại* (ngôn ngữ đích).
+    $ L_"cross" = - log frac(exp((q dot k^+_"cross") / tau), exp((q dot k^+_"cross") / tau) + sum_(i=0)^K exp((q dot k^-_"cross,i") / tau)) $
+    #text(size: 0.8em, style: "italic")[Mục tiêu: Kéo phong cách của ảnh sinh lại gần phong cách của ngôn ngữ đích bất chấp khác biệt cấu trúc.]
+  ]
+)
+
+#pagebreak()
+#align(center)[
+  *Tổng hợp CL-SCR Loss:* $ L_"CL-SCR" = alpha dot L_"intra" + beta dot L_"cross" $
+]
+
+== Hàm mục tiêu tổng quát <touying:hidden>
+
+Mô hình được huấn luyện để tối ưu hoá đồng thời độ chính xác nội dung, cấu trúc và phong cách:
+
+#v(10pt)
+#block(fill: rgb("#e6f7ff"), inset: 15pt, radius: 5pt, width: 100%)[
+  #align(center)[
+    $ L_"total" = underbrace(L_"MSE", "Tái tạo ảnh") + lambda_1 underbrace(L_"percep", "Nội dung") + lambda_2 underbrace(L_"offset", "Biến dạng") + lambda_3 underbrace(L_"CL-SCR", "Phong cách (Đề xuất)") $
+  ]
+]
+
+#v(15pt)
+#grid(
+  columns: (1fr, 1fr),
+  align: top + left,
+  gutter: 20pt,
+  [
+    - *$L_"MSE"$*: Đảm bảo ảnh sinh ra giống ảnh gốc ở cấp độ pixel (Phase 1).
+    - *$L_"percep"$*: Giữ lại các đặc trưng thị giác cấp cao (VGG features).
+  ],
+  [
+    - *$L_"offset"$*: Ràng buộc sự biến dạng của RSI để không phá vỡ cấu trúc chữ.
+    - *$L_"CL-SCR"$*: Đóng góp chính của khoá luận, giải quyết bài toán đa ngôn ngữ (Phase 2).
   ]
 )
 
@@ -280,14 +346,14 @@ Giải pháp cho vấn đề "Domain Gap" giữa hai ngôn ngữ.
 Kế thừa bộ dữ liệu chuẩn từ *FTransGAN*.
 
 - *Quy mô:* *818* bộ phông chữ song ngữ (Bao gồm Serif, Sans-serif, Thư pháp...).
-- *Cấu trúc cặp (Paired Data):*
+- *Cấu trúc cặp:*
   #table(
     columns: (auto, 1fr),
     stroke: none,
     inset: (y: 3pt),
     gutter: 10pt,
     [Latin:], [~ *52* ký tự cơ bản.],
-    [Hán tự:], [~ *800* ký tự thông dụng (GB2312).]
+    [Hán tự:], [~ *800* ký tự thông dụng.]
   )
 - *Đặc điểm:* Nhất quán tuyệt đối về phong cách giữa hai hệ chữ $arrow$ Cung cấp *Ground-truth* tự nhiên cho việc học.
 
@@ -789,7 +855,7 @@ Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
 = Phụ lục <touying:hidden>
 So sánh chỉ số quan trọng nhất (*FID*) trên kịch bản khó (*UFSC*):
 
-== Tối ưu hóa CL-SCR (Ablation Detail) <touying:hidden>
+== Tối ưu hoá CL-SCR <touying:hidden>
 Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
 
 #text(size: 17pt)[
@@ -848,7 +914,7 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
   )
 ]
 
-== Phân tích độ nhạy (Sensitivity Analysis) <touying:hidden>
+== Phân tích độ nhạy <touying:hidden>
 Ảnh hưởng của Số mẫu âm & Guidance Scale
 
 #text(size: 17pt)[
@@ -904,12 +970,12 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
         )
       )
       #v(5pt)
-      $arrow$ *$s=7.5$* (Chuẩn CFG) cho kết quả tốt nhất.
+      $arrow$ *$s$* thấp ($in *[2.5, 7.5]*$) cho kết quả tốt nhất.
     ]
   )
 ]
 
-== Phân tích độ nhạy (Sensitivity Analysis) <touying:hidden>
+#pagebreak()
 #v(30pt)
 Đánh giá hiệu quả của chiến lược Tăng cường dữ liệu (Data Augmentation).
 
@@ -919,8 +985,8 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
     gutter: 30pt,
     align: top + left,
     [
-      *c. So sánh Định lượng (Impact on FID):*
-      So sánh mô hình khi tắt/bật kỹ thuật *Random Resized Crop*.
+      *e. Tăng cường dữ liệu:*
+      So sánh mô hình khi dùng/không dùng kỹ thuật tăng cường dữ liệu.
       #figure(
         table(
           columns: (1.5fr, auto, auto),
