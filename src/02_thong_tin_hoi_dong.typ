@@ -25,14 +25,14 @@
 }
 
 #thong_tin_hoi_dong(
-  "xx", 
-  "xx", 
-  "xxxxxxxx", 
-  "xxxxxxxx", 
-  "xxxxxxxx", 
-  "xxxxxxxx",
-  "xxxxxxxx",
-  "xxxxxxxx"
+  "20", 
+  "01", 
+  "Chủ tịch", 
+  "TS. Ngô Đức Thành", 
+  "Thư ký", 
+  "ThS. Nguyễn Thanh Sơn",
+  "Uỷ viên",
+  "TS. Mai Tiến Dũng"
 )
 
 #pagebreak()
