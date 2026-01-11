@@ -829,8 +829,8 @@ Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
   )
 ]
 
-== Công bố liên quan <touying:hidden>
-// TODO
+== Công trình khoa học <touying:hidden>
+D. K. D. Tran and V. H. Duong, “CL-SCR: Decoupling Style and Structure for One-Shot Cross-Script Font Generation,” _The Journal of Supercomputing (under review)_, 2026.
   
 == Lời cảm ơn <touying:hidden>
 #align(center, [
