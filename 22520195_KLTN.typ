@@ -14,9 +14,10 @@
 #include "src/09_chuong_3.typ"
 #include "src/10_chuong_4.typ"
 #include "src/11_ket_luan.typ"
-#include "src/12_cong_bo_lien_quan.typ"
 
 #set text(lang: "en")
 #bibliography("ref.bib", style: "ieee", full: false, title: text(lang: "vi")[Tài liệu tham khảo])
+
+#include "src/12_cong_bo_lien_quan.typ"
 
 #include "src/13_phu_luc.typ"
