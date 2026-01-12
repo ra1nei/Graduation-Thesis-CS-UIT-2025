@@ -180,7 +180,7 @@ Xây dựng giải pháp *Cross-Lingual (Đa ngôn ngữ)* tổng quát.
 2. Đề xuất mô-đun *CL-SCR* để xử lý sự chênh lệch cấu trúc giữa hai hệ chữ này.
 
 // ================================================
-= Thách thức và Cơ sở lý thuyết
+= Thách thức
 == Khoảng cách hình thái học <touying:hidden>
 Tại sao cặp Latin - Hán tự lại là thách thức lớn nhất?
 
