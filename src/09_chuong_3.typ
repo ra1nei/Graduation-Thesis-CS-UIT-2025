@@ -265,6 +265,15 @@ Thay vì chỉ sử dụng cặp mẫu dương/âm đơn thuần (Intra-lingual)
   ]
 ]
 
+Để cung cấp cái nhìn tổng quan về cách các luồng dữ liệu này tương tác trong không gian đặc trưng, kiến trúc chi tiết và cơ chế hoạt động của mô-đun CL-SCR được minh hoạ trực quan tại @fig:clscr_framework.
+
+#figure(
+  image("../images/CLSCR_framework.pdf"),
+  caption: [Kiến trúc của mô-đun Tinh chỉnh Tương phản Phong cách Đa ngôn ngữ (CL-SCR), minh hoạ với ví dụ cụ thể về việc sinh ký tự Latin 'd' theo phong cách đích 'Z'.
+  Với đầu vào là mẫu sinh $x_"sample"$ đóng vai trò là anchor, mô-đun sử dụng bộ trích xuất phong cách (Style Extractor) chia sẻ trọng số để ánh xạ các đầu vào vào không gian vector tiềm ẩn. Các vector đặc trưng trích xuất được ký hiệu là $V_"sample"$ (anchor), $V_p$ (đại diện cho các mẫu dương $x^+_"intra"$ và $x^+_"cross"$), và $V_n$ (đại diện cho các tập mẫu âm $X^-_"N,intra"$ và $X^-_"N,cross"$).
+  Mục tiêu huấn luyện sử dụng cơ chế giám sát kép để đảm bảo phong cách 'Z' được nắm bắt chính xác: 1) Nhánh nội miền ($L_"intra"$): Căn chỉnh $V_"sample"$ với đặc trưng nhãn $V_p$ (từ $x^+_"intra"$) đồng thời đẩy xa các đặc trưng âm $V_n$ (từ $X^-_"N,intra"$); và 2) Nhánh xuyên miền ($L_"cross"$): Thu hẹp khoảng cách phong cách bằng cách kéo $V_"sample"$ lại gần đặc trưng dương xuyên ngôn ngữ $V_p$ (từ ký tự Hán $x^+_"cross"$). Mục tiêu cuối cùng $L_"CL-SCR"$ kết hợp các lực này để đảm bảo sự chuyển giao thẩm mỹ nhất quán qua các hệ chữ viết.]
+) <fig:clscr_framework>
+
 ==== Cơ chế tính toán Loss hỗn hợp
 Hàm mất mát CL-SCR được định nghĩa là tổ hợp tuyến tính giữa mất mát nội miền và mất mát xuyên miền:
 
