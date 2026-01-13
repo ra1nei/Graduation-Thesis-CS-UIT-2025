@@ -388,7 +388,7 @@ Tuân theo chuẩn của FTransGAN và FontDiffuser.
       - *Mục tiêu:* Học cấu trúc nội dung và phong cách cơ bản.
 
       *2. Tiền huấn luyện CL-SCR:*
-      - *Quy mô:* 200k bước, Batch 16, Adam[cite: 914].
+      - *Quy mô:* 200.000 bước, Batch 16, AdamW
       - *Augmentation:* Random Resized Crop (Scale 0.8-1.0) $arrow$ Tăng tính bền vững với biến thể hình học.
     ], 
     [],
