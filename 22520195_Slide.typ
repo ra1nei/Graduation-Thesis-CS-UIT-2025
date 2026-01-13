@@ -220,7 +220,7 @@ Với khoảng cách hình thái lớn như vậy, các phương pháp hiện t�
     *1. Các phương pháp dựa trên GAN:*
     (Ví dụ: DG-Font, FTransGAN)
     - *Cơ chế:* Cố gắng học ánh xạ trực tiếp giữa hai miền ảnh.
-    - *Thất bại:* Do cấu trúc quá khác biệt, GAN thường sinh ra ảnh bị *Mode Collapse* (biến dạng) hoặc *Blur* (mờ) khi cố gắng "ép" chữ Latin thành khối vuông Hán tự.
+    - *Thất bại:* Do cấu trúc quá khác biệt, GAN thường sinh ra ảnh bị *Mode Collapse* (biến dạng) hoặc *Blur* (mờ) khi cố gắng "ép" chữ Latin thành khối vuông Hán tự và ngược lại.
   ],
   [
     *2. Tại sao chọn Diffusion Model?*
