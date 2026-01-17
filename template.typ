@@ -86,7 +86,7 @@
   include "src/02_thong_tin_hoi_dong.typ"
   
   // ================= LỜI CAM ĐOAN =====================
-  include "src/03_loi_cam_doan.typ"
+  // include "src/03_loi_cam_doan.typ"
 
   // ================= LỜI CẢM ƠN =====================
   include "src/04_loi_cam_on.typ"

@@ -1,0 +1,25 @@
+- Có giới hạn gì không?
+-> Cụ thể là vùng nào mình làm, chứ không phải tất cả.
+
+- Phong cách của phông chữ là gì? Được đánh giá qua các metric nào?
+-> Phong cách đối với máy tính chính là tập hợp các tham số thống kê (về mật độ, gradient, tần số) được mã hóa nén lại thành một Vector số học.
+
+	+ Nó không thấy chữ 'đậm', mà nó thấy trong ma trận ảnh, tỷ lệ số lượng điểm ảnh có giá trị thấp (màu đen) chiếm tỷ trọng lớn và tập trung thành các cụm rộng (wide clusters).
+	+ Khi đi qua các bộ lọc (filters) của mạng CNN, các vùng này sẽ tạo ra tín hiệu phản hồi mạnh, cho ra một con số cao trong vector đặc trưng.
+	
+	+ Một nét trơn mượt (Smooth): Sự thay đổi giá trị pixel giữa các điểm lân cận rất êm dịu, chênh lệch thấp $\rightarrow$ Tần số thấp.
+	+ Một nét xước/gồ ghề (Rough): Giá trị pixel nhảy múa liên tục (đen-xám-trắng-đen) trong một vùng nhỏ $\rightarrow$ Tần số cao.
+
+- Bài toán này tập trung xử lý Ký tự (Character) hay Từ (Word)
+-> Bài toán này tập trung xử lý từng Ký tự — đơn vị nhỏ nhất trong hệ thống văn bản được máy tính định danh bằng một mã số Unicode duy nhất. Cho nên dù trong tiếng Trung, đôi khi một Ký tự là Từ (人 — Người) thì trong máy tính, nó cũng chỉ là một mã Unicode mà thôi.
+
+- Lý do vì sao chọn cặp Latin - Hán?
+-> Dạ, em chọn cặp Latin-Hán không phải ngẫu nhiên mà vì 2 lý do chiến lược:
+
+	Về mặt kỹ thuật: Đây là cặp có Khoảng cách hình thái lớn nhất (đơn giản vs. phức tạp). Nó đóng vai trò là trường hợp khó nhất (Worst-case) để kiểm chứng khả năng tách biệt Cấu trúc và Phong cách của mô-đun CL-SCR.
+
+	Về mặt khoa học: Đây là bộ dữ liệu chuẩn (Benchmark) mà các nghiên cứu SOTA đều sử dụng. Em cần dùng nó để có cơ sở so sánh định lượng trực tiếp và công bằng với các phương pháp cũ.
+	
+- Thế nào là khoảng cách hình thái học?
+
+- Diffusion cho phép kiểm soát tách biệt giữa Cấu trúc và Phong cách như thế nào?
