@@ -150,12 +150,12 @@ Mục tiêu: Xây dựng giải pháp *Cross-Lingual (Đa ngôn ngữ)* tổng q
 
 #list(marker: text(fill: blue)[$arrow$])[
   *Phạm vi (Scope):* Tập trung vào cặp *Latin - Hán tự*.
-  (Lý do: Đây là cặp có cấu trúc khác biệt lớn nhất $arrow$ Bài toán khó nhất).
+  (Lý do: Đây là cặp đại diện tiêu biểu cho *sự khác biệt cấu trúc* và là *Chuẩn so sánh* của các nghiên cứu SOTA).
 ]
 
 *Đóng góp chính:*
 1. Xây dựng pipeline dựa trên *Diffusion Model*.
-2. Đề xuất mô-đun *CL-SCR* để xử lý khác biệt cấu trúc.
+2. Đề xuất mô-đun *CL-SCR* với cơ chế luồng đôi để xử lý khác biệt cấu trúc.
 
 // ================================================
 // == Khoảng cách hình thái học <touying:hidden>
@@ -209,7 +209,7 @@ Mục tiêu: Xây dựng giải pháp *Cross-Lingual (Đa ngôn ngữ)* tổng q
 // )
 // 
 == Khoảng cách hình thái học (Morphological Gap) <touying:hidden>
-Tại sao Latin - Hán tự là thách thức lớn nhất?
+Thách thức: Sự "Lệch pha" về cấu trúc
 
 #grid(
   columns: (1fr, 1fr),
@@ -217,20 +217,20 @@ Tại sao Latin - Hán tự là thách thức lớn nhất?
   gutter: 20pt,
   [
     *1. Latin (Hệ chữ cái):*
-    - Cấu trúc tuyến tính (Linear), ít nét.
-    - *Vấn đề:* Quá ít thông tin để suy diễn.
+    - Cấu trúc tuyến tính (Linear), đơn giản.
+    - *Vấn đề:* Phát triển theo chiều ngang, mật độ nét thấp.
   ],
   [
     *2. Hán tự (Hệ tượng hình):*
-    - Cấu trúc khối vuông (Block), dày đặc.
-    - *Vấn đề:* Dễ bị biến dạng cấu trúc.
+    - Cấu trúc khối vuông (Block), phức tạp.
+    - *Vấn đề:* Chồng chéo trong không gian 2D, mật độ nét dày đặc.
   ]
 )
 
 #align(center)[
     #image("images/visualization_morphological_gap.png", height: 35%)
 ]
-$arrow$ *Rào cản lớn nhất trong việc bảo toàn cấu trúc khi chuyển đổi phong cách.*
+// $arrow$ *Rào cản lớn nhất trong việc bảo toàn cấu trúc khi chuyển đổi phong cách.*
 
 // == Tại sao chọn Diffusion thay vì GAN? <touying:hidden>
 // #grid(
@@ -292,7 +292,7 @@ $arrow$ *Rào cản lớn nhất trong việc bảo toàn cấu trúc khi chuy�
   
   [
     #text(size: 16pt)[ 
-      *Giai đoạn 1 (Nền tảng FontDiffuser):*
+      *Giai đoạn 1 (Kế thừa FontDiffuser):*
       - *MCA:* Tổng hợp đặc trưng đa tỷ lệ.
       - *RSI:* Xử lý biến dạng hình học.
       - $arrow$ *Mục tiêu:* Đảm bảo tái tạo đúng *cấu trúc chữ*.
@@ -302,7 +302,7 @@ $arrow$ *Rào cản lớn nhất trong việc bảo toàn cấu trúc khi chuy�
   [
     #text(size: 16pt)[
       #block(fill: rgb("#ffe6e6"), stroke: red, inset: 10pt, radius: 5pt, width: 100%)[
-        *Giai đoạn 2 (Trong khung đỏ):*
+        *Giai đoạn 2 (Đóng góp chính):*
         - Thay thế mô-đun SCR gốc bằng kiến trúc *CL-SCR* đề xuất.
         - $arrow$ Nâng cấp khả năng học *Cross-Lingual*.
       ]
@@ -310,28 +310,32 @@ $arrow$ *Rào cản lớn nhất trong việc bảo toàn cấu trúc khi chuy�
   ]
 )
 
-== Động lực & Ý tưởng <touying:hidden>
+== Động lực & Ý tưởng (Motivation) <touying:hidden>
 #v(25pt)
 #grid(
   columns: (1fr, 1fr),
-  gutter: 15pt,
+  gutter: 20pt,
   align: top + left,
+  
   [
-    #block(fill: rgb("#fff0f0"), stroke: red, inset: 10pt, radius: 5pt, width: 100%)[
-      #text(size: 17pt)[
-        *Vấn đề của Giai đoạn 1:*
-        - Giai đoạn 1 chỉ tập trung tối ưu hoá *điểm ảnh* (Pixel-wise).
-        - $arrow$ Học tốt cấu trúc nhưng yếu về *biểu diễn phong cách trừu tượng*. Khi chuyển sang hệ chữ khác, mô hình bị "mất phương hướng" vì không còn điểm ảnh tương đồng để so sánh.
+    #block(fill: rgb("#fff0f0"), stroke: red, inset: 15pt, radius: 10pt, width: 100%)[
+      #text(size: 18pt)[
+        *Hạn chế của Giai đoạn 1:*
+        #v(5pt)
+        - Dựa vào sự *khớp nối không gian* (Spatial Correspondence).
+        - *Hạn chế:* Mất "điểm neo" khi cấu trúc Latin và Hán tự lệch pha hoàn toàn.
       ]
     ]
   ],
+  
   [
-    #block(fill: rgb("#e6fffa"), stroke: green, inset: 10pt, radius: 5pt, width: 100%)[
-      #text(size: 17pt)[
-        *Trực giác cho Giai đoạn 2 (Cross-Lingual Bridge):*
-        - Cần một cơ chế *tách biệt phong cách* khỏi nội dung.
-        - Tận dụng các *nét tương đồng* (stroke-level) giữa Latin và Hán tự thông qua cơ chế *Học tương phản (Contrastive Learning)*.
-        - $arrow$ Dùng CL-SCR để "ép" mô hình tìm ra mẫu số chung về phong cách giữa hai ngôn ngữ.
+    #block(fill: rgb("#e6fffa"), stroke: green, inset: 15pt, radius: 10pt, width: 100%)[
+      #text(size: 18pt)[
+        *Trực giác cho Giai đoạn 2:*
+        #v(5pt)
+        - SCR gốc chỉ bóc tách phong cách tốt trong *cùng hệ chữ*.
+        - *Đề xuất:* Dùng CL-SCR với cơ chế *Luồng đôi* để ép mô hình tìm ra *phong cách bất biến* giữa hai hệ chữ khác biệt.
+        - $arrow$ Học "bản chất nét bút" thay vì "bắt chước vị trí".
       ]
     ]
   ]
@@ -638,7 +642,7 @@ Cơ sở thực nghiệm của khoá luận:
   [
     #block(fill: rgb("#e6f7ff"), stroke: blue, inset: 15pt, radius: 10pt, width: 100%)[
       *1. Định lượng:*
-      
+      Rào cản lớn nhất 
       #v(5pt)
       - *FID (Quan trọng nhất):*
         Đo khoảng cách phân bố giữa ảnh sinh và ảnh thật.
