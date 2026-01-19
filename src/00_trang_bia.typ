@@ -39,7 +39,7 @@
           right: 1cm,
         )[
           #set text(lang: "en")
-          #text(18pt, strong("Enhancing One-shot Cross-Script Font Style Transfer using Diffusion Model"))
+          #text(fill: red, 18pt, strong("Enhancing One-shot Cross-Script Font Style Transfer using Diffusion Model"))
         ]
       ]
 
