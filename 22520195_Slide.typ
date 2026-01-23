@@ -127,7 +127,7 @@ Quy trình thiết kế font truyền thống gặp 3 rào cản lớn:
 
 == Giải pháp: One-shot Font Generation <touying:hidden>
 // AI học phong cách từ *1 mẫu duy nhất* $arrow$ chuyển giao sang ký tự khác.
-Cơ chế *One-shot*: Tách biệt phong cách từ *1 mẫu ảnh* $arrow$ Chuyển giao (Transfer) sang *bất kỳ ký tự nào*.
+Cơ chế *One-shot*: Tách biệt phong cách từ *1 mẫu ảnh* $arrow$ Chuyển giao sang *bất kỳ ký tự nào*.
 
 #v(20pt)
 #align(center)[
@@ -146,10 +146,10 @@ Cơ chế *One-shot*: Tách biệt phong cách từ *1 mẫu ảnh* $arrow$ Chuy
 $arrow$ *Giải pháp tối ưu cho bài toán Chi phí, Quy mô và Đa ngôn ngữ.*
 
 == Mục tiêu & Đóng góp <touying:hidden>
-Mục tiêu: Xây dựng giải pháp *Cross-Lingual (Đa ngôn ngữ)* tổng quát.
+Mục tiêu: Xây dựng giải pháp *Đa ngôn ngữ* tổng quát.
 
 #list(marker: text(fill: blue)[$arrow$])[
-  *Phạm vi (Scope):* Tập trung vào cặp *Latin - Hán tự*.
+  *Phạm vi:* Tập trung vào cặp *Latin - Hán tự*. \
   (Lý do: Đây là cặp đại diện tiêu biểu cho *sự khác biệt cấu trúc* và là *Chuẩn so sánh* của các nghiên cứu SOTA).
 ]
 
@@ -208,7 +208,7 @@ Mục tiêu: Xây dựng giải pháp *Cross-Lingual (Đa ngôn ngữ)* tổng q
 //   ]
 // )
 // 
-== Khoảng cách hình thái học (Morphological Gap) <touying:hidden>
+== Khoảng cách hình thái học <touying:hidden>
 Thách thức: Sự "Lệch pha" về cấu trúc
 
 #grid(
@@ -247,7 +247,7 @@ Thách thức: Sự "Lệch pha" về cấu trúc
 //     *2. Diffusion Model (Đề xuất):*
 //     - *Cơ chế:* Khử nhiễu (Denoising) & Tái tạo.
 //     - *Ưu điểm:* Tách biệt triệt để *Cấu trúc* (Content) và *Phong cách* (Style).
-//     $arrow$ *Phù hợp để xử lý Cross-Lingual.*
+//     $arrow$ *Phù hợp để xử lý Đa ngôn ngữ.*
 //   ]
 // )
 
@@ -304,13 +304,13 @@ Thách thức: Sự "Lệch pha" về cấu trúc
       #block(fill: rgb("#ffe6e6"), stroke: red, inset: 10pt, radius: 5pt, width: 100%)[
         *Giai đoạn 2 (Đóng góp chính):*
         - Thay thế mô-đun SCR gốc bằng kiến trúc *CL-SCR* đề xuất.
-        - $arrow$ Nâng cấp khả năng học *Cross-Lingual*.
+        - $arrow$ Nâng cấp khả năng học *Đa ngôn ngữ*.
       ]
     ]
   ]
 )
 
-== Động lực & Ý tưởng (Motivation) <touying:hidden>
+== Động lực & Ý tưởng <touying:hidden>
 #v(25pt)
 #grid(
   columns: (1fr, 1fr),
@@ -341,16 +341,16 @@ Thách thức: Sự "Lệch pha" về cấu trúc
   ]
 )
 
-*Giải pháp CL-SCR:* Áp dụng cơ chế *Contrastive Learning*:
+*Giải pháp CL-SCR:* Áp dụng cơ chế *Học tương phản* (Contrastive Learning):
 #grid(
   columns: (1fr, 1fr),
   gutter: 20pt,
   align: top + left,
   [
-    #text(size: 17pt)[- *Intra-domain:* Giữ bản sắc ngôn ngữ nguồn.]
+    #text(size: 17pt)[- *Nhánh nội miền:* Giữ bản sắc ngôn ngữ nguồn.]
   ],
   [
-    #text(size: 17pt)[- *Cross-domain:* Tìm điểm chung giữa hai hệ chữ.]
+    #text(size: 17pt)[- *Nhánh xuyên miền:* Tìm điểm chung giữa hai hệ chữ.]
   ]
 )
 
@@ -375,16 +375,16 @@ Dựa trên nguyên lý *InfoNCE* (Cơ chế Kéo - Đẩy):
   gutter: 20pt,
   [
     #block(fill: luma(240), stroke: gray, inset: 10pt, radius: 5pt, width: 100%)[
-      *1. Intra-Lingual ($L_"intra"$)*
-      #text(size: 17pt)[$ L_"intra" = - log frac(exp(q dot k^+), exp(q dot k^+) + sum exp(q dot k^-)) $]
+      *1. Nhánh nội miền ($L_"intra"$)*
+      #text(size: 15pt)[$ L_"intra" = - log frac(exp(q dot k^+ "/" tau), exp(q dot k^+ "/" tau) + sum_(n=1)^N exp(q dot k^-_n "/" tau)) $]
       #v(5pt)
       $arrow$ *Mục tiêu:* Đảm bảo tính nhất quán nội bộ.
     ]
   ],
   [
     #block(fill: rgb("#e6f7ff"), stroke: blue, inset: 10pt, radius: 5pt, width: 100%)[
-      *2. Cross-Lingual ($L_"cross"$)*
-      #text(size: 17pt)[$ L_"cross" = - log frac(exp(q dot k^+_"cross"), exp(q dot k^+_"cross") + sum exp(q dot k^-_"cross")) $]
+      *2. Nhánh xuyên miền ($L_"cross"$)*
+      #text(size: 14pt)[$ L_"cross" = - log frac(exp(q dot k^+_"cross" "/" tau), exp(q dot k^+_"cross" "/" tau) + sum_(n=1)^N exp(q dot k^-_"cross" "/" tau)) $]
       #v(5pt)
       $arrow$ *Mục tiêu:* Kéo ảnh sinh về phía phong cách đích (Target).
     ]
@@ -409,7 +409,7 @@ Mô hình tối ưu hoá đồng thời 4 thành phần:
 ]
 
 #v(20pt)
-- *$L_"MSE"$ & $L_"offset"$*: Giữ vai trò bảo toàn khung xương (Giai đoạn 1).
+- *$L_"MSE"$ & $L_"cp"$* & *$L_"offset"$*: Giữ vai trò bảo toàn khung xương (Giai đoạn 1).
 - *$L_"CL-SCR"$*: Đóng vai trò then chốt trong việc chuyển giao phong cách (Giai đoạn 2).
 
 // ================================================
@@ -513,7 +513,7 @@ Mô hình tối ưu hoá đồng thời 4 thành phần:
   #block(fill: luma(240), stroke: gray, inset: 8pt, radius: 5pt)[
     #text(size: 17pt)[
       *Thiết lập:* GPU Tesla P100 (16GB) $diamond$ Batch size: 4 $diamond$ *Inference:* DPM-Solver++ (20 bước).
-      \ (Mô-đun CL-SCR được tiền huấn luyện (pre-train) độc lập trước khi đưa vào Giai đoạn 2).
+      \ (Mô-đun CL-SCR được tiền huấn luyện độc lập trước khi đưa vào Giai đoạn 2).
     ]
   ]
 ]
@@ -530,7 +530,7 @@ Mô hình tối ưu hoá đồng thời 4 thành phần:
       #text(size: 17pt)[
         - *Mục tiêu:* Học tái tạo cấu trúc chữ (Skeleton).
         - *Loss:* $L_"MSE"$ + $lambda_"cp" L_"cp"$ + $lambda_"offset" L_"offset"$.
-        - *Quy mô:* 400.000 bước (Steps).
+        - *Quy mô:* 400.000 bước.
         - *Learning Rate:* $1 times 10^(-4)$.
         
         $arrow$ *Kết quả:* Học cấu trúc nội dung và phong cách cơ bản.
@@ -544,11 +544,11 @@ Mô hình tối ưu hoá đồng thời 4 thành phần:
       #text(size: 16pt, fill: red)[*Giai đoạn 2: Tinh chỉnh*]
       #v(5pt)
       #text(size: 17pt)[
-        - *Mục tiêu:* Tách biệt và chuyển giao Style (Cross-Lingual).
+        - *Mục tiêu:* Tách biệt và chuyển giao Phong cách.
         - *Loss:* Thêm hàm *CL-SCR* (Contrastive Loss).
         - *Quy mô:* 30.000 bước.
         - *Learning Rate:* Giảm xuống $1 times 10^(-5)$.
-        - *Kỹ thuật:* Áp dụng *Data Augmentation* (Random Crop) để chống học vẹt.
+        - *Kỹ thuật:* Áp dụng *Tăng cường dữ liệu* (Random Crop) để chống học vẹt.
         
         $arrow$ *Kết quả:* Phong cách sắc nét, chuẩn xác.
       ]
@@ -1004,9 +1004,9 @@ Cơ sở thực nghiệm của khoá luận:
 == Tổng kết đóng góp <touying:hidden>
 Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
 
-- Xây dựng thành công Pipeline chuyển đổi phong cách *xuyên hệ chữ (Cross-Script)*, đặc biệt là cặp khó Latin - Hán tự.
+- Xây dựng thành công Pipeline chuyển đổi phong cách *xuyên hệ chữ*, đặc biệt là cặp Latin - Hán tự.
 #v(10pt)
-- Đề xuất mô-đun *CL-SCR* với cơ chế *Contrastive Learning*, giải quyết hiệu quả vấn đề "Domain Gap" giữa các ngôn ngữ.
+- Đề xuất mô-đun *CL-SCR* với cơ chế *Học tương phản*, giải quyết hiệu quả vấn đề "Domain Gap" giữa các ngôn ngữ.
 #v(10pt)
 - Vượt trội SOTA hiện tại (FID giảm $~50%$), khắc phục triệt để lỗi *"Bóng ma"* (Ghosting) và *"Biến dạng cấu trúc"* thường gặp ở GAN.
 
@@ -1133,7 +1133,7 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
         )
       )
       #v(5pt)
-      $arrow$ Bài toán Cross-Lingual cần ưu tiên học các đặc trưng xuyên ngôn ngữ ($beta$ lớn).
+      $arrow$ Bài toán Đa ngôn ngữ cần ưu tiên học các đặc trưng xuyên ngôn ngữ ($beta$ lớn).
     ]
   )
 ]
@@ -1234,13 +1234,13 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
         *Chiến lược: Random Resized Crop*
         
         #v(5pt)
-        - *Scale ($0.8 - 1.0$):* Cắt ngẫu nhiên nhưng giữ lại phần lớn cấu trúc chữ.
+        *Scale ($0.8 - 1.0$):* Cắt ngẫu nhiên nhưng giữ lại phần lớn cấu trúc chữ.
         
-        - *Ratio ($0.8 - 1.2$):* Thay đổi tỷ lệ khung hình nhẹ để mô phỏng các biến thể viết tay.
+        // - *Ratio ($0.8 - 1.2$):* Thay đổi tỷ lệ khung hình nhẹ để mô phỏng các biến thể viết tay.
       ]
       
       #v(10pt)
-      $arrow$ Giúp mô-đun *CL-SCR* không bị "học vẹt" (memorize) các vị trí pixel cố định.
+      $arrow$ Giúp mô-đun *CL-SCR* không bị "học vẹt" các vị trí pixel cố định.
     ]
   )
 ]
