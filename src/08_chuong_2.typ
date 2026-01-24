@@ -22,7 +22,7 @@ DG-Font@Xie2021DGFont tiếp cận bài toán sinh phông chữ theo hướng *k
 
 #figure(
     image("../images/DG-Font/overview.png", width: 100%),
-    caption: [Kiến trúc mạng DG-Font. Mô-đun FDSC đóng vai trò nòng cốt trong việc học biến dạng hình học giữa các ký tự.]
+    caption: [Kiến trúc mạng DG-Font. Mô-đun FDSC đóng vai trò nòng cốt trong việc học biến dạng hình học giữa các ký tự. (Trích từ @Xie2021DGFont)]
   )
 
 ==== CF-Font (Content Fusion, CVPR 2023)
@@ -32,7 +32,7 @@ CF-Font@Wang2023CFFont tiếp cận bài toán sinh phông chữ few-shot theo h
 
 #figure(
   image("../images/CF-Font/overview.pdf", width: 100%),
-  caption: [Minh hoạ cơ chế Content Fusion: Các đặc trưng từ tập font cơ sở (Source) được tổ hợp tuyến tính dựa trên bộ trọng số dự đoán (Weights) để xấp xỉ cấu trúc hình học của font mục tiêu.]
+  caption: [Minh hoạ cơ chế Content Fusion: Các đặc trưng từ tập font cơ sở (Source) được tổ hợp tuyến tính dựa trên bộ trọng số dự đoán (Weights) để xấp xỉ cấu trúc hình học của font mục tiêu. (Trích từ @Wang2023CFFont)]
 )
 
 ==== DFS (Few-Shot Text Style Transfer via Deep Feature Similarity, TIP 2020)
@@ -43,7 +43,7 @@ Cơ chế này hoạt động như một bộ lọc chú ý thông minh: nó cho
 
 #figure( 
   image("../images/DFS/overview.png", width: 100%), 
-  caption: [Kiến trúc mạng DFS với thành phần cốt lõi là Ma trận Tương đồng (SM) giúp điều hướng dòng chảy thông tin phong cách.] 
+  caption: [Kiến trúc mạng DFS với thành phần cốt lõi là Ma trận Tương đồng (SM) giúp điều hướng dòng chảy thông tin phong cách. (Trích từ @Zhu2020FewShotTextStyle)] 
 )
 
 ==== FTransGAN (Few-shot Font Style Transfer between Different Languages, WACV 2021)
@@ -53,7 +53,7 @@ FTransGAN@Li2021FTransGAN là một trong những mô hình tiên phong giải q
 
 #figure( 
   image("../images/FTransGAN/overview.png", width: 100%), 
-  caption: [Tổng quan kiến trúc FTransGAN.] 
+  caption: [Tổng quan kiến trúc FTransGAN. (Trích từ @Li2021FTransGAN)]
 )
 
 === Mô hình khuếch tán (Diffusion Models)
@@ -77,7 +77,7 @@ Trong quá trình này, nhiễu được thêm dần vào dữ liệu qua một 
 
 #figure(
   image("../images/diffusion_forward_process.png"),
-  caption: [Quá trình Khuếch tán xuôi.]
+  caption: [Quá trình Khuếch tán xuôi. (Trích từ @geeksforgeeks_diffusion)]
 )
 
 Về mặt toán học, xác suất chuyển trạng thái được biểu diễn như sau:
@@ -121,7 +121,7 @@ Quá trình này nhằm mục đích tái tạo lại dữ liệu gốc bằng c
 
 #figure(
   image("../images/diffusion_backward_process.png"),
-  caption: [Quá trình Khuếch tán ngược.]
+  caption: [Quá trình Khuếch tán ngược.  (Trích từ @geeksforgeeks_diffusion)]
 )
 
 Về mặt toán học, xác suất chuyển trạng thái ngược được xấp xỉ bởi một phân phối Gauss với tham số được học:
@@ -222,7 +222,7 @@ Chính vì khoảng cách hình thái sâu sắc này, việc áp dụng trực 
 
 #figure(
   image("../images/visualization_morphological_gap.png", width: 100%),
-    caption: [So sánh cấu trúc hình thái giữa chữ Latin và Hán tự. Chữ Latin được tổ chức theo bố cục tuyến tính dựa trên baseline, với các tham số hình học như x-height và cap height, đồng thời có độ rộng ký tự biến thiên. Ngược lại, Hán tự tuân theo cấu trúc khối vuông cố định (body frame), trong đó các nét bút được phân bố để cân bằng và lấp đầy không gian nội khối. Sự khác biệt căn bản về hệ quy chiếu hình học này tạo nên khoảng cách hình thái học giữa hai hệ chữ.]
+    caption: [So sánh cấu trúc hình thái giữa chữ Latin và Hán tự. Chữ Latin được tổ chức theo bố cục tuyến tính dựa trên baseline, với các tham số hình học như x-height và cap height, đồng thời có độ rộng ký tự biến thiên. Ngược lại, Hán tự tuân theo cấu trúc khối vuông cố định (body frame), trong đó các nét bút được phân bố để cân bằng và lấp đầy không gian nội khối. Sự khác biệt căn bản về hệ quy chiếu hình học này tạo nên khoảng cách hình thái học giữa hai hệ chữ. (Trích từ @tam_hanzi_blog)]
 )
 
 #pagebreak()

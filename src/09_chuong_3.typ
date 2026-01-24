@@ -18,7 +18,7 @@ FontDiffuser được thiết kế dưới dạng một mô hình khuếch tán 
 
 #figure(
   image("../images/FontDiffuser/framework.pdf"),
-  caption: [Mô hình tổng thể của FontDiffuser gồm 2 giai đoạn: #linebreak() Tái tạo cấu trúc (Trái) và Tinh chỉnh phong cách (Phải).]
+  caption: [Mô hình tổng thể của FontDiffuser gồm 2 giai đoạn: #linebreak() Tái tạo cấu trúc (Trái) và Tinh chỉnh phong cách (Phải). (Trích từ @Yang2024FontDiffuser)]
 )
 
 Mô hình nhận hai đầu vào chính:
@@ -62,12 +62,12 @@ Cụ thể, quy trình hoạt động như sau:
 
 #figure(
   image("../images/FontDiffuser/MCA.pdf"),
-  caption: [Khối MCA (Multi-scale Content Aggregation).]
+  caption: [Khối MCA (Multi-scale Content Aggregation). (Trích từ @Yang2024FontDiffuser)]
 )
 
 #figure(
   image("../images/FontDiffuser/multi-scale_content_feature.pdf"),
-  caption: [Đặc trưng Content ở các khối khác nhau.]
+  caption: [Đặc trưng Content ở các khối khác nhau. (Trích từ @Yang2024FontDiffuser)]
 )
 
 #h(1.5em) _*Reference-Structure Interaction (RSI)*_:
@@ -110,7 +110,7 @@ Kiến trúc của SCR, như được minh hoạ trong @scr_framework, bao gồm
 
 #figure(
   image("../images/FontDiffuser/Style Contrastive Refinement.png"),
-  caption: [Kiến trúc của mô-đun SCR.]
+  caption: [Kiến trúc của mô-đun SCR. (Trích từ @Yang2024FontDiffuser)]
 ) <scr_framework>
 
 1. _*Bộ trích xuất Đặc trưng (Style Extractor)*_:
