@@ -320,7 +320,7 @@ Khoá luận sử dụng hai cấu hình mô hình cho hướng này: $"Ours"_"A
     "../images/FontDiffuser/segment_b.pdf",
     "../images/FontDiffuser/segment_c.pdf",
   )),
-  caption: [Ví dụ ba loại độ phức tạp. (Trích từ @Yang2024FontDiffuser)]
+  caption: [Ví dụ ba loại độ phức tạp. (Trích dẫn từ @Yang2024FontDiffuser)]
 ) <image:stroke_compare>
 
 Việc phân loại theo độ phức tạp này giúp khoá luận xác định mô-đun *CL-SCR* hoặc các kiến trúc lõi khác (*MCA*, *RSI*) hoạt động hiệu quả nhất ở mức độ phức tạp cấu trúc nào của phong cách Hán tự, từ đó cung cấp những cái nhìn sâu sắc hơn về khả năng học đặc trưng của mô hình khuếch tán.

@@ -11,7 +11,7 @@ Lời đầu tiên, em xin gửi lời tri ân sâu sắc đến Ban Giám hiệ
 
 Bên cạnh đó, con xin cảm ơn gia đình – điểm tựa tinh thần vững chắc, và cảm ơn bạn bè, những người đồng đội đã luôn kề vai sát cánh, chia sẻ và hỗ trợ em trong suốt chặng đường sinh viên vừa qua.
 
-Kính chúc Quý Thầy/Cô, gia đình và bạn bè luôn dồi dào sức khỏe, hạnh phúc và gặt hái được nhiều thành công trong sự nghiệp cũng như cuộc sống.
+Kính chúc Quý Thầy/Cô, gia đình và bạn bè luôn dồi dào sức khoẻ, hạnh phúc và gặt hái được nhiều thành công trong sự nghiệp cũng như cuộc sống.
 
 Em xin chân thành cảm ơn!
 

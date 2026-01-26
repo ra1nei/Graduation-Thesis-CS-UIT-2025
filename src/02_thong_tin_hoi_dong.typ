@@ -8,7 +8,7 @@
   v(10pt)
   align(center)[
     #text()[
-      Hội đồng chấm khoá luận tốt nghiệp, thành lập theo Quyết định số #so ngày #ngay \
+      Hội đồng chấm khoá luận tốt nghiệp, thành lập theo Quyết định số #so, ngày #ngay
       của Hiệu trưởng Trường Đại học Công nghệ Thông tin.
     ]
   ]
@@ -25,14 +25,11 @@
 }
 
 #thong_tin_hoi_dong(
-  "20", 
-  "01", 
-  "Chủ tịch", 
-  "TS. Ngô Đức Thành", 
-  "Thư ký", 
-  "ThS. Nguyễn Thanh Sơn",
-  "Uỷ viên",
-  "TS. Mai Tiến Dũng"
+  "36/QĐ-ĐHCNTT", 
+  "12/01/2026", 
+  "Chủ tịch",       "TS. Ngô Đức Thành", 
+  "Thư ký",         "ThS. Nguyễn Thanh Sơn",
+  "Uỷ viên",        "TS. Mai Tiến Dũng"
 )
 
 #pagebreak()
