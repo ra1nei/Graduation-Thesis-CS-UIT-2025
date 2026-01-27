@@ -13,6 +13,6 @@ Hệ thống được bổ sung cơ chế checkpoint giúp tiếp tục huấn l
 
 #v(0.3cm)
 
-*_Từ khoá:_* _FontDiffuser_, _Style Contrastive Refinement_, _Cross-lingual SCR_, _Diffusion Model_, _Font Generation_
+*_Từ khoá:_* _FontDiffuser_, _Tinh chỉnh Tương phản Phong cách_, _SCR Đa ngôn ngữ_, _Mô hình Khuếch tán_, _Sinh phông chữ_
 
 #pagebreak()
