@@ -80,24 +80,6 @@
 
 // ================================================
 = Giới thiệu
-// == Bối cảnh & Nhu cầu thực tế <touying:hidden>
-// #grid(
-//   columns: (1fr, 1.2fr),
-//   gutter: 20pt,
-//   align: horizon,
-//   [
-//     #image("images/slide_fontdes_example1.jpg", height: 80%)
-//   ],
-//   [
-//     *Nhu cầu:* Phông chữ hiện diện khắp nơi (Biển hiệu, Bao bì, Website...).
-    
-//     #v(10pt)
-//     *Vấn đề:* Nhu cầu về font chữ độc đáo, thẩm mỹ và *đồng bộ thương hiệu* ngày càng cao, đòi hỏi quy trình thiết kế phải nhanh chóng và đa dạng.
-    
-//     $arrow$ *Các phương pháp thủ công không còn đáp ứng đủ tốc độ.*
-//   ]
-// )
-
 == Thách thức của thiết kế truyền thống <touying:hidden>
 Quy trình thiết kế font truyền thống gặp 3 rào cản lớn:
 
@@ -126,7 +108,6 @@ Quy trình thiết kế font truyền thống gặp 3 rào cản lớn:
 )
 
 == Giải pháp: One-shot Font Generation <touying:hidden>
-// AI học phong cách từ *1 mẫu duy nhất* $arrow$ chuyển giao sang ký tự khác.
 Cơ chế *One-shot*: Tách biệt phong cách từ *1 mẫu ảnh* $arrow$ Chuyển giao sang *bất kỳ ký tự nào*.
 
 #v(20pt)
@@ -142,7 +123,6 @@ Cơ chế *One-shot*: Tách biệt phong cách từ *1 mẫu ảnh* $arrow$ Chuy
   )
 ]
 #v(20pt)
-// $arrow$ *Giải quyết đồng thời bài toán về Tốc độ, Quy mô và Đa ngôn ngữ.*
 $arrow$ *Giải pháp tối ưu cho bài toán Chi phí, Quy mô và Đa ngôn ngữ.*
 
 == Mục tiêu & Đóng góp <touying:hidden>
@@ -157,57 +137,6 @@ Mục tiêu: Xây dựng giải pháp *Đa ngôn ngữ* tổng quát.
 1. Xây dựng pipeline dựa trên *Diffusion Model*.
 2. Đề xuất mô-đun *CL-SCR* với cơ chế luồng đôi để xử lý khác biệt cấu trúc.
 
-// ================================================
-// == Khoảng cách hình thái học <touying:hidden>
-// Tại sao cặp Latin - Hán tự lại là thách thức lớn nhất?
-
-// #grid(
-//   columns: (1fr, 1fr),
-//   align: top + left,
-//   gutter: 20pt,
-//   [
-//     *1. Latin (Đại diện hệ chữ cái):*
-//     - Cấu trúc tuyến tính (Linear).
-//     - Ít nét, mật độ thưa.
-//     - *Vấn đề:* Thiếu thông tin để suy diễn sang chữ phức tạp.
-//   ],
-//   [
-//     *2. Hán tự (Đại diện hệ tượng hình):*
-//     - Cấu trúc khối vuông (Square block).
-//     - Nét dày đặc, phức tạp.
-//     - *Vấn đề:* Dễ bị biến dạng cấu trúc khi áp dụng phong cách lạ.
-//   ]
-// )
-
-// #linebreak()
-// #align(center)[
-//     #image("images/visualization_morphological_gap.png", height: 30%)
-// ]
-// $arrow$ *Khoảng cách hình thái này tạo ra rào cản lớn trong việc bảo toàn cấu trúc (Structure Preservation) khi thực hiện chuyển đổi phong cách.*
-
-// == Tiếp cận giải quyết vấn đề <touying:hidden>
-// Với khoảng cách hình thái lớn như vậy, các phương pháp hiện tại xử lý ra sao?
-
-// #grid(
-//   columns: (1fr, 1fr),
-//   gutter: 20pt,
-//   align: top + left,
-//   [
-//     *1. Các phương pháp dựa trên GAN:*
-//     (Ví dụ: DG-Font, FTransGAN)
-//     - *Cơ chế:* Ánh xạ biến đổi trực tiếp (Direct Image-to-Image Translation).
-//     - *Hạn chế:* Gặp khó khăn khi xử lý sự chênh lệch thông tin 2 chiều:
-//       + Chiều $L arrow C$: Dễ bị *mờ* do phải "bịa" ra các nét phức tạp.
-//       + Chiều $C arrow L$: Thường gặp lỗi *bóng ma* (ghosting).
-//   ],
-//   [
-//     *2. Tại sao chọn Diffusion Model?*
-//     - *Cơ chế:* Phá huỷ cấu trúc cũ thành nhiễu và tái tạo lại cấu trúc mới từng bước.
-//     - *Ưu điểm:* Khả năng *tách biệt* giữa Cấu trúc và Phong cách.
-//     $arrow$ *Đảm bảo tính toàn vẹn cấu trúc cho cả hai chiều chuyển đổi (Bi-directional).*
-//   ]
-// )
-// 
 == Khoảng cách hình thái học <touying:hidden>
 Thách thức: Sự "Lệch pha" về cấu trúc
 
@@ -230,28 +159,7 @@ Thách thức: Sự "Lệch pha" về cấu trúc
 #align(center)[
     #image("images/visualization_morphological_gap.png", height: 35%)
 ]
-// $arrow$ *Rào cản lớn nhất trong việc bảo toàn cấu trúc khi chuyển đổi phong cách.*
 
-// == Tại sao chọn Diffusion thay vì GAN? <touying:hidden>
-// #grid(
-//   columns: (1fr, 1fr),
-//   gutter: 20pt,
-//   align: top + left,
-//   [
-//     *1. Các phương pháp GAN:*
-//     (DG-Font, FTransGAN)
-//     - *Cơ chế:* Ánh xạ trực tiếp (Mapping).
-//     - *Hạn chế:* Gặp lỗi *Bóng ma (Ghosting)* hoặc *Mờ (Blur)* do cố "ép" cấu trúc này vào khuôn khổ kia.
-//   ],
-//   [
-//     *2. Diffusion Model (Đề xuất):*
-//     - *Cơ chế:* Khử nhiễu (Denoising) & Tái tạo.
-//     - *Ưu điểm:* Tách biệt triệt để *Cấu trúc* (Content) và *Phong cách* (Style).
-//     $arrow$ *Phù hợp để xử lý Đa ngôn ngữ.*
-//   ]
-// )
-
-// ================================================
 = Phương pháp đề xuất
 == Kiến trúc đề xuất <touying:hidden>
 
@@ -283,8 +191,6 @@ Thách thức: Sự "Lệch pha" về cấu trúc
 ]
 
 #v(10pt)
-
-// Phần text giải thích
 #grid(
   columns: (1fr, 1fr),
   gutter: 20pt,
@@ -412,102 +318,8 @@ Mô hình tối ưu hoá đồng thời 4 thành phần:
 - *$L_"MSE"$ & $L_"cp"$* & *$L_"offset"$*: Giữ vai trò bảo toàn khung xương (Giai đoạn 1).
 - *$L_"CL-SCR"$*: Đóng vai trò then chốt trong việc chuyển giao phong cách (Giai đoạn 2).
 
-// ================================================
-// = Thực nghiệm và Đánh giá
-// == Bộ dữ liệu <touying:hidden>
-// Kế thừa bộ dữ liệu chuẩn từ *FTransGAN*.
-
-// - *Quy mô:* *818* bộ phông chữ song ngữ (Bao gồm Serif, Sans-serif, Thư pháp...).
-// - *Cấu trúc cặp:*
-//   #table(
-//     columns: (auto, 1fr),
-//     stroke: none,
-//     inset: (y: 3pt),
-//     gutter: 10pt,
-//     [Latin:], [~ *52* ký tự cơ bản.],
-//     [Hán tự:], [~ *800* ký tự thông dụng.]
-//   )
-// - *Đặc điểm:* Nhất quán về phong cách giữa hai hệ chữ $arrow$ Cung cấp *Ground-truth* tự nhiên cho việc học.
-
-// == Kịch bản đánh giá <touying:hidden>
-// Tuân theo chuẩn của FTransGAN và FontDiffuser.
-
-// #v(5pt)
-// #block(fill: luma(240), inset: 8pt, radius: 5pt)[
-//   *SFUC (Seen Font, Unseen Char):*
-//   - Font đã biết, sinh ký tự mới.
-//   - *Mục tiêu:* Đánh giá khả năng *nội suy phong cách*.
-// ]
-
-// #v(10pt)
-// #block(fill: blue.lighten(90%), stroke: blue, inset: 8pt, radius: 5pt)[
-//   *UFSC (Unseen Font, Seen Char):*
-//   - Font *mới hoàn toàn* (chưa từng thấy khi train).
-//   - *Mục tiêu:* Đánh giá khả năng *One-shot Generalization* (Kịch bản khó nhất & Quan trọng nhất).
-// ]
-
-// == Cấu hình Huấn luyện & Suy diễn <touying:hidden>
-// #text(size: 0.8em)[
-//   #grid(
-//     align: top + left,
-//     columns: (1fr, auto, 1fr),
-//     gutter: 20pt,
-//     [
-//       *1. Môi trường & Giai đoạn 1:*
-//       - *Phần cứng:* Kaggle Cloud, GPU NVIDIA Tesla P100 (16GB).
-//       - *Framework:* PyTorch, Diffusers.
-//       - *Giai đoạn 1:* 400.000 bước, Batch 4, AdamW ($lr=1 times 10^(-4)$).
-//       - *Mục tiêu:* Học cấu trúc nội dung và phong cách cơ bản.
-
-//       *2. Tiền huấn luyện CL-SCR:*
-//       - *Quy mô:* 200.000 bước, Batch 16, AdamW
-//       - *Augmentation:* Random Resized Crop (Scale 0.8-1.0) $arrow$ Tăng tính bền vững với biến thể hình học.
-//     ], 
-//     [],
-//     [
-//       *3. Giai đoạn 2 - Tinh chỉnh:*
-//       - *Thiết lập:* 30k bước, Batch 4, giảm $lr=1 times 10^(-5)$ để tránh phá vỡ cấu trúc.
-//       - *CL-SCR:* Chế độ `both` (Nội miền + Xuyên miền), $alpha=0.3, beta=0.7$, $K=4$.
-//       - *Hàm Loss tổng hợp:*
-//         $ L_"total" = L_"MSE" + 0.01 L_"percep" + 0.5 L_"offset" + 0.01 L_"CL-SCR" $
-
-//       *4. Quy trình Inference:*
-//       - *Sampler:* DPM-Solver++ (20 steps) để cân bằng tốc độ/chất lượng.
-//       - *Guidance:* Classifier-free Guidance (CFG).
-//     ]
-//   )
-// ]
-
-// == Các thước đo đánh giá <touying:hidden>
-// #v(20pt)
-// Để đánh giá toàn diện, khoá luận sử dụng hệ thống đo lường đa tầng:
-
-// #grid(
-//   align: top + left,
-//   columns: (1fr, 1fr),
-//   gutter: 20pt,
-//   [
-//     *1. Định lượng (Quantitative):*
-//     #table(
-//       columns: (auto, 1fr),
-//       stroke: none,
-//       inset: (y: 5pt),
-//       [*L1 & SSIM*], [Độ chính xác về điểm ảnh & cấu trúc (Pixel-level).],
-//       [*LPIPS*], [Độ tương đồng nhận thức (Perceptual distance).],
-//       [*FID*], [*(Quan trọng nhất)* Đo khoảng cách phân bố giữa ảnh sinh và ảnh thật (Độ chân thực).]
-//     )
-//   ],
-//   [
-//     *2. Định tính (Qualitative):*
-//     - *Visual Inspection:* So sánh bằng mắt thường các chi tiết nét (gai, xước, đậm/nhạt).
-//     - *User Study:* Khảo sát mù (Blind Test) trên 20 người dùng để đánh giá độ hài lòng thị giác.
-//   ]
-// )
-// $arrow$ *Kết hợp cả độ chính xác máy học và cảm nhận con người.*
-
 = Thực nghiệm và kết quả
 == Chiến lược Huấn luyện <touying:hidden>
-// Áp dụng chiến lược *Coarse-to-Fine (Từ Thô đến Tinh)* qua 2 giai đoạn:
 #v(25pt)
 #align(center)[
   #block(fill: luma(240), stroke: gray, inset: 8pt, radius: 5pt)[
@@ -522,7 +334,6 @@ Mô hình tối ưu hoá đồng thời 4 thành phần:
   gutter: 20pt,
   align: top + left,
   
-  // Giai đoạn 1: Giai đoạn thô
   [
     #block(fill: rgb("#e6f7ff"), stroke: blue, inset: 15pt, radius: 10pt, width: 100%)[
       #text(size: 16pt, fill: blue)[*Giai đoạn 1: Khởi tạo*]
@@ -538,7 +349,6 @@ Mô hình tối ưu hoá đồng thời 4 thành phần:
     ]
   ],
   
-  // Giai đoạn 2: Giai đoạn tinh (Quan trọng)
   [
     #block(fill: rgb("#ffe6e6"), stroke: red, inset: 15pt, radius: 10pt, width: 100%)[
       #text(size: 16pt, fill: red)[*Giai đoạn 2: Tinh chỉnh*]
@@ -555,38 +365,6 @@ Mô hình tối ưu hoá đồng thời 4 thành phần:
     ]
   ]
 )
-
-// == Cấu hình Huấn luyện & Suy diễn <touying:hidden>
-// #text(size: 0.8em)[
-//   #grid(
-//     align: top + left,
-//     columns: (1fr, auto, 1fr),
-//     gutter: 20pt,
-//     [
-//       *1. Môi trường & Giai đoạn 1:*
-//       - *Phần cứng:* Kaggle Cloud, GPU NVIDIA Tesla P100 (16GB).
-//       - *Framework:* PyTorch, Diffusers.
-//       - *Giai đoạn 1:* 400.000 bước, Batch 4, AdamW ($lr=1 times 10^(-4)$).
-//       - *Mục tiêu:* Học cấu trúc nội dung và phong cách cơ bản.
-
-//       *2. Tiền huấn luyện CL-SCR:*
-//       - *Quy mô:* 200.000 bước, Batch 16, AdamW
-//       - *Augmentation:* Random Resized Crop (Scale 0.8-1.0) $arrow$ Tăng tính bền vững với biến thể hình học.
-//     ], 
-//     [],
-//     [
-//       *3. Giai đoạn 2 - Tinh chỉnh:*
-//       - *Thiết lập:* 30k bước, Batch 4, giảm $lr=1 times 10^(-5)$ để tránh phá vỡ cấu trúc.
-//       - *CL-SCR:* Chế độ `both` (Nội miền + Xuyên miền), $alpha=0.3, beta=0.7$, $K=4$.
-//       - *Hàm Loss tổng hợp:*
-//         $ L_"total" = L_"MSE" + 0.01 L_"percep" + 0.5 L_"offset" + 0.01 L_"CL-SCR" $
-
-//       *4. Quy trình Inference:*
-//       - *Sampler:* DPM-Solver++ (20 steps) để cân bằng tốc độ/chất lượng.
-//       - *Guidance:* Classifier-free Guidance (CFG).
-//     ]
-//   )
-// ]
 
 == Dữ liệu & Kịch bản đánh giá <touying:hidden>
 #v(15pt)
@@ -605,12 +383,6 @@ Cơ sở thực nghiệm của khoá luận:
       $arrow$ Đảm bảo sự nhất quán phong cách (Ground-truth).
     ]
     #v(10pt)
-    // Chèn bảng nhỏ minh hoạ số lượng nếu cần, hoặc để trống cho thoáng
-    // #table(
-    //   columns: (auto, 1fr), stroke: none, inset: 4pt,
-    //   [Latin:], [A-Z, a-z],
-    //   [Hán tự:], [800 chữ thông dụng]
-    // )
   ],
   
   [
@@ -671,12 +443,6 @@ Cơ sở thực nghiệm của khoá luận:
     ]
   ]
 )
-// #v(20pt)
-// #align(center)[
-//   #text(size: 14pt, style: "italic", fill: gray)[
-//     *Chiến lược huấn luyện:* Áp dụng *Data Augmentation* (Random Crop) để tăng tính bền vững (Robustness).
-//   ]
-// ]
 
 == Kết quả định lượng <touying:hidden>
 #v(30pt)
@@ -1015,10 +781,9 @@ Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
 Định hướng nghiên cứu trong tương lai:
 
 #grid(
-  columns: (1fr, 1fr), // Bên phải rộng hơn để nhấn mạnh Tương lai
+  columns: (1fr, 1fr),
   gutter: 20pt,
   align: top + left,
-  // Cột 1: Hạn chế (Nói giảm nói tránh)
   [
     #block(fill: rgb("#fff0f0"), inset: 15pt, radius: 10pt, width: 100%)[
       #text(size: 17pt)[
@@ -1034,7 +799,6 @@ Khoá luận đã hoàn thành các mục tiêu đề ra ban đầu:
     ]
   ],
   
-  // Cột 2: Tương lai (Vẽ bánh)
   [
     #block(fill: rgb("#e6fffa"), inset: 15pt, radius: 10pt, width: 100%)[
       #text(size: 17pt)[
@@ -1235,8 +999,6 @@ Cơ sở thực nghiệm để lựa chọn các siêu tham số tốt nhất.
         
         #v(5pt)
         *Scale ($0.8 - 1.0$):* Cắt ngẫu nhiên nhưng giữ lại phần lớn cấu trúc chữ.
-        
-        // - *Ratio ($0.8 - 1.2$):* Thay đổi tỷ lệ khung hình nhẹ để mô phỏng các biến thể viết tay.
       ]
       
       #v(10pt)
