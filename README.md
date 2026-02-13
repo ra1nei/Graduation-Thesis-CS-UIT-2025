@@ -1,6 +1,6 @@
 <div align="center">
 
-# Graduation Thesis: Cross-Lingual Font Generation via Diffusion Models
+# Graduation Thesis: Enhancing One-shot Cross-Script Font Style Transfer using Diffusion Model
 
 </div>
 
